@@ -46,17 +46,17 @@ const Book: FC<TBookContainer> = ({ data, loading }) => {
         </Fade>
         {!loading && data && (
           <div className="detail-wrapper">
-            <BookInfo>
-              <div className="cover">
-                <div>
-                  <Image
-                    src={data?.Image?.secureUrl}
-                    fill
-                    alt="cover"
-                  />
-                </div>
+            <CoverWrapper>
+              <div>
+                <Image
+                  src={data?.Image?.secureUrl}
+                  fill
+                  alt="cover"
+                />
               </div>
-              <div className="info">
+            </CoverWrapper>
+            <BookInfo>
+              <div className="main-info">
                 <div className="section-1">
                   <p className="title">{data.title}</p>
                   <p className="author">{data.authorName}</p>
@@ -69,22 +69,24 @@ const Book: FC<TBookContainer> = ({ data, loading }) => {
                   <Button type="button" onClick={() => window.open("https://wa.link/i4bf6x")} label="Beli Sekarang" variant="contained" />
                 </div>
               </div>
-            </BookInfo>
-            <Description>
-              <p className="title">Deskripsi Buku</p>
-              <p className="value">{data.description}</p>
-            </Description>
-            <Detail>
-              <p className="title">Detail</p>
-              <div className="item-wrapper">
-                {detail.map((val) => (
-                  <div key={val.label}>
-                    <p className="label">{val.label}</p>
-                    <p className="value">{val.value}</p>
+              <div className="additional-info">
+                <Description>
+                  <p className="title">Deskripsi Buku</p>
+                  <p className="value">{data.description}</p>
+                </Description>
+                <Detail>
+                  <p className="title">Detail</p>
+                  <div className="item-wrapper">
+                    {detail.map((val) => (
+                      <div key={val.label}>
+                        <p className="label">{val.label}</p>
+                        <p className="value">{val.value}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </Detail>
               </div>
-            </Detail>
+            </BookInfo>
           </div>
         )}
       </div>
@@ -113,8 +115,7 @@ const Main = styled.div`
     position: relative;
     > div.detail-wrapper{
       display: flex;
-      flex-direction: column;
-      gap: 30px;
+      gap: 40px;
     }
   }
 `
@@ -133,29 +134,15 @@ const Loading = styled.div`
 
 const BookInfo = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 30px;
-  >div.cover {
-    display: flex;
-    padding: 20px;
-    min-width: 240px;
-    height: 240px;
-    aspect-ratio: 1/1;
-    background: #c3dbf3;
-    justify-content: center;
-    border-radius: 3px;
-    >div{
-      border-radius: 3px;
-      overflow: hidden;
-      aspect-ratio: 2/2.8;
-      position: relative;
-      box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
-    }
-  }
-  > div.info {
+  > div.main-info {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 20px;
     > div.section-1 {
+      display: flex;
+      flex-direction: column;
       > p.title {
         font-size: 25px;
         font-weight: 700;
@@ -197,11 +184,35 @@ const BookInfo = styled.div`
         font-weight: 700;
         margin: 0;
         line-height: 1.3;
-        color: #ff06a4;
+        color: #ff4a71;
       }
     }
   }
+  >div.additional-info {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
 `
+
+const CoverWrapper = styled.div`
+  display: flex;
+  padding: 20px;
+  min-width: 450px;
+  height: 450px;
+  aspect-ratio: 1/1;
+  background: #d2e2f3;
+  justify-content: center;
+  border-radius: 8px;
+  >div{
+    border-radius: 3px;
+    overflow: hidden;
+    aspect-ratio: 2/2.9;
+    position: relative;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 20px 30px;
+  }
+`
+
 const Description = styled.div`
   display: flex;
   flex-direction: column;

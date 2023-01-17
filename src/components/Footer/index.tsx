@@ -4,37 +4,36 @@ const Footer = () => {
   return (
     <Main>
       <div className="content">
-
         <Phone>
           <p>No. Telp</p>
-          <p>0812-7327-2469</p>
+          <p>+62 (0717) 422145</p>
         </Phone>
         <Address>
           <p>Alamat</p>
-          <p>Jln. Dahlia Dalam 1 No. 446 RT/RW 003/001, kel. Bukit Merapin, kec. Gerunggang Pangkalpinang Kepulauan Bangka Belitung 33123 Indonesia</p>
+          <p>Gedung Rektorat UBB, Kampus Terpadu Universitas Bangka Belitung Desa Balinijuk, Kec. Merawang, Kab. Bangka, Prov. Kep. Bangka Belitung</p>
         </Address>
         <Media>
           <p>Sosial Media</p>
           <div className="icon-wrapper">
-            <div onClick={() => window.open("https://www.facebook.com/dapur.kata.77")}>
+            <div onClick={() => window.open("https://www.facebook.com/TP3IUBB/")}>
               <Facebook />
             </div>
-            <div onClick={() => window.open("https://www.instagram.com/dapurkata.id/")}>
+            <div onClick={() => window.open("https://www.instagram.com/TP3IUBB/?hl=id")}>
               <Instagram />
             </div>
-            <div onClick={() => window.open("https://twitter.com/DapurKatadotid")}>
+            <div onClick={() => window.open("https://publisher.tp3i.ubb.ac.id/#")}>
               <Twitter />
             </div>
-            <div onClick={() => window.open("mailto:dapurkata.id@gmail.com?subject")}>
+            <div onClick={() => window.open("mailto:tp3ubb@gmail.com?subject")}>
               <Gmail />
             </div>
-            <div onClick={() => window.open("https://wa.link/i4bf6x")}>
+            <div onClick={() => window.open("https://publisher.tp3i.ubb.ac.id/#")}>
               <Whatsapp />
             </div>
           </div>
         </Media>
       </div>
-      <div className="footer-message">Penerbit DapurKata © 2022 ~ Made with ❤️</div>
+      <div className="footer-message">© Copyright 2023 UBB PRESS</div>
     </Main>
   )
 }
@@ -46,11 +45,12 @@ const Main = styled.div`
   flex-direction: column;
   gap: 30px;
   width: 100%;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px;
   > div.content {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     padding: 40px 60px;
+    gap: 20px;
   }
   > div.footer-message {
     display: flex;

@@ -7,11 +7,7 @@ const Navbar = () => {
   return (
     <Main>
       <div onClick={()=>router.push("/")} className="logo-wrapper">
-        <Image src="/icons/dklogo.svg" height={40} width={40} alt="logo" />
-        <div>
-          <p>Penerbit</p>
-          <p>Dapurkata</p>
-        </div>
+        <Image src="/icons/ubb_press.png" height={40} width={145} alt="logo" />
       </div>
     </Main>
   )
@@ -34,23 +30,5 @@ const Main = styled.div`
     display: flex;
     align-items: center;
     gap: 10px;
-    > div {
-      display: flex;
-      flex-direction: column;
-      > p:nth-child(1){
-        font-size: 14px;
-        font-weight: 500;
-        margin: 0;
-        line-height: 1;
-        color: #23252b;
-      }
-      > p:nth-child(2){
-        font-size: 16px;
-        font-weight: 700;
-        margin: 0;
-        line-height: 1;
-        color: #101114;
-      }
-    }
   }
 `

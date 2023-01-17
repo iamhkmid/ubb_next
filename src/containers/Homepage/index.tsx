@@ -13,19 +13,6 @@ const Homepage: FC<THomepage> = () => {
   const router = useRouter()
   return (
     <>
-      <Main>
-        <div className="content">
-          <div className="title">
-            <p>Penerbit DapurKata</p>
-            <p>"Di sini, naskahmu diracik dengan sempurna."</p>
-          </div>
-          <Image src="/img/banner.svg" width={400} height={300} alt="pic" />
-          <div className="button-wrapper">
-            <Button type="button" variant="contained" label="Pesan Sekarang" onClick={() => window.open("https://wa.link/i4bf6x")} />
-            <Button type="button" variant="outlined" label="Daftar Buku" onClick={() => router.push({ hash: "#book-list" })} />
-          </div>
-        </div>
-      </Main>
       <BookList />
     </>
   )

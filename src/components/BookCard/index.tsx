@@ -55,7 +55,8 @@ const Main = styled.div`
     height: 100%;
     width: 100%;
     top: -15px;
-    position: relative;
+    position: relative;  
+    background: #fff;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   }
   >div.detail {
@@ -66,7 +67,7 @@ const Main = styled.div`
     > p.title {
       display: -webkit-box;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 1;
+      -webkit-line-clamp: 2;
       overflow: hidden;
       font-size: 12px;
       font-weight: 500;
@@ -94,7 +95,7 @@ const Main = styled.div`
       font-weight: 600;
       margin: 0;
       line-height: 1.3;
-      color: #ff06a4;
+      color: #ff4a71;
     }
     > div.additional{
       display: -webkit-box;

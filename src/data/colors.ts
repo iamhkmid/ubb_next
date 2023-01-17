@@ -1,12 +1,12 @@
 
 export const colors: TColors = {
   primary: {
-    dark: "#283593",
-    hard: "#3949ab",
-    default: "#5c6bc0",
-    medium: "#7986cb",
-    Soft: "#9fa8da",
-    ultrasoft: "#e8eaf6"
+    dark: "#3f589c",
+    hard: "#4f65a1",
+    default: "#667ab3",
+    medium: "#8f9cdf",
+    Soft: "#b7bfee",
+    ultrasoft: "#e8ebff"
   },
   text: {
     dark: "#2B2F3C",

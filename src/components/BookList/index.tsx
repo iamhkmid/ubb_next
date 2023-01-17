@@ -35,7 +35,6 @@ const BookList: FC<TBookList> = () => {
 
   return (
     <Main id="book-list">
-      <p className="title">Daftar Buku</p>
       <Content>
         <div className="search">
           <div className="input-wrapper">
@@ -72,8 +71,8 @@ export default BookList
 const Main = styled.div`
   display: flex;
   flex-direction: column;
-  background: #e7edf2;
   padding: 90px 60px 60px 60px;
+  min-height: calc(100vh - 220px);
   gap: 50px;
   >p.title{
     text-align: center;

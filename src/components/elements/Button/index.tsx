@@ -39,6 +39,9 @@ const Main = styled.div`
   }
   .MuiButton-contained {
     background: ${({ theme }) => theme?.colors?.primary?.default};
+    :hover {
+      background: ${({ theme }) => theme?.colors?.primary?.hard};
+    }
   }
   .MuiButton-outlined {
     color: ${({ theme }) => theme?.colors?.primary?.default};

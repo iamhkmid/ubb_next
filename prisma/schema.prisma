@@ -3,41 +3,52 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(cuid()) @map("book_id")
   username  String   @unique
   name      String
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
 
 model Book {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  id            String     @id @default(cuid()) @map("book_id")
   title         String
-  authorName    String
+  authorName    String     @map("author_name")
   price         Int
   stock         Int
   publisher     String
   description   String?
-  printType     String
-  numberOfPages Int
+  printType     String     @map("print_type")
+  numberOfPages Int        @map("number_of_pages")
   isbn          String
-  slug          String   @unique
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  slug          String     @unique
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
   Image         Image?
+  Category      Category[]
 }
 
 model Image {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  publicId  String @unique
+  id        String   @id @default(cuid()) @map("image_id")
+  publicId  String   @unique @map("public_id")
   url       String
-  secureUrl String
-  book      Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  bookId    String @unique @db.ObjectId
+  secureUrl String   @map("secure_url")
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId    String   @unique @map("book_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Category {
+  id        String   @id @default(cuid()) @map("_id")
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  Book      Book[]
 }
