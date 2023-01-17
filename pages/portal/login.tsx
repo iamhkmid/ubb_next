@@ -7,7 +7,7 @@ const login: React.FC = () => {
     <>
       <Head>
         <title>Login</title>
-        <link rel="icon" href="/icons/dklogo.svg" />
+        <link rel="icon" href="/icons/ubb_press_logo.png" />
       </Head>
       <Login />
     </>

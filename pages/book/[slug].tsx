@@ -32,7 +32,7 @@ const BookPath: FC<TBookPath> = ({ slug }) => {
     <>
       <Head key={data?.data?.id}>
         <title>{data?.data?.title || "Book"}</title>
-        <link rel="icon" href="/icons/dklogo.svg" />
+        <link rel="icon" href="/icons/ubb_press_logo.png" />
       </Head>
       <Book data={data?.data} loading={loading} />
     </>

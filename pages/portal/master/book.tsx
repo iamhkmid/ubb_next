@@ -7,7 +7,7 @@ const Book: React.FC = () => {
     <>
       <Head>
         <title>Portal - Book</title>
-        <link rel="icon" href="/icons/dklogo.svg" />
+        <link rel="icon" href="/icons/ubb_press_logo.png" />
       </Head>
       <BookComponent />
     </>

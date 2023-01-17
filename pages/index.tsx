@@ -6,8 +6,8 @@ const Home: FC = () => {
   return (
     <>
       <Head>
-        <title>Homepage</title>
-        <link rel="icon" href="/icons/dklogo.svg" />
+        <title>UBB PRESS</title>
+        <link rel="icon" href="/icons/ubb_press_logo.png" />
       </Head>
       <Homepage />
     </>

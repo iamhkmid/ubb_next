@@ -19,7 +19,7 @@ const Portal: React.FC = () => {
     <>
       <Head>
         <title>Portal</title>
-        <link rel="icon" href="/icons/dklogo.svg" />
+        <link rel="icon" href="/icons/ubb_press_logo.png" />
       </Head>
       <PortalComponent />
     </>
