@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Book {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  authorName    String
+  price         Int
+  stock         Int
+  publisher     String
+  description   String?
+  printType     String
+  numberOfPages Int
+  isbn          String
+  slug          String   @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  Image         Image?
+}
+
+model Image {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  publicId  String @unique
+  url       String
+  secureUrl String
+  book      Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId    String @unique @db.ObjectId
+}
