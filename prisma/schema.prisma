@@ -3,52 +3,72 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(cuid()) @map("book_id")
-  username  String   @unique
-  name      String
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  username  String     @unique
   password  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  fullName  String
+  role      String
+  email     String?    @unique
+  phone     String?    @unique
+  isActive  Boolean
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Image     UserImage?
+}
+
+model UserImage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  publicId  String
+  url       String
+  secureUrl String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique @db.ObjectId
 }
 
 model Book {
-  id            String     @id @default(cuid()) @map("book_id")
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
   title         String
-  authorName    String     @map("author_name")
+  authorName    String
   price         Int
   stock         Int
   publisher     String
   description   String?
-  printType     String     @map("print_type")
-  numberOfPages Int        @map("number_of_pages")
+  printType     String
+  numberOfPages Int
   isbn          String
-  slug          String     @unique
-  createdAt     DateTime   @default(now()) @map("created_at")
-  updatedAt     DateTime   @updatedAt @map("updated_at")
-  Image         Image?
-  Category      Category[]
+  slug          String      @unique
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  categoryIDs   String[]    @db.ObjectId
+  Categories    Category[]  @relation(fields: [categoryIDs], references: [id])
+  Images        BookImage[]
 }
 
-model Image {
-  id        String   @id @default(cuid()) @map("image_id")
-  publicId  String   @unique @map("public_id")
+model BookImage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  publicId  String
   url       String
-  secureUrl String   @map("secure_url")
-  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  bookId    String   @unique @map("book_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  secureUrl String
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId    String   @unique @db.ObjectId
 }
 
 model Category {
-  id        String   @id @default(cuid()) @map("_id")
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  Book      Book[]
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  nameId    String   @unique
+  nameEn    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bookIDs   String[] @db.ObjectId
+  Books     Book[]   @relation(fields: [bookIDs], references: [id])
 }

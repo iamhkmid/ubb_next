@@ -14,11 +14,12 @@ const BookCard: FC<TBookCard> = ({ data, onClick }) => {
   return (
     <Main onClick={onClick}>
       <div className="cover">
-        <Image
-          src={data.Image.secureUrl}
-          fill
-          alt="cover"
-        />
+        {data?.Images?.find((val) => val.type === "COVER") ? (
+          <Image
+            src={data?.Images?.find((val) => val.type === "COVER")?.secureUrl!}
+            fill
+            alt="cover"
+          />) : null}
       </div>
       <div className="detail">
         <p className="title">{data.title}</p>

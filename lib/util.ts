@@ -12,7 +12,7 @@ export const stringPath = (str: string) =>
 
 type TCreateToken = {
     username: string;
-    name: string
+    fullName: string
 };
 export const createToken = (props: TCreateToken) => {
     const maxAge = 1 * 24 * 60 * 60;

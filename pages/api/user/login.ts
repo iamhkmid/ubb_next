@@ -25,10 +25,11 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
 
         const token = createToken({
           username: findUser!.username,
-          name: findUser!.name,
+          fullName: findUser!.fullName,
         });
         res.status(200).send({ statusCode: "200", token })
       } catch (error: any) {
+        console.log({error})
         httpCatchError({ error, res })
       }
       break;

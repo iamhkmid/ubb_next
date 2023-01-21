@@ -48,11 +48,12 @@ const Book: FC<TBookContainer> = ({ data, loading }) => {
           <div className="detail-wrapper">
             <CoverWrapper>
               <div>
-                <Image
-                  src={data?.Image?.secureUrl}
-                  fill
-                  alt="cover"
-                />
+                {data?.Images?.find((val) => val.type === "COVER") ? (
+                  <Image
+                    src={data?.Images?.find((val) => val.type === "COVER")?.secureUrl!}
+                    fill
+                    alt="cover"
+                  />) : null}
               </div>
             </CoverWrapper>
             <BookInfo>
