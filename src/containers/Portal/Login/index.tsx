@@ -8,8 +8,9 @@ import { defaultValues, validationSchema } from "./validationSchema";
 import crypto from "crypto"
 import Router from "next/router"
 import LoadingWrapper from "../../../components/Loading/LoadingWrapper";
-import useMutation from "../../../hooks/useMutation";
 import { Fade } from "@mui/material";
+import { useMutation } from "@apollo/client";
+import { LOGIN } from "../../../graphql/auth.graphql";
 
 const Login: React.FC = () => {
   const PUBLIC_KEY = process.env.NEXT_PUBLIC_PUBLIC_KEY as string
@@ -30,22 +31,26 @@ const Login: React.FC = () => {
   }, [])
 
   type TLoginMutaion = {
-    statusCode: string;
-    token: string;
+    login: {
+      message: string;
+      user: { fullName: string; role: string; username: string };
+    }
   }
 
 
-  const { data, error, loading, mutation } = useMutation<TLoginMutaion>({
-    method: "POST",
-    url: "/api/user/login",
+  const [login, { data, error, loading}] = useMutation<TLoginMutaion>(LOGIN, {
+    errorPolicy: "all",
+    fetchPolicy: 'network-only'
   })
 
-  React.useEffect(() => {
-    if (data) {
-      sessionStorage.setItem("token", data?.token)
-      Router.push("/portal")
-    }
-  }, [data])
+  console.log({ data, error })
+
+  // React.useEffect(() => {
+  //   if (data?.login?.user) {
+  //     sessionStorage.setItem("token", data?.token)
+  //     Router.push("/portal")
+  //   }
+  // }, [data])
 
   const { handleSubmit, watch, control, formState, setValue } = useForm({
     mode: "all",
@@ -56,13 +61,16 @@ const Login: React.FC = () => {
 
   const { isValid } = formState;
 
-  const onSubmit = (values: any) => {
-    mutation({
-      body: {
-        username: values.username,
-        password: encryptRSA(values.password)
-      }
-    })
+  const onSubmit = async (values: any) => {
+    console.log({ pass: encryptRSA(values.password) })
+    try {
+      await login({
+        variables: {
+          username: values.username,
+          password: encryptRSA(values.password)
+        }
+      });
+    } catch (error) { }
   }
 
   return (

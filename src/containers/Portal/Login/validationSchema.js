@@ -5,6 +5,6 @@ export const validationSchema = yup.object({
   password: yup.string(),
 });
 export const defaultValues = {
-  username: undefined,
-  password: undefined,
+  username: "",
+  password: "",
 };

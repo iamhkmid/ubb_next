@@ -2,27 +2,27 @@ import { Button } from "@mui/material"
 import React, { useMemo, useState } from "react"
 import styled from "styled-components"
 import ButtonComp from "../../../../components/elements/Button"
-import PopupAddBook from "../../../../components/Popups/PopupAddBook"
-import PopupDelete from "../../../../components/Popups/PopupDeleteBook"
-import PopupUpdate from "../../../../components/Popups/PopupUpdateBook"
+import PopupAddCategory from "../../../../components/Popups/PopupAddCategory"
+import PopupDelete from "../../../../components/Popups/PopupDeleteCategory"
+import PopupUpdate from "../../../../components/Popups/PopupUpdateCategory"
 import TableComponent from "../../../../components/Tables/TableComponent"
 import useQuery from "../../../../hooks/useQuery"
-import { TBook } from "../../../../types/book"
+import { TCategory } from "../../../../types/category"
 
-const Book: React.FC = () => {
+const Category: React.FC = () => {
   const [popupDelete, setPopupDelete] = useState(false)
   const [popupAdd, setPopupAdd] = useState(false)
   const [popupUpdate, setPopupUpdate] = useState(false)
   const [deleteData, setDeleteData] = useState<{ id: string; title: string; }>({ id: "", title: "" })
-  const [updateData, setUpdateData] = useState<TBook | null>(null)
-  type TResBook = {
+  const [updateData, setUpdateData] = useState<TCategory | null>(null)
+  type TResCategory = {
     statusCode: string;
-    data: TBook[]
+    data: TCategory[]
   }
 
-  const { data, error, loading, refetch } = useQuery<TResBook>({
+  const { data, error, loading, refetch } = useQuery<TResCategory>({
     method: "GET",
-    url: "/api/book"
+    url: "/api/category"
   })
 
   const onClickDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: { id: string; title: string; }) => {
@@ -31,31 +31,29 @@ const Book: React.FC = () => {
     setDeleteData(data)
   }
 
-  const onClickUpdate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: TBook) =>{
+  const onClickUpdate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: TCategory) =>{
     setUpdateData(data)
     setPopupUpdate(true)
   }
 
-  const createData = (id: string, no: string, title: string, authorName: string, action: any) => ({ id, no, title, authorName, action });
+  const createData = (id: string, no: string, category: string, action: any) => ({ id, no, category, action });
 
   const dataTable = useMemo(() => {
     const columns = [
       { id: "id", label: "id", width: "auto", align: "left", display: "hidden" },
-      { id: "no", label: "No", width: "auto", align: "left" },
-      { id: "title", label: "Title", width: "auto", align: "left" },
-      { id: "authorName", label: "Author Name", width: "auto", align: "left" },
+      { id: "no", label: "No", width: "10px", align: "left" },
+      { id: "category", label: "Category", width: "auto", align: "left" },
       { id: "action", label: "Action", width: "0", align: "center" },
     ];
     const rows = data?.data?.map((val, idx) => {
       return createData(
         val?.id,
         String(idx + 1),
-        val?.title,
-        val?.authorName,
+        val?.category,
         <Action>
           
           <Button onClick={(e) => onClickUpdate(e, val)}><EditIcon /></Button>
-          <Button onClick={(e) => onClickDelete(e, { id: val?.id, title: val?.title })}><XIcon /></Button>
+          <Button onClick={(e) => onClickDelete(e, { id: val?.id, title: val?.category })}><XIcon /></Button>
         </Action>
       );
     }, []);
@@ -77,19 +75,19 @@ const Book: React.FC = () => {
     <Main>
       <PopupDelete open={popupDelete} onClickClose={onCloseDeleteBook} data={deleteData} refetch={refetch} />
       <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateBook} data={updateData!} refetch={refetch} />
-      <PopupAddBook open={popupAdd} onClickClose={onCloseAddBook} refetch={refetch}/>
-      <p className="title">Portal - Book</p>
+      <PopupAddCategory open={popupAdd} onClickClose={onCloseAddBook} refetch={refetch}/>
+      <p className="title">Portal - Category</p>
       <Content>
         <div className="action">
           <ButtonComp label="ADD" startIcon={<PlusIcon />} onClick={() => setPopupAdd(true)} />
         </div>
-        <TableComponent dataTable={dataTable} loading={loading} checkbox maxHeight="600px" />
+        <TableComponent dataTable={dataTable} loading={loading}  maxHeight="600px" />
       </Content>
     </Main>
   )
 }
 
-export default Book
+export default Category
 
 const XIcon = () => (<svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M368 368L144 144M368 144L144 368" /></svg>)
 const PlusIcon = () => (<svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="54" d="M256 112v288M400 256H112" /></svg>)
