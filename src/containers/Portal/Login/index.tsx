@@ -31,6 +31,7 @@ const Login: React.FC = () => {
   }, [])
 
   type TLoginMutaion = {
+    token: string;
     login: {
       message: string;
       user: { fullName: string; role: string; username: string };
@@ -43,14 +44,12 @@ const Login: React.FC = () => {
     fetchPolicy: 'network-only'
   })
 
-  console.log({ data, error })
-
-  // React.useEffect(() => {
-  //   if (data?.login?.user) {
-  //     sessionStorage.setItem("token", data?.token)
-  //     Router.push("/portal")
-  //   }
-  // }, [data])
+  React.useEffect(() => {
+    if (data?.token) {
+      sessionStorage.setItem("token", data?.token)
+      Router.push("/portal")
+    }
+  }, [data])
 
   const { handleSubmit, watch, control, formState, setValue } = useForm({
     mode: "all",
@@ -62,7 +61,6 @@ const Login: React.FC = () => {
   const { isValid } = formState;
 
   const onSubmit = async (values: any) => {
-    console.log({ pass: encryptRSA(values.password) })
     try {
       await login({
         variables: {
