@@ -13,6 +13,16 @@ export type TBook = {
   slug: string;
 }
 
+export type TBookHome = {
+  id: string;
+  title: string;
+  authorName: string;
+  slug: string;
+  printType: string;
+  price: number;
+  Images: { url: string; type: string; secureUrl: string; }[]
+}
+
 export type TFormAdd = {
   title: string;
   authorName: string;

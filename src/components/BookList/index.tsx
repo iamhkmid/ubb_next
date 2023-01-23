@@ -1,9 +1,10 @@
+import { useQuery } from "@apollo/client"
 import { Fade } from "@mui/material"
 import { useRouter } from "next/router"
 import { FC, useState } from "react"
 import styled from "styled-components"
-import useQuery from "../../hooks/useQuery"
-import { TBook } from "../../types/book"
+import { BOOKS } from "../../graphql/book.graphql"
+import { TBook, TBookHome } from "../../types/book"
 import BookCard from "../BookCard"
 import { FacebookCircularProgress } from "../Loading/LoadingWrapper"
 
@@ -11,18 +12,14 @@ type TBookList = {
 }
 
 type TResBook = {
-  statusCode: string;
-  data: TBook[]
+  books: TBookHome[]
 }
 
 const BookList: FC<TBookList> = () => {
   const router = useRouter()
   const [search, setSearch] = useState("")
 
-  const { data, error, loading } = useQuery<TResBook>({
-    method: "GET",
-    url: "/api/book"
-  })
+  const { data, error, loading } = useQuery<TResBook>(BOOKS)
 
   const onClickBook = (slug: string) => {
     router.push({
@@ -31,7 +28,7 @@ const BookList: FC<TBookList> = () => {
     })
   }
 
-  const filterBook = data?.data?.filter((val) => `${val.title.toLowerCase()} ${val.authorName.toLowerCase()}`.includes(search.toLowerCase()))
+  const filterBook = data?.books?.filter((val) => `${val.title.toLowerCase()} ${val.authorName.toLowerCase()}`.includes(search.toLowerCase()))
 
   return (
     <Main id="book-list">
@@ -46,7 +43,7 @@ const BookList: FC<TBookList> = () => {
             />
           </div>
         </div>
-        <Fade in={!loading && filterBook?.length > 0} unmountOnExit>
+        <Fade in={!loading && filterBook?.length! > 0} unmountOnExit>
           <div className="books-wrapper">
             {filterBook?.map((book) => (
               <div key={book.id}>

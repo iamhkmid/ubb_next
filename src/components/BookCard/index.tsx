@@ -2,10 +2,10 @@ import Image from "next/image";
 import { FC } from "react";
 import styled from "styled-components"
 import { formatToCurrency } from "../../helpers/formatToCurrency";
-import { TBook } from "../../types/book"
+import { TBook, TBookHome } from "../../types/book"
 
 type TBookCard = {
-  data: TBook;
+  data: TBookHome;
   onClick?: () => void;
 }
 
