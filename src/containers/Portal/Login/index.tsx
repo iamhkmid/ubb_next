@@ -31,9 +31,9 @@ const Login: React.FC = () => {
   }, [])
 
   type TLoginMutaion = {
-    token: string;
     login: {
       message: string;
+      token: string;
       user: { fullName: string; role: string; username: string };
     }
   }
@@ -45,13 +45,11 @@ const Login: React.FC = () => {
   })
 
   React.useEffect(() => {
-    if (data?.token) {
-      sessionStorage.setItem("token", data?.token)
+    if (data?.login?.token) {
+      sessionStorage.setItem("token", data?.login?.token)
       Router.push("/portal")
     }
   }, [data])
-
-  console.log({data})
 
   const { handleSubmit, watch, control, formState, setValue } = useForm({
     mode: "all",

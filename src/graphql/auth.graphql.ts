@@ -4,6 +4,7 @@ export const LOGIN = gql`
   mutation($username: String!, $password: String!) {
     login(username: $username, password: $password){
       message
+      token
       user {
         fullName
         username
