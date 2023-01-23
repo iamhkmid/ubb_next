@@ -32,6 +32,10 @@ const SideMenu = () => {
           label: "Book",
           pathname: "/portal/master/book"
         },
+        {
+          label: "Category",
+          pathname: "/portal/master/category"
+        },
       ]
     },
     {
