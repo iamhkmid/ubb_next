@@ -7,15 +7,18 @@ import ButtonComp from '../elements/Button'
 import * as yup from "yup"
 import InputText from '../elements/Input/Input'
 import FileUploader from '../elements/FileUploader/FileUploader'
-import useMutation from '../../hooks/useMutation'
-import { TFormAdd, TMutationAddBook } from '../../types/book'
+import { useMutation } from '@apollo/client'
+import { TFormAddBook, TMutationAddBook } from '../../types/book'
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
+import { ADDBOOK } from '../../graphql/book.graphql'
 
 type TPopupDelete = {
   open: boolean;
   onClickClose: () => void;
   refetch: (p?: any) => void;
 }
+
+
 
 const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
 
@@ -26,7 +29,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
   }, [open])
 
 
-  const { handleSubmit, watch, control, formState, setValue, reset } = useForm<TFormAdd>({
+  const { handleSubmit, watch, control, formState, setValue, reset } = useForm<TFormAddBook>({
     mode: "all",
     reValidateMode: "onChange",
     resolver: yupResolver(validationSchema),
@@ -34,22 +37,29 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
   });
   const { isValid } = formState;
 
-  const { data: dataAddBook, error, loading, mutation } = useMutation<TMutationAddBook>({ method: "POST", url: "/api/book" })
+  const [addBook, { data, error, loading}] = useMutation<TMutationAddBook>(ADDBOOK, {
+    errorPolicy: "all",
+    fetchPolicy: 'network-only'
+  })
+
 
   React.useEffect(() => {
-    if (dataAddBook?.data?.id) {
+    if (data?.addBook) {
       onClickClose()
       refetch()
     }
-  }, [dataAddBook])
+  }, [data])
 
-  const onSubmit = (values: TFormAdd) => {
-    mutation({
-      body: {
-        ...values
-      }
-    })
-  };
+  const onSubmit = async (values: TFormAddBook) => {
+    try {
+      await addBook({
+        variables: {
+          data: values
+        }
+      });
+    } catch (error) { }
+  }
+
 
   return (
     <StyledModal open={open}>
@@ -266,7 +276,7 @@ const validationSchema =
     printType: yup.string().required("Required"),
     numberOfPages: yup.number().required("Required"),
     isbn: yup.string().required("Required"),
-    cover: yup.string().required("Required")
+    // cover: yup.string().required("Required")
   });
 
 const defaultValues = {

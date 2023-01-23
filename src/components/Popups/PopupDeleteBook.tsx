@@ -1,10 +1,11 @@
 import { Backdrop, Button, Fade, Modal } from '@mui/material';
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import useMutation from '../../hooks/useMutation';
+import { useMutation } from '@apollo/client';
 import { TMutationDeleteBook } from '../../types/book';
 import ButtonComp from '../elements/Button';
 import { FacebookCircularProgress } from '../Loading/LoadingWrapper';
+import { DELETEBOOK } from '../../graphql/book.graphql';
 
 type TPopupDelete = {
   open: boolean;
@@ -14,23 +15,29 @@ type TPopupDelete = {
 }
 
 const PopupDelete: FC<TPopupDelete> = ({ open, onClickClose, data, refetch }) => {
-  const { data: dataDelete, error, loading, mutation } = useMutation<TMutationDeleteBook>({ method: "DELETE", url: "/api/book" })
+
+  const [deleteBook, { data: datares, error, loading}] = useMutation<TMutationDeleteBook>(DELETEBOOK, {
+    errorPolicy: "all",
+    fetchPolicy: 'network-only'
+  })
+
 
   React.useEffect(() => {
-    if (dataDelete?.data?.id) {
+    if (datares?.deleteBook) {
       onClickClose()
       refetch()
     }
-  }, [dataDelete])
+  }, [datares])
 
   const onClickDelete = () => {
-    mutation({
-      body: {
-        bookId: data?.id
-      }
-    })
+    try {
+      deleteBook({
+        variables: {
+          bookId: data?.id
+        }
+      });
+    } catch (error) { }
   }
-
   return (
     <StyledModal
       open={open}

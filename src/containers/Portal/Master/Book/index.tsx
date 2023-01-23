@@ -1,13 +1,14 @@
 import { Button } from "@mui/material"
 import React, { useMemo, useState } from "react"
 import styled from "styled-components"
+import { useQuery } from "@apollo/client"
 import ButtonComp from "../../../../components/elements/Button"
 import PopupAddBook from "../../../../components/Popups/PopupAddBook"
 import PopupDelete from "../../../../components/Popups/PopupDeleteBook"
 import PopupUpdate from "../../../../components/Popups/PopupUpdateBook"
 import TableComponent from "../../../../components/Tables/TableComponent"
-import useQuery from "../../../../hooks/useQuery"
-import { TBook } from "../../../../types/book"
+import { TBook, TBookPortal } from "../../../../types/book"
+import { ADDBOOK, BOOKS } from "../../../../graphql/book.graphql"
 
 const Book: React.FC = () => {
   const [popupDelete, setPopupDelete] = useState(false)
@@ -16,25 +17,22 @@ const Book: React.FC = () => {
   const [deleteData, setDeleteData] = useState<{ id: string; title: string; }>({ id: "", title: "" })
   const [updateData, setUpdateData] = useState<TBook | null>(null)
   type TResBook = {
-    statusCode: string;
-    data: TBook[]
+    books: TBookPortal[]
   }
 
-  const { data, error, loading, refetch } = useQuery<TResBook>({
-    method: "GET",
-    url: "/api/book"
-  })
 
-  const onClickDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: { id: string; title: string; }) => {
+  const onClickDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, dataProps: { id: string; title: string; }) => {
     e.stopPropagation()
     setPopupDelete(true)
-    setDeleteData(data)
+    setDeleteData(dataProps)
   }
 
   const onClickUpdate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: TBook) =>{
     setUpdateData(data)
     setPopupUpdate(true)
   }
+
+  const { data, error, loading, refetch } = useQuery<TResBook>(BOOKS)
 
   const createData = (id: string, no: string, title: string, authorName: string, action: any) => ({ id, no, title, authorName, action });
 
@@ -46,7 +44,7 @@ const Book: React.FC = () => {
       { id: "authorName", label: "Author Name", width: "auto", align: "left" },
       { id: "action", label: "Action", width: "0", align: "center" },
     ];
-    const rows = data?.data?.map((val, idx) => {
+    const rows = data?.books?.map((val, idx) => {
       return createData(
         val?.id,
         String(idx + 1),

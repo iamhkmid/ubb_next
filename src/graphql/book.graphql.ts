@@ -17,3 +17,21 @@ export const BOOKS = gql`
     }
   }
 `
+
+export const ADDBOOK = gql`
+  mutation($data: addBookInput!){
+   addBook(data: $data){
+     createdAt
+     id
+     title
+   }
+ }`
+
+ export const DELETEBOOK = gql`
+ mutation($bookId: ID!){ 
+   deleteBook(bookId: $bookId){
+     createdAt
+     id
+     title
+   }
+ }`
