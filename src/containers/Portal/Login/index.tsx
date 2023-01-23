@@ -51,6 +51,8 @@ const Login: React.FC = () => {
     }
   }, [data])
 
+  console.log({data})
+
   const { handleSubmit, watch, control, formState, setValue } = useForm({
     mode: "all",
     reValidateMode: "onChange",

@@ -26,6 +26,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
   return forward(operation).map((response) => {
     const context = operation.getContext()
     const token = context.response.headers.get('Authorization')
+    console.log({token})
     return { ...response, data: token ? { ...response.data, token } : response.data }
   })
 })
