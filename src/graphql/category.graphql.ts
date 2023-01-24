@@ -41,3 +41,11 @@ mutation($data: updateBookCategoryInput!){
     createdAt
   }
 }`
+
+export const PORTAL_INIT_CATEGORY_UPDATE = gql`
+  query($categoryId: ID!) {
+    bookCategory(categoryId: $categoryId) {
+      name
+    }
+  }
+`;
