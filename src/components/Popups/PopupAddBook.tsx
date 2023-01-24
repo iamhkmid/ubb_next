@@ -237,7 +237,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                     )}
                   />
                 </InputGroup>
-                <CoverInput>
+                {/* <CoverInput>
                   <p>Cover File</p>
                   <Controller
                     name="cover"
@@ -249,7 +249,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                       />
                     )}
                   />
-                </CoverInput>
+                </CoverInput> */}
               </div>
             </FormWrapper>
           </div>
