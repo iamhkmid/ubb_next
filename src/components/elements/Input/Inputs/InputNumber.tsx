@@ -36,6 +36,7 @@ const InputNumber: React.FC<InputProps & TInputNumeric> = (props) => {
           autoComplete={props.autoComplete}
           placeholder={props.placeholder}
           disabled={props.disabled}
+          label={props.label!}
         />
         <El.CloseIcon onClick={onClickClear} show={value?.toString()?.length! > 0} disabled={props.disabled!}><XIcon /></El.CloseIcon>
       </div>
@@ -51,7 +52,7 @@ InputNumber.defaultProps = {
   className: "",
   onChange: () => { },
   width: "300px",
-  id: "input",
+  id: undefined,
   autoComplete: "off",
   placeholder: "Placeholder",
   value: undefined,

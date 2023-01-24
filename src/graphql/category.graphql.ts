@@ -2,11 +2,19 @@ import { gql } from "@apollo/client";
 
 
 export const BOOKCATEGORIES = gql`
-query{
-  bookcategories{
-    id
-    name
-  }
+  query{
+    bookCategories{
+      id
+      name
+    }
+}`
+
+export const PUBLIC_BOOK_CATEGORIES = gql`
+  query {
+    bookCategories {
+      id
+      name
+    }
 }`
 
 export const ADDBOOKCATEGORY = gql`

@@ -13,7 +13,11 @@ export type TBook = {
   slug: string;
 }
 
-export type TBookHome = {
+export type TQueryBookDetail = {
+  book: TBook
+}
+
+export type TBookCardHome = {
   id: string;
   title: string;
   authorName: string;
@@ -21,6 +25,10 @@ export type TBookHome = {
   printType: string;
   price: number;
   Images: { url: string; type: string; secureUrl: string; }[]
+}
+
+export type TQueryBookHome = {
+  books: TBookCardHome[]
 }
 
 export type TBookPortal = {

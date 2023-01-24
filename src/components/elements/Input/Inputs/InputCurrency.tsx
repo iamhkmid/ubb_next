@@ -51,7 +51,7 @@ InputCurrency.defaultProps = {
   className: "",
   onChange: () => { },
   width: "300px",
-  id: "input",
+  id: undefined,
   autoComplete: "off",
   value: undefined,
   type: "currency",

@@ -3,6 +3,13 @@ export type TCategory = {
   name: string;
 }
 
+export type TQueryBookCategory = {
+  bookCategories: {
+    id: string;
+    name: string;
+  }[]
+}
+
 export type TFormAddCategory = {
   name: string;
 }

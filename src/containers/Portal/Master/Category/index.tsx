@@ -17,7 +17,7 @@ const Category: React.FC = () => {
   const [deleteData, setDeleteData] = useState<{ id: string; name: string; }>({ id: "", name: "" })
   const [updateData, setUpdateData] = useState<{ id: string; name: string; }>({ id: "", name: "" })
   type TResCategory = {
-    bookcategories: TCategory[]
+    bookCategories: TCategory[]
   }
 
   const { data, error, loading, refetch } = useQuery<TResCategory>(BOOKCATEGORIES)
@@ -42,7 +42,7 @@ const Category: React.FC = () => {
       { id: "name", label: "Category", width: "auto", align: "left" },
       { id: "action", label: "Action", width: "0", align: "center" },
     ];
-    const rows = data?.bookcategories?.map((val, idx) => {
+    const rows = data?.bookCategories?.map((val, idx) => {
       return createData(
         val?.id,
         String(idx + 1),

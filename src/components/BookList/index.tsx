@@ -2,17 +2,17 @@ import { useQuery } from "@apollo/client"
 import { Button, Fade, List, ListItem, ListItemButton, ListItemText } from "@mui/material"
 import ButtonComp from "../elements/Button"
 import { useRouter } from "next/router"
-import { FC, useState } from "react"
+import { FC, useMemo, useState } from "react"
 import styled from "styled-components"
 import { PUBLIC_BOOK_LIST } from "../../graphql/book.graphql"
-import { TBookHome } from "../../types/book"
+import { TQueryBookHome } from "../../types/book"
 import BookCard from "../BookCard"
 import Input from "../elements/Input/Input"
 import { FacebookCircularProgress } from "../Loading/LoadingWrapper"
+import { PUBLIC_BOOK_CATEGORIES } from "../../graphql/category.graphql"
+import { TQueryBookCategory } from "../../types/category"
 
 type TBookList = {}
-
-type TResBook = { books: TBookHome[] }
 
 const BookList: FC<TBookList> = () => {
   const router = useRouter()
@@ -20,19 +20,14 @@ const BookList: FC<TBookList> = () => {
   const [minAmount, setMinAmount] = useState<number | undefined>(undefined)
   const [maxAmount, setMaxAmount] = useState<number | undefined>(undefined)
 
-  const categories = [
-    { id: "ALL", label: "Semua Kategori" },
-    { id: "ALL", label: "Semua Kategori" },
-    { id: "ALL", label: "Semua Kategori" },
-    { id: "ALL", label: "Semua Kategori" },
-    { id: "ALL", label: "Semua Kategori" },
-    { id: "ALL", label: "Semua Kategori" },
-    { id: "ALL", label: "Semua Kategori" },
-    { id: "ALL", label: "Semua Kategori" },
-    { id: "ALL", label: "Semua Kategori" },
-  ]
 
-  const { data, error, loading } = useQuery<TResBook>(PUBLIC_BOOK_LIST)
+  const { data, error, loading } = useQuery<TQueryBookHome>(PUBLIC_BOOK_LIST)
+  const { data: dataCategories, error: errCategories, loading: loadCategories } = useQuery<TQueryBookCategory>(PUBLIC_BOOK_CATEGORIES, { fetchPolicy: "cache-first" })
+
+  const categories = useMemo(() => {
+    const initCategories = [{ id: "ALL", label: "Semua Kategori" }]
+    return [...initCategories, ...(dataCategories?.bookCategories || [])?.map((val) => ({ id: val.id, label: val.name }))]
+  }, [dataCategories?.bookCategories])
 
   const onClickBook = (slug: string) => {
     router.push({ pathname: '/book/[slug]', query: { slug } })
