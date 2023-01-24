@@ -10,7 +10,7 @@ import { useMutation } from '@apollo/client'
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
 import { useQuery } from '@apollo/client'
 import { TCategory, TDefaultValueUpdateCategory, TFormAddCategory, TMutationUpdateBookCategory } from '../../types/category'
-import { PORTAL_INIT_CATEGORY_UPDATE, UPDATEBOOKCATEGORY } from '../../graphql/category.graphql'
+import { BOOKCATEGORIES, PORTAL_INIT_CATEGORY_UPDATE, UPDATEBOOKCATEGORY } from '../../graphql/category.graphql'
 
 
 type TPopupDelete = {
@@ -25,7 +25,8 @@ const PopupUpdateBookCategory: FC<TPopupDelete> = (props) => {
   const { data: dataInit, refetch, loading: loadInit } = useQuery<TResCategory>(PORTAL_INIT_CATEGORY_UPDATE, {
     variables: { categoryId: props.data?.id! },
     skip: !props.data?.id || !props.open,
-    fetchPolicy: "network-only"
+    fetchPolicy: "network-only",
+
   })
 
   useEffect(() => {
@@ -83,7 +84,11 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
   const { isValid } = formState;
 
   const [updateBookCategory, { data: dataUpdate, error, loading }] = useMutation<TMutationUpdateBookCategory>(UPDATEBOOKCATEGORY, {
-    errorPolicy: "all"
+    errorPolicy: "all",
+    refetchQueries: [
+      {query: BOOKCATEGORIES}
+    ], 
+    awaitRefetchQueries: true
   })
 
   React.useEffect(() => {
