@@ -52,6 +52,7 @@ const PopupUpdateBook: FC<TPopupDelete> = (props) => {
       <Fade in={props.open} unmountOnExit>
         <Content>
           <div className="head"><p>Update Data</p><Button color="error" onClick={props.onClickClose}><CloseIcon /></Button></div>
+          {loadInit && <div className="loading-wrapper"><FacebookCircularProgress size={50} thickness={4}/></div>}
           <Fade in={props.open && !!dataInit?.book && !loadInit} unmountOnExit>
             <div>
               <FormData {...props} defaultValues={defaultValues} />
@@ -334,6 +335,13 @@ const Content = styled.div`
   border-radius: 15px;
   padding: 10px;
   gap: 10px;
+  > div.loading-wrapper {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+  }
   >div.head{
     display: flex;
     align-items: center;
