@@ -6,9 +6,11 @@ import styled from 'styled-components'
 import ButtonComp from '../elements/Button'
 import * as yup from "yup"
 import InputText from '../elements/Input/Input'
-import useMutation from '../../hooks/useMutation'
-import { TFormAddCategory, TMutationAddCategory } from '../../types/category'
+import { TFormAddCategory, TMutationAddBookCategory } from '../../types/category'
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
+import { useMutation } from '@apollo/client'
+import { ADDBOOKCATEGORY } from '../../graphql/category.graphql'
+import Category from '../../containers/Portal/Master/Category'
 
 type TPopupDeleteCategory = {
   open: boolean;
@@ -33,22 +35,29 @@ const PopupAddCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, refetc
   });
   const { isValid } = formState;
 
-  const { data: dataAddCategory, error, loading, mutation } = useMutation<TMutationAddCategory>({ method: "POST", url: "/api/category" })
+  const [addBookCategory, { data, error, loading}] = useMutation<TMutationAddBookCategory>(ADDBOOKCATEGORY, {
+    errorPolicy: "all",
+    fetchPolicy: 'network-only'
+  })
+
 
   React.useEffect(() => {
-    if (dataAddCategory?.data?.id) {
+    if (data?.addBookCategory) {
       onClickClose()
       refetch()
     }
-  }, [dataAddCategory])
+  }, [data])
 
-  const onSubmit = (values: TFormAddCategory) => {
-    mutation({
-      body: {
-        ...values
-      }
-    })
-  };
+  const onSubmit = async (values: TFormAddCategory) => {
+    try {
+      await addBookCategory({
+        variables: {
+          data: values
+        }
+      });
+    } catch (error) { }
+  }
+
 
   return (
     <StyledModal open={open}>
@@ -59,7 +68,7 @@ const PopupAddCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, refetc
             <FormWrapper>
               <div className="section">
                 <Controller
-                  name="category"
+                  name="name"
                   control={control}
                   render={({ field: { onChange, value }, fieldState: { error } }) => (
                     <InputText
@@ -71,7 +80,7 @@ const PopupAddCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, refetc
                       label="Category"
                       width="100%"
                       onChange={onChange}
-                      id="category"
+                      id="name"
                       disabled={loading}
                     />
                   )}
@@ -93,11 +102,11 @@ export default PopupAddCategory;
 
 const validationSchema =
   yup.object({
-    category: yup.string().required("Required"),
+    name: yup.string().required("Required"),
   });
 
 const defaultValues = {
-  category: "",
+  name: "",
 };
 
 const CloseIcon = () => (<svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M368 368L144 144M368 144L144 368" /></svg>)

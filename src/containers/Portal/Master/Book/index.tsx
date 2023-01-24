@@ -15,10 +15,11 @@ const Book: React.FC = () => {
   const [popupAdd, setPopupAdd] = useState(false)
   const [popupUpdate, setPopupUpdate] = useState(false)
   const [deleteData, setDeleteData] = useState<{ id: string; title: string; }>({ id: "", title: "" })
-  const [updateData, setUpdateData] = useState<{ id: string | null }>({ id: null })
+  const [updateData, setUpdateData] = useState<TBookPortal | null>(null)
   type TResBook = {
     books: TBookPortal[]
   }
+
 
   const onClickDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, dataProps: { id: string; title: string; }) => {
     e.stopPropagation()
@@ -26,7 +27,7 @@ const Book: React.FC = () => {
     setDeleteData(dataProps)
   }
 
-  const onClickUpdate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: TBookPortal) => {
+  const onClickUpdate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: TBookPortal) =>{
     setUpdateData(data)
     setPopupUpdate(true)
   }
@@ -50,7 +51,7 @@ const Book: React.FC = () => {
         val?.title,
         val?.authorName,
         <Action>
-
+          
           <Button onClick={(e) => onClickUpdate(e, val)}><EditIcon /></Button>
           <Button onClick={(e) => onClickDelete(e, { id: val?.id, title: val?.title })}><XIcon /></Button>
         </Action>
@@ -74,7 +75,7 @@ const Book: React.FC = () => {
     <Main>
       <PopupDelete open={popupDelete} onClickClose={onCloseDeleteBook} data={deleteData} refetch={refetch} />
       <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateBook} data={updateData!} refetch={refetch} />
-      <PopupAddBook open={popupAdd} onClickClose={onCloseAddBook} refetch={refetch} />
+      <PopupAddBook open={popupAdd} onClickClose={onCloseAddBook} refetch={refetch}/>
       <p className="title">Portal - Book</p>
       <Content>
         <div className="action">
@@ -90,7 +91,7 @@ export default Book
 
 const XIcon = () => (<svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M368 368L144 144M368 144L144 368" /></svg>)
 const PlusIcon = () => (<svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="54" d="M256 112v288M400 256H112" /></svg>)
-const EditIcon = () => (<svg viewBox="0 0 512 512"><title>Pencil</title><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="44" d="M358.62 129.28L86.49 402.08 70 442l39.92-16.49 272.8-272.13-24.1-24.1zM413.07 74.84l-11.79 11.78 24.1 24.1 11.79-11.79a16.51 16.51 0 000-23.34l-.75-.75a16.51 16.51 0 00-23.35 0z" /></svg>)
+const EditIcon = () => (<svg viewBox="0 0 512 512"><title>Pencil</title><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="44" d="M358.62 129.28L86.49 402.08 70 442l39.92-16.49 272.8-272.13-24.1-24.1zM413.07 74.84l-11.79 11.78 24.1 24.1 11.79-11.79a16.51 16.51 0 000-23.34l-.75-.75a16.51 16.51 0 00-23.35 0z"/></svg>)
 
 const Main = styled.div`
   display: flex;

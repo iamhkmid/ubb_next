@@ -6,26 +6,23 @@ import PopupAddCategory from "../../../../components/Popups/PopupAddCategory"
 import PopupDelete from "../../../../components/Popups/PopupDeleteCategory"
 import PopupUpdate from "../../../../components/Popups/PopupUpdateCategory"
 import TableComponent from "../../../../components/Tables/TableComponent"
-import useQuery from "../../../../hooks/useQuery"
+import { BOOKCATEGORIES } from "../../../../graphql/category.graphql"
+import { useQuery } from "@apollo/client"
 import { TCategory } from "../../../../types/category"
 
 const Category: React.FC = () => {
   const [popupDelete, setPopupDelete] = useState(false)
   const [popupAdd, setPopupAdd] = useState(false)
   const [popupUpdate, setPopupUpdate] = useState(false)
-  const [deleteData, setDeleteData] = useState<{ id: string; title: string; }>({ id: "", title: "" })
+  const [deleteData, setDeleteData] = useState<{ id: string; name: string; }>({ id: "", name: "" })
   const [updateData, setUpdateData] = useState<TCategory | null>(null)
   type TResCategory = {
-    statusCode: string;
-    data: TCategory[]
+    bookcategories: TCategory[]
   }
 
-  const { data, error, loading, refetch } = useQuery<TResCategory>({
-    method: "GET",
-    url: "/api/category"
-  })
+  const { data, error, loading, refetch } = useQuery<TResCategory>(BOOKCATEGORIES)
 
-  const onClickDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: { id: string; title: string; }) => {
+  const onClickDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: { id: string; name: string; }) => {
     e.stopPropagation()
     setPopupDelete(true)
     setDeleteData(data)
@@ -36,24 +33,24 @@ const Category: React.FC = () => {
     setPopupUpdate(true)
   }
 
-  const createData = (id: string, no: string, category: string, action: any) => ({ id, no, category, action });
+  const createData = (id: string, no: string, name: string, action: any) => ({ id, no, name, action });
 
   const dataTable = useMemo(() => {
     const columns = [
       { id: "id", label: "id", width: "auto", align: "left", display: "hidden" },
       { id: "no", label: "No", width: "10px", align: "left" },
-      { id: "category", label: "Category", width: "auto", align: "left" },
+      { id: "name", label: "Category", width: "auto", align: "left" },
       { id: "action", label: "Action", width: "0", align: "center" },
     ];
-    const rows = data?.data?.map((val, idx) => {
+    const rows = data?.bookcategories?.map((val, idx) => {
       return createData(
         val?.id,
         String(idx + 1),
-        val?.category,
+        val?.name,
         <Action>
           
           <Button onClick={(e) => onClickUpdate(e, val)}><EditIcon /></Button>
-          <Button onClick={(e) => onClickDelete(e, { id: val?.id, title: val?.category })}><XIcon /></Button>
+          <Button onClick={(e) => onClickDelete(e, { id: val?.id, name: val?.name })}><XIcon /></Button>
         </Action>
       );
     }, []);

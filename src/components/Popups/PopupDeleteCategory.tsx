@@ -1,34 +1,43 @@
 import { Backdrop, Button, Fade, Modal } from '@mui/material';
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import useMutation from '../../hooks/useMutation';
-import { TMutationDeleteCategory } from '../../types/category';
+import { DELETEBOOKCATEGORY } from '../../graphql/category.graphql';
+import { useMutation } from '@apollo/client';
+import { TMutationDeleteBookCategory } from '../../types/category';
 import ButtonComp from '../elements/Button';
 import { FacebookCircularProgress } from '../Loading/LoadingWrapper';
 
 type TPopupDeleteCategory = {
   open: boolean;
   onClickClose: () => void;
-  data: { title: string; id: string; };
+  data: {  id: string; name: string; };
   refetch: (p?: any) => void;
 }
 
 const PopupDeleteCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, data, refetch }) => {
-  const { data: dataDelete, error, loading, mutation } = useMutation<TMutationDeleteCategory>({ method: "DELETE", url: "/api/category" })
+
+  const [deleteBookCategory, { data: datares, error, loading}] = useMutation<TMutationDeleteBookCategory>(DELETEBOOKCATEGORY, {
+    errorPolicy: "all",
+    fetchPolicy: 'network-only'
+  })
+
 
   React.useEffect(() => {
-    if (dataDelete?.data?.id) {
+    if (datares?.deleteBookCategory) {
       onClickClose()
       refetch()
     }
-  }, [dataDelete])
+  }, [datares])
+
 
   const onClickDelete = () => {
-    mutation({
-      body: {
-        bookId: data?.id
-      }
-    })
+    try {
+      deleteBookCategory({
+        variables: {
+          categoryId: data?.id
+        }
+      });
+    } catch (error) { }
   }
 
   return (
@@ -40,7 +49,7 @@ const PopupDeleteCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, dat
           <div className="head"><p>Delete Confirmation</p><Button color="error" onClick={onClickClose}><CloseIcon /></Button></div>
           <div className="content">
             <div><p>ID</p><p>{data?.id || "-"}</p></div>
-            <div><p>Title</p><p>{data?.title || "-"}</p></div>
+            <div><p>Title</p><p>{data?.name || "-"}</p></div>
           </div>
           <div className="footer">
             <ButtonComp label="Delete" className="delete" variant="contained" onClick={onClickDelete} startIcon={loading && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading} />
