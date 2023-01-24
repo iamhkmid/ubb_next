@@ -39,6 +39,7 @@ const InputText: React.FC<InputProps & TInputText> = (props) => {
           autoComplete={props.autoComplete}
           placeholder={props.placeholder}
           disabled={props.disabled}
+          label={props.label!}
         />
         <El.CloseIcon onClick={onClickClear} show={value?.length! > 0} disabled={props.disabled!}><XIcon /></El.CloseIcon>
       </div>
@@ -50,7 +51,6 @@ export default InputText
 
 InputText.defaultProps = {
   disabled: false,
-  label: "Caption",
   className: "",
   onChange: () => { },
   width: "300px",

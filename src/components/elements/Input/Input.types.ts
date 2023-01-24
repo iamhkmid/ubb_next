@@ -3,7 +3,7 @@ import rnf from "react-number-format"
 
 export type InputProps =
   {
-    label?: string;
+    label?: string | null;
     placeholder?: string;
     disabled?: boolean;
     className?: string;

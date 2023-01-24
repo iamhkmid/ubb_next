@@ -20,7 +20,6 @@ const Book: React.FC = () => {
     books: TBookPortal[]
   }
 
-
   const onClickDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, dataProps: { id: string; title: string; }) => {
     e.stopPropagation()
     setPopupDelete(true)

@@ -36,6 +36,7 @@ const InputCurrency: React.FC<InputProps & TInputCurrency> = (props) => {
           disabled={props.disabled}
           thousandSeparator="."
           decimalSeparator=","
+          label={props.label!}
         />
         <El.CloseIcon onClick={onClickClear} show={value?.toString()?.length! > 0} disabled={props.disabled!}><XIcon /></El.CloseIcon>
       </div>
@@ -47,13 +48,11 @@ export default InputCurrency
 
 InputCurrency.defaultProps = {
   disabled: false,
-  label: "Caption",
   className: "",
   onChange: () => { },
   width: "300px",
   id: "input",
   autoComplete: "off",
-  placeholder: "Placeholder",
   value: undefined,
   type: "currency",
 };

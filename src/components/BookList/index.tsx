@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client"
-import { Fade } from "@mui/material"
+import { Button, Fade, List, ListItem, ListItemButton, ListItemText } from "@mui/material"
+import ButtonComp from "../elements/Button"
 import { useRouter } from "next/router"
 import { FC, useState } from "react"
 import styled from "styled-components"
@@ -16,6 +17,20 @@ type TResBook = { books: TBookHome[] }
 const BookList: FC<TBookList> = () => {
   const router = useRouter()
   const [search, setSearch] = useState("")
+  const [minAmount, setMinAmount] = useState<number | undefined>(undefined)
+  const [maxAmount, setMaxAmount] = useState<number | undefined>(undefined)
+
+  const categories = [
+    { id: "ALL", label: "Semua Kategori" },
+    { id: "ALL", label: "Semua Kategori" },
+    { id: "ALL", label: "Semua Kategori" },
+    { id: "ALL", label: "Semua Kategori" },
+    { id: "ALL", label: "Semua Kategori" },
+    { id: "ALL", label: "Semua Kategori" },
+    { id: "ALL", label: "Semua Kategori" },
+    { id: "ALL", label: "Semua Kategori" },
+    { id: "ALL", label: "Semua Kategori" },
+  ]
 
   const { data, error, loading } = useQuery<TResBook>(PUBLIC_BOOK_LIST)
 
@@ -27,6 +42,44 @@ const BookList: FC<TBookList> = () => {
 
   return (
     <Main id="book-list">
+      <Filter>
+        <CategoryFilter>
+          <p className="title">Daftar Kategori</p>
+          <List>
+            {categories.map((category) => (
+              <ListItem disablePadding key={category.id}>
+                <ListItemButton>
+                  <ListItemText primary={category.label} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </CategoryFilter>
+        <NominalFilter>
+          <p className="title">Harga</p>
+          <div>
+            <Input
+              type="currency"
+              label="Minimal"
+              value={minAmount!}
+              width="100%"
+              placeholder="20.000"
+              onChange={(value) => setMinAmount(value.floatValue)}
+            />
+            <Input
+              type="currency"
+              label="Maksimal"
+              value={maxAmount!}
+              width="100%"
+              placeholder="50.000"
+              onChange={(value) => setMaxAmount(value.floatValue)}
+            />
+          </div>
+        </NominalFilter>
+        <div className="button-apply">
+          <ButtonComp label="Terapkan" />
+        </div>
+      </Filter>
       <Content>
         <div className="search">
           <Input
@@ -62,7 +115,6 @@ export default BookList
 
 const Main = styled.div`
   display: flex;
-  flex-direction: column;
   padding: 90px 60px 60px 60px;
   min-height: calc(100vh - 220px);
   gap: 50px;
@@ -87,6 +139,7 @@ const Loading = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
   min-height: 400px;
   position: relative;
   gap: 40px;
@@ -111,6 +164,89 @@ const NoData = styled.div`
   font-size: 16px;
   font-weight: 600;
   color: #384048;
+`
+
+const Filter = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  > div.button-apply {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+  }
+`
+
+const CategoryFilter = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  padding: 5px;
+  height: fit-content;
+  border-radius: 8px;
+  box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+  > p.title {
+    margin: 0;
+    line-height: 1;
+    font-size: 13px;
+    padding: 10px;
+    font-weight: 500;
+    border-bottom: 1px ${({ theme }) => theme?.colors?.text?.ultraSoft} solid;
+  }
+  .MuiList-root {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 250px;
+    max-height: 250px;
+    overflow-y: auto;
+  }
+  .MuiListItem-root {
+  }
+  .MuiListItemButton-root {
+    padding: 5px 10px;
+    width: 100%;
+  }
+  .MuiListItemText-primary {
+    font-size: 13px;
+  }
+`
+
+const NominalFilter = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  padding: 5px;
+  height: fit-content;
+  border-radius: 8px;
+  box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+  > p.title {
+    margin: 0;
+    line-height: 1;
+    font-size: 13px;
+    padding: 10px;
+    font-weight: 500;
+    border-bottom: 1px ${({ theme }) => theme?.colors?.text?.ultraSoft} solid;
+  }
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+    padding: 20px 15px;
+    input {
+      height: 40px;
+      text-align: end;
+      ::placeholder { 
+        text-align: end;
+      }
+      :-ms-input-placeholder {
+        text-align: end;
+      }
+      ::-ms-input-placeholder {
+        text-align: end;
+      }
+    }
+  }
 `
 
 const SearchIcon = () => (

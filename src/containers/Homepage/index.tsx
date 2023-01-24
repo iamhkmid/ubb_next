@@ -1,13 +1,9 @@
-import Image from "next/image"
 import { useRouter } from "next/router"
 import { FC } from "react"
 import styled from "styled-components"
 import BookList from "../../components/BookList"
-import Button from "../../components/elements/Button"
-import { TBook } from "../../types/book"
 
-type THomepage = {
-}
+type THomepage = {}
 
 const Homepage: FC<THomepage> = () => {
   const router = useRouter()

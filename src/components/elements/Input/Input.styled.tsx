@@ -71,7 +71,11 @@ export const Main = styled.div<TMain>`
   transition: .2s all ease;
 `;
 
-export const InputText = styled.input`
+type TInputText = {
+  label: string;
+}
+
+export const InputText = styled.input<TInputText>`
   border: 1.5px solid ${({ theme }) => theme.colors?.primary?.default};
   outline: none;
   border-radius: 25px;
@@ -91,6 +95,18 @@ export const InputText = styled.input`
   ::-ms-input-placeholder {
     color: transparent;
   }
+  ${({ label }) => !label && css`
+    ::placeholder { 
+      color: ${({ theme }) => theme.colors?.text?.medium};
+    }
+    :-ms-input-placeholder {
+      color: ${({ theme }) => theme.colors?.text?.medium};
+    }
+    ::-ms-input-placeholder {
+      color: ${({ theme }) => theme.colors?.text?.medium};
+    }
+  `}
+
   :focus {
     ::placeholder { 
       color: ${({ theme }) => theme.colors?.text?.medium};
@@ -161,7 +177,11 @@ export const CloseIcon = styled.div<TCloseIcon>`
   transition: .2s all ease;
 `
 
-export const InputNumeric = styled(NumericFormat)`
+type TInputNumeric = {
+  label: string;
+}
+
+export const InputNumeric = styled(NumericFormat)<TInputNumeric>`
   border: 1.5px solid ${({ theme }) => theme.colors?.primary?.default};
   outline: none;
   border-radius: 25px;
@@ -180,6 +200,19 @@ export const InputNumeric = styled(NumericFormat)`
   ::-ms-input-placeholder {
     color: transparent;
   }
+  
+  ${({ label }) => !label && css`
+    ::placeholder { 
+      color: ${({ theme }) => theme.colors?.text?.medium};
+    }
+    :-ms-input-placeholder {
+      color: ${({ theme }) => theme.colors?.text?.medium};
+    }
+    ::-ms-input-placeholder {
+      color: ${({ theme }) => theme.colors?.text?.medium};
+    }
+  `}
+  
   :focus {
     ::placeholder { 
       color: ${({ theme }) => theme.colors?.text?.medium};
