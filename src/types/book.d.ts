@@ -71,3 +71,18 @@ export type TMutationDeleteBook = {
     isbn: string;
   }
 }
+
+export type TMutationUpdateBook = {
+  updateBook: {
+    id: string;
+    title: string;
+    authorName: string;
+    price: number;
+    stock: number;
+    publisher: string;
+    description: string;
+    printType: string;
+    numberOfPages: number
+    isbn: string;
+  }
+}
