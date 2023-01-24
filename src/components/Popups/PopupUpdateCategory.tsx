@@ -1,12 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Backdrop, Button, Fade, Modal } from '@mui/material'
+import {  Button, Fade, Modal } from '@mui/material'
 import React, { FC } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import ButtonComp from '../elements/Button'
 import * as yup from "yup"
 import InputText from '../elements/Input/Input'
-import FileUploader from '../elements/FileUploader/FileUploader'
 import useMutation from '../../hooks/useMutation'
 import { TCategory, TFormAddCategory, TMutationAddCategory } from '../../types/category'
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
