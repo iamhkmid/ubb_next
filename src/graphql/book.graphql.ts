@@ -56,6 +56,26 @@ export const HOME_BOOK_LIST = gql`
   }
 `;
 
+export const PORTAL_INIT_BOOK_UPDATE = gql`
+  query($slug: ID!) {
+    book(slug: $slug) {
+      title
+      authorName
+      numberOfPages
+      isbn
+      publisher
+      description
+      price
+      stock
+      printType
+      Images {
+        secureUrl
+        type
+      }
+    }
+  }
+`;
+
 export const PORTAL_BOOK_LIST = gql`
   query {
     books {

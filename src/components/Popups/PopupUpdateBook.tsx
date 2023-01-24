@@ -7,27 +7,42 @@ import ButtonComp from '../elements/Button'
 import * as yup from "yup"
 import InputText from '../elements/Input/Input'
 import { useMutation } from '@apollo/client'
-import { TFormAddBook, TMutationUpdateBook } from '../../types/book'
+import { TBook, TDefaultValueUpdateBook, TFormAddBook, TMutationUpdateBook } from '../../types/book'
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
-import { UPDATEBOOK } from '../../graphql/book.graphql'
+import { PORTAL_INIT_BOOK_UPDATE, UPDATEBOOK } from '../../graphql/book.graphql'
+import { useQuery } from '@apollo/client'
 
 
 type TPopupDelete = {
   open: boolean;
   data: { id: string | null };
   onClickClose: () => void;
-  refetch: (p?: any) => void;
 }
 
 const PopupUpdateBook: FC<TPopupDelete> = (props) => {
+  type TResBook = { book: TBook }
+  
 
+  const { data: dataInit} = useQuery<TResBook>(PORTAL_INIT_BOOK_UPDATE, {skip: !props.data?.id})
 
+  const defaultValues = React.useMemo(() => ({
+    title: dataInit?.book?.title,
+    authorName: dataInit?.book?.authorName,
+    price: dataInit?.book?.price,
+    stock: dataInit?.book?.stock,
+    publisher: dataInit?.book?.publisher,
+    description: dataInit?.book?.description,
+    printType: dataInit?.book?.printType,
+    numberOfPages: dataInit?.book?.numberOfPages,
+    isbn: dataInit?.book?.isbn,
+
+  }), [dataInit]);
 
   return (
-    <StyledModal open={props.open}>
-      <Fade in={props.open} unmountOnExit>
+    <StyledModal open={props.open && !!dataInit?.book}>
+      <Fade in={props.open && !!dataInit?.book} unmountOnExit>
         <div>
-          <FormData {...props} />
+          <FormData {...props} defaultValues={defaultValues} />
         </div>
       </Fade>
     </StyledModal>
@@ -35,20 +50,15 @@ const PopupUpdateBook: FC<TPopupDelete> = (props) => {
   );
 };
 
-const FormData: FC<TPopupDelete> = ({ open, onClickClose, refetch, data }) => {
+type TFormdata = {
+  defaultValues: TDefaultValueUpdateBook;
+  open: boolean;
+  data: { id: string | null };
+  onClickClose: () => void;
+}
 
-  const defaultValues = React.useMemo(() => ({
-    title: data?.title,
-    authorName: data?.authorName,
-    price: data?.price,
-    stock: data?.stock,
-    publisher: data?.publisher,
-    description: data?.description,
-    printType: data?.printType,
-    numberOfPages: data?.numberOfPages,
-    isbn: data?.isbn,
+const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) => {
 
-  }), [data]);
 
   React.useEffect(() => {
     if (open) {
@@ -57,7 +67,7 @@ const FormData: FC<TPopupDelete> = ({ open, onClickClose, refetch, data }) => {
   }, [open])
 
 
-  const { handleSubmit, watch, control, formState, setValue, reset } = useForm<TFormAddBook>({
+  const { handleSubmit, watch, control, formState, setValue, reset} = useForm<TFormAddBook>({
     mode: "all",
     reValidateMode: "onChange",
     resolver: yupResolver(validationSchema),
@@ -73,7 +83,6 @@ const FormData: FC<TPopupDelete> = ({ open, onClickClose, refetch, data }) => {
   React.useEffect(() => {
     if (datares?.updateBook) {
       onClickClose()
-      refetch()
     }
   }, [data])
 
