@@ -57,8 +57,8 @@ export const HOME_BOOK_LIST = gql`
 `;
 
 export const PORTAL_INIT_BOOK_UPDATE = gql`
-  query($slug: ID!) {
-    book(slug: $slug) {
+  query($bookId: ID) {
+    book(bookId: $bookId) {
       title
       authorName
       numberOfPages

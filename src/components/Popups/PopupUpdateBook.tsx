@@ -21,9 +21,12 @@ type TPopupDelete = {
 
 const PopupUpdateBook: FC<TPopupDelete> = (props) => {
   type TResBook = { book: TBook }
-  
 
-  const { data: dataInit} = useQuery<TResBook>(PORTAL_INIT_BOOK_UPDATE, {skip: !props.data?.id})
+  const { data: dataInit } = useQuery<TResBook>(PORTAL_INIT_BOOK_UPDATE, {
+    variables: { bookId: props.data?.id! },
+    skip: !props.data?.id,
+    fetchPolicy: "network-only"
+  })
 
   const defaultValues = React.useMemo(() => ({
     title: dataInit?.book?.title,
@@ -35,15 +38,19 @@ const PopupUpdateBook: FC<TPopupDelete> = (props) => {
     printType: dataInit?.book?.printType,
     numberOfPages: dataInit?.book?.numberOfPages,
     isbn: dataInit?.book?.isbn,
-
   }), [dataInit]);
 
   return (
-    <StyledModal open={props.open && !!dataInit?.book}>
-      <Fade in={props.open && !!dataInit?.book} unmountOnExit>
-        <div>
-          <FormData {...props} defaultValues={defaultValues} />
-        </div>
+    <StyledModal open={props.open}>
+      <Fade in={props.open} unmountOnExit>
+        <Content>
+          <div className="head"><p>Update Data</p><Button color="error" onClick={props.onClickClose}><CloseIcon /></Button></div>
+          <Fade in={props.open && !!dataInit?.book} unmountOnExit>
+            <div>
+              <FormData {...props} defaultValues={defaultValues} />
+            </div>
+          </Fade>
+        </Content>
       </Fade>
     </StyledModal>
 
@@ -67,7 +74,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
   }, [open])
 
 
-  const { handleSubmit, watch, control, formState, setValue, reset} = useForm<TFormAddBook>({
+  const { handleSubmit, watch, control, formState, setValue, reset } = useForm<TFormAddBook>({
     mode: "all",
     reValidateMode: "onChange",
     resolver: yupResolver(validationSchema),
@@ -75,7 +82,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
   });
   const { isValid } = formState;
 
-  const [updateBook, { data: datares, error, loading}] = useMutation<TMutationUpdateBook>(UPDATEBOOK, {
+  const [updateBook, { data: datares, error, loading }] = useMutation<TMutationUpdateBook>(UPDATEBOOK, {
     errorPolicy: "all",
     fetchPolicy: 'network-only'
   })
@@ -97,8 +104,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
   }
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <div className="head"><p>Update Data</p><Button color="error" onClick={onClickClose}><CloseIcon /></Button></div>
-      <div className="content">
+      <div className="input-form">
         <FormWrapper>
           <div className="section">
             <Controller
@@ -312,7 +318,7 @@ const StyledModal = styled(Modal)`
   } 
 `;
 
-const Form = styled.form`
+const Content = styled.div`
   display: flex;
   flex-direction: column;
   width: 1200px;
@@ -348,7 +354,12 @@ const Form = styled.form`
       }
     }
   }
-  >div.content {
+`
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  >div.input-form {
     display: flex;
     flex-direction: column;
     height: 100%;
