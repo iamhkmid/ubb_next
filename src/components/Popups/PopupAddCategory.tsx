@@ -68,7 +68,7 @@ const PopupAddCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, refetc
             <FormWrapper>
               <div className="section">
                 <Controller
-                  name="nameId"
+                  name="name"
                   control={control}
                   render={({ field: { onChange, value }, fieldState: { error } }) => (
                     <InputText
@@ -80,7 +80,7 @@ const PopupAddCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, refetc
                       label="Category"
                       width="100%"
                       onChange={onChange}
-                      id="nameId"
+                      id="name"
                       disabled={loading}
                     />
                   )}
@@ -102,11 +102,11 @@ export default PopupAddCategory;
 
 const validationSchema =
   yup.object({
-    nameId: yup.string().required("Required"),
+    name: yup.string().required("Required"),
   });
 
 const defaultValues = {
-  nameId: "",
+  name: "",
 };
 
 const CloseIcon = () => (<svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M368 368L144 144M368 144L144 368" /></svg>)

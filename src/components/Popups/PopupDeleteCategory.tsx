@@ -10,7 +10,7 @@ import { FacebookCircularProgress } from '../Loading/LoadingWrapper';
 type TPopupDeleteCategory = {
   open: boolean;
   onClickClose: () => void;
-  data: {  id: string; nameId: string; };
+  data: {  id: string; name: string; };
   refetch: (p?: any) => void;
 }
 
@@ -49,7 +49,7 @@ const PopupDeleteCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, dat
           <div className="head"><p>Delete Confirmation</p><Button color="error" onClick={onClickClose}><CloseIcon /></Button></div>
           <div className="content">
             <div><p>ID</p><p>{data?.id || "-"}</p></div>
-            <div><p>Title</p><p>{data?.nameId || "-"}</p></div>
+            <div><p>Title</p><p>{data?.name || "-"}</p></div>
           </div>
           <div className="footer">
             <ButtonComp label="Delete" className="delete" variant="contained" onClick={onClickDelete} startIcon={loading && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading} />

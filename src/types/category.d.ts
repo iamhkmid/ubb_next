@@ -1,25 +1,23 @@
 export type TCategory = {
   id: string;
-  nameId: string;
+  name: string;
 }
 
 export type TFormAddCategory = {
-  nameId: string;
-  nameEn: string;
+  name: string;
+
 }
 
 export type TMutationAddBookCategory = {
   addBookCategory: {
     id: string;
-    nameId: string;
-    nameEn: string;
+    name: string;
   }
 }
 
 export type TMutationDeleteBookCategory = {
   deleteBookCategory: {
     id: string;
-    nameId: string;
-    nameEn: string;
+    name: string;
   }
 }

@@ -14,7 +14,7 @@ const Category: React.FC = () => {
   const [popupDelete, setPopupDelete] = useState(false)
   const [popupAdd, setPopupAdd] = useState(false)
   const [popupUpdate, setPopupUpdate] = useState(false)
-  const [deleteData, setDeleteData] = useState<{ id: string; nameId: string; }>({ id: "", nameId: "" })
+  const [deleteData, setDeleteData] = useState<{ id: string; name: string; }>({ id: "", name: "" })
   const [updateData, setUpdateData] = useState<TCategory | null>(null)
   type TResCategory = {
     bookcategories: TCategory[]
@@ -22,7 +22,7 @@ const Category: React.FC = () => {
 
   const { data, error, loading, refetch } = useQuery<TResCategory>(BOOKCATEGORIES)
 
-  const onClickDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: { id: string; nameId: string; }) => {
+  const onClickDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: { id: string; name: string; }) => {
     e.stopPropagation()
     setPopupDelete(true)
     setDeleteData(data)
@@ -33,24 +33,24 @@ const Category: React.FC = () => {
     setPopupUpdate(true)
   }
 
-  const createData = (id: string, no: string, nameId: string, action: any) => ({ id, no, nameId, action });
+  const createData = (id: string, no: string, name: string, action: any) => ({ id, no, name, action });
 
   const dataTable = useMemo(() => {
     const columns = [
       { id: "id", label: "id", width: "auto", align: "left", display: "hidden" },
       { id: "no", label: "No", width: "10px", align: "left" },
-      { id: "nameId", label: "Category", width: "auto", align: "left" },
+      { id: "name", label: "Category", width: "auto", align: "left" },
       { id: "action", label: "Action", width: "0", align: "center" },
     ];
     const rows = data?.bookcategories?.map((val, idx) => {
       return createData(
         val?.id,
         String(idx + 1),
-        val?.nameId,
+        val?.name,
         <Action>
           
           <Button onClick={(e) => onClickUpdate(e, val)}><EditIcon /></Button>
-          <Button onClick={(e) => onClickDelete(e, { id: val?.id, nameId: val?.nameId })}><XIcon /></Button>
+          <Button onClick={(e) => onClickDelete(e, { id: val?.id, name: val?.name })}><XIcon /></Button>
         </Action>
       );
     }, []);

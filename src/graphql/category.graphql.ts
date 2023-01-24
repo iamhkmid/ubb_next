@@ -5,7 +5,7 @@ export const BOOKCATEGORIES = gql`
 query{
   bookcategories{
     id
-    nameId
+    name
   }
 }`
 
@@ -21,7 +21,7 @@ export const DELETEBOOKCATEGORY = gql`
 mutation($categoryId: ID!){ 
  deleteBookCategory(categoryId: $categoryId){
    id
-   nameId
+   name
    }
  }
 
