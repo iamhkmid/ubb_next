@@ -1,6 +1,6 @@
 export type TCategory = {
   id: string;
-  category: string;
+  nameId: string;
 }
 
 export type TFormAddCategory = {
