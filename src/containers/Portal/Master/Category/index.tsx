@@ -15,7 +15,7 @@ const Category: React.FC = () => {
   const [popupAdd, setPopupAdd] = useState(false)
   const [popupUpdate, setPopupUpdate] = useState(false)
   const [deleteData, setDeleteData] = useState<{ id: string; name: string; }>({ id: "", name: "" })
-  const [updateData, setUpdateData] = useState<TCategory | null>(null)
+  const [updateData, setUpdateData] = useState<{ id: string; name: string; }>({ id: "", name: "" })
   type TResCategory = {
     bookcategories: TCategory[]
   }
@@ -28,7 +28,7 @@ const Category: React.FC = () => {
     setDeleteData(data)
   }
 
-  const onClickUpdate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: TCategory) =>{
+  const onClickUpdate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: { id: string; name: string; }) =>{
     setUpdateData(data)
     setPopupUpdate(true)
   }
@@ -49,7 +49,7 @@ const Category: React.FC = () => {
         val?.name,
         <Action>
           
-          <Button onClick={(e) => onClickUpdate(e, val)}><EditIcon /></Button>
+          <Button onClick={(e) => onClickUpdate(e, { id: val?.id, name: val?.name })}><EditIcon /></Button>
           <Button onClick={(e) => onClickDelete(e, { id: val?.id, name: val?.name })}><XIcon /></Button>
         </Action>
       );
@@ -71,7 +71,7 @@ const Category: React.FC = () => {
   return (
     <Main>
       <PopupDelete open={popupDelete} onClickClose={onCloseDeleteBook} data={deleteData} refetch={refetch} />
-      <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateBook} data={updateData!} refetch={refetch} />
+      <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateBook} data={updateData} refetch={refetch} />
       <PopupAddCategory open={popupAdd} onClickClose={onCloseAddBook} refetch={refetch}/>
       <p className="title">Portal - Category</p>
       <Content>

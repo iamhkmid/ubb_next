@@ -24,5 +24,12 @@ mutation($categoryId: ID!){
    name
    }
  }
-
 `
+
+export const UPDATEBOOKCATEGORY = gql`
+mutation($data: updateBookCategoryInput!){
+   updateBookCategory(data: $data){
+    updatedAt,
+    createdAt
+  }
+}`

@@ -1,48 +1,35 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import {  Button, Fade, Modal } from '@mui/material'
+import { Button, Fade, Modal } from '@mui/material'
 import React, { FC } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import ButtonComp from '../elements/Button'
 import * as yup from "yup"
 import InputText from '../elements/Input/Input'
-import useMutation from '../../hooks/useMutation'
-import { TCategory, TFormAddCategory, TMutationAddCategory } from '../../types/category'
+import { TFormAddCategory, TMutationAddBookCategory, TMutationUpdateBookCategory } from '../../types/category'
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
-
+import { useMutation } from '@apollo/client'
+import { ADDBOOKCATEGORY, UPDATEBOOKCATEGORY } from '../../graphql/category.graphql'
+import Category from '../../containers/Portal/Master/Category'
 
 type TPopupDeleteCategory = {
   open: boolean;
-  data: TCategory;
   onClickClose: () => void;
   refetch: (p?: any) => void;
+  data: {  id: string; name: string; };
 }
 
-const PopupUpdateBook: FC<TPopupDeleteCategory> = (props) => {
-
-  return (
-    <StyledModal open={props.open}>
-      <Fade in={props.open} unmountOnExit>
-        <div>
-        <FormData {...props} />
-        </div>
-      </Fade>
-    </StyledModal>
-
-  );
-};
-
-const FormData:FC<TPopupDeleteCategory> = ({ open, onClickClose, refetch, data }) => {
-  const defaultValues = React.useMemo(()=> ({
-    category: data?.category
-    
-  }), [data]);
+const PopupAddCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, data, refetch }) => {
 
   React.useEffect(() => {
     if (open) {
       reset()
     }
   }, [open])
+
+  const defaultValues = {
+    name: data?.name,
+  };
 
 
   const { handleSubmit, watch, control, formState, setValue, reset } = useForm<TFormAddCategory>({
@@ -53,31 +40,40 @@ const FormData:FC<TPopupDeleteCategory> = ({ open, onClickClose, refetch, data }
   });
   const { isValid } = formState;
 
-  const { data: dataAddBook, error, loading, mutation } = useMutation<TMutationAddCategory>({ method: "POST", url: "/api/category" })
+  const [updateBookCategory, { data: datares, error, loading}] = useMutation<TMutationUpdateBookCategory>(UPDATEBOOKCATEGORY, {
+    errorPolicy: "all",
+    fetchPolicy: 'network-only'
+  })
+
 
   React.useEffect(() => {
-    if (dataAddBook?.data?.id) {
+    if (datares?.updateBookCategory) {
       onClickClose()
       refetch()
     }
-  }, [dataAddBook])
+  }, [datares])
 
-  const onSubmit = (values: TFormAddCategory) => {
-    mutation({
-      body: {
-        ...values
-      }
-    })
-  };
+  const onSubmit = async (values: TFormAddCategory) => {
+    try {
+      await updateBookCategory({
+        variables: {
+          data: values
+        }
+      });
+    } catch (error) { }
+  }
+
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-          <div className="head"><p>Add Data</p><Button color="error" onClick={onClickClose}><CloseIcon /></Button></div>
+    <StyledModal open={open}>
+      <Fade in={open} unmountOnExit>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <div className="head"><p>Update Category</p><Button color="error" onClick={onClickClose}><CloseIcon /></Button></div>
           <div className="content">
             <FormWrapper>
               <div className="section">
                 <Controller
-                  name="category"
+                  name="name"
                   control={control}
                   render={({ field: { onChange, value }, fieldState: { error } }) => (
                     <InputText
@@ -89,7 +85,7 @@ const FormData:FC<TPopupDeleteCategory> = ({ open, onClickClose, refetch, data }
                       label="Category"
                       width="100%"
                       onChange={onChange}
-                      id="title"
+                      id="name"
                       disabled={loading}
                     />
                   )}
@@ -102,15 +98,18 @@ const FormData:FC<TPopupDeleteCategory> = ({ open, onClickClose, refetch, data }
             <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading} />
           </div>
         </Form>
-  )
-}
+      </Fade>
+    </StyledModal>
+  );
+};
 
-export default PopupUpdateBook;
+
+
+export default PopupAddCategory;
 
 const validationSchema =
   yup.object({
-    category: yup.string().required("Required"),
-
+    name: yup.string().required("Required"),
   });
 
 
@@ -121,6 +120,7 @@ const StyledModal = styled(Modal)`
   display: flex;
   justify-content: center;
   align-items: center;
+
   > div {
     outline: none;
   }
@@ -132,7 +132,7 @@ const StyledModal = styled(Modal)`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  width: 1200px;
+  width: 400px;
   background: #FFFFFF;
   border: 1px solid #BCC8E7;
   box-sizing: border-box;
@@ -145,7 +145,7 @@ const Form = styled.form`
     justify-content: center;
     justify-content: space-between;
     > p {
-      padding-left: 10px;
+      padding-left: 16px;
       line-height: 1;
       font-size: 16px;
       font-weight: 500;
@@ -171,7 +171,7 @@ const Form = styled.form`
     height: 100%;
     gap: 20px;
     border-radius: 5px;
-    padding: 10px 20px;
+  
     margin: 0 10px;
     max-height: 80vh;
     overflow-y: auto;
@@ -201,8 +201,7 @@ const Form = styled.form`
 
 const FormWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 25px;
+  grid-template-columns: 1fr;
   width: 100%;
   > div.section {
     display: flex;
@@ -212,26 +211,5 @@ const FormWrapper = styled.div`
   }
   @media screen and (max-width: 900px) {
     grid-template-columns: 1fr;
-  }
-`
-
-const InputGroup = styled.div`
-  display: flex;
-  gap: 15px;
-  @media screen and (max-width: 1200px) {
-    flex-direction: column;
-  }
-`
-
-const CoverInput = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  > p {
-    font-size: 13px;
-    font-weight: 500;
-    margin: 0;
-    line-height: 1;
-    color: ${({ theme }) => theme?.colors?.text?.darkGrey}
   }
 `
