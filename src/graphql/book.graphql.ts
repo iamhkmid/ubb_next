@@ -85,3 +85,12 @@ export const DELETEBOOK = gql`
     }
   }
 `;
+
+export const UPDATEBOOK = gql`
+ mutation($data: updateBookInput!){
+   updateBook(data: $data){
+     createdAt
+     id
+     title
+   }
+ }`

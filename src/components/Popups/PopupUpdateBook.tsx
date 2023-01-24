@@ -6,9 +6,10 @@ import styled from 'styled-components'
 import ButtonComp from '../elements/Button'
 import * as yup from "yup"
 import InputText from '../elements/Input/Input'
-import useMutation from '../../hooks/useMutation'
-import { TFormAddBook, TMutationAddBook } from '../../types/book'
+import { useMutation } from '@apollo/client'
+import { TFormAddBook, TMutationUpdateBook } from '../../types/book'
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
+import { UPDATEBOOK } from '../../graphql/book.graphql'
 
 
 type TPopupDelete = {
@@ -37,15 +38,15 @@ const PopupUpdateBook: FC<TPopupDelete> = (props) => {
 const FormData: FC<TPopupDelete> = ({ open, onClickClose, refetch, data }) => {
 
   const defaultValues = React.useMemo(() => ({
-    // title: data?.title,
-    // authorName: data?.authorName,
-    // price: data?.price,
-    // stock: data?.stock,
-    // publisher: data?.publisher,
-    // description: data?.description,
-    // printType: data?.printType,
-    // numberOfPages: data?.numberOfPages,
-    // isbn: data?.isbn,
+    title: data?.title,
+    authorName: data?.authorName,
+    price: data?.price,
+    stock: data?.stock,
+    publisher: data?.publisher,
+    description: data?.description,
+    printType: data?.printType,
+    numberOfPages: data?.numberOfPages,
+    isbn: data?.isbn,
 
   }), [data]);
 
@@ -64,26 +65,30 @@ const FormData: FC<TPopupDelete> = ({ open, onClickClose, refetch, data }) => {
   });
   const { isValid } = formState;
 
-  const { data: dataAddBook, error, loading, mutation } = useMutation<TMutationAddBook>({ method: "POST", url: "/api/book" })
+  const [updateBook, { data: datares, error, loading}] = useMutation<TMutationUpdateBook>(UPDATEBOOK, {
+    errorPolicy: "all",
+    fetchPolicy: 'network-only'
+  })
 
   React.useEffect(() => {
-    if (dataAddBook?.addBook.id) {
+    if (datares?.updateBook) {
       onClickClose()
       refetch()
     }
-  }, [dataAddBook])
+  }, [data])
 
-  const onSubmit = (values: TFormAddBook) => {
-    mutation({
-      body: {
-        ...values
-      }
-    })
-  };
-
+  const onSubmit = async (values: TFormAddBook) => {
+    try {
+      await updateBook({
+        variables: {
+          data: values
+        }
+      });
+    } catch (error) { }
+  }
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <div className="head"><p>Add Data</p><Button color="error" onClick={onClickClose}><CloseIcon /></Button></div>
+      <div className="head"><p>Update Data</p><Button color="error" onClick={onClickClose}><CloseIcon /></Button></div>
       <div className="content">
         <FormWrapper>
           <div className="section">

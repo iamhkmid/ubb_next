@@ -15,11 +15,11 @@ import Category from '../../containers/Portal/Master/Category'
 type TPopupDeleteCategory = {
   open: boolean;
   onClickClose: () => void;
-  refetch: (p?: any) => void;
   data: {  id: string; name: string; };
+  refetch: (p?: any) => void;
 }
 
-const PopupAddCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, data, refetch }) => {
+const PopupUpdateBookCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, data, refetch }) => {
 
   React.useEffect(() => {
     if (open) {
@@ -57,7 +57,10 @@ const PopupAddCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, data, 
     try {
       await updateBookCategory({
         variables: {
-          data: values
+          data: {
+            categoryId : data.id,
+            name: values.name
+          }
         }
       });
     } catch (error) { }
@@ -105,7 +108,7 @@ const PopupAddCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, data, 
 
 
 
-export default PopupAddCategory;
+export default PopupUpdateBookCategory;
 
 const validationSchema =
   yup.object({
