@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Fade, Modal } from '@mui/material'
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import ButtonComp from '../elements/Button'
@@ -22,11 +22,18 @@ type TPopupDelete = {
 const PopupUpdateBook: FC<TPopupDelete> = (props) => {
   type TResBook = { book: TBook }
 
-  const { data: dataInit } = useQuery<TResBook>(PORTAL_INIT_BOOK_UPDATE, {
+  const { data: dataInit, refetch, loading: loadInit } = useQuery<TResBook>(PORTAL_INIT_BOOK_UPDATE, {
     variables: { bookId: props.data?.id! },
-    skip: !props.data?.id,
+    skip: !props.data?.id || !props.open,
     fetchPolicy: "network-only"
   })
+
+  useEffect(() => {
+    if (props.open) {
+      refetch({ bookId: props.data.id })
+    }
+  }, [props.open])
+
 
   const defaultValues = React.useMemo(() => ({
     title: dataInit?.book?.title,
@@ -45,7 +52,7 @@ const PopupUpdateBook: FC<TPopupDelete> = (props) => {
       <Fade in={props.open} unmountOnExit>
         <Content>
           <div className="head"><p>Update Data</p><Button color="error" onClick={props.onClickClose}><CloseIcon /></Button></div>
-          <Fade in={props.open && !!dataInit?.book} unmountOnExit>
+          <Fade in={props.open && !!dataInit?.book && !loadInit} unmountOnExit>
             <div>
               <FormData {...props} defaultValues={defaultValues} />
             </div>
@@ -82,21 +89,21 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
   });
   const { isValid } = formState;
 
-  const [updateBook, { data: datares, error, loading }] = useMutation<TMutationUpdateBook>(UPDATEBOOK, {
+  const [updateBook, { data: dataUpdate, error, loading }] = useMutation<TMutationUpdateBook>(UPDATEBOOK, {
     errorPolicy: "all"
   })
 
   React.useEffect(() => {
-    if (datares?.updateBook) {
+    if (dataUpdate?.updateBook) {
       onClickClose()
     }
-  }, [data])
+  }, [dataUpdate])
 
   const onSubmit = async (values: TFormAddBook) => {
     try {
       await updateBook({
         variables: {
-          data: values
+          data: { ...values, bookId: data.id }
         }
       });
     } catch (error) { }
