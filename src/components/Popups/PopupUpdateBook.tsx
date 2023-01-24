@@ -83,8 +83,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
   const { isValid } = formState;
 
   const [updateBook, { data: datares, error, loading }] = useMutation<TMutationUpdateBook>(UPDATEBOOK, {
-    errorPolicy: "all",
-    fetchPolicy: 'network-only'
+    errorPolicy: "all"
   })
 
   React.useEffect(() => {
