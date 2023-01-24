@@ -1,33 +1,32 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Backdrop, Button, Fade, Modal } from '@mui/material'
+import { Button, Fade, Modal } from '@mui/material'
 import React, { FC } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import ButtonComp from '../elements/Button'
 import * as yup from "yup"
 import InputText from '../elements/Input/Input'
-import FileUploader from '../elements/FileUploader/FileUploader'
 import useMutation from '../../hooks/useMutation'
-import { TBook, TFormAdd, TMutationAddBook } from '../../types/book'
+import { TFormAddBook, TMutationAddBook } from '../../types/book'
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
 
 
 type TPopupDelete = {
   open: boolean;
-  data: TBook;
+  data: { id: string | null };
   onClickClose: () => void;
   refetch: (p?: any) => void;
 }
 
 const PopupUpdateBook: FC<TPopupDelete> = (props) => {
 
-  
-  
+
+
   return (
     <StyledModal open={props.open}>
       <Fade in={props.open} unmountOnExit>
         <div>
-        <FormData {...props} />
+          <FormData {...props} />
         </div>
       </Fade>
     </StyledModal>
@@ -35,18 +34,19 @@ const PopupUpdateBook: FC<TPopupDelete> = (props) => {
   );
 };
 
-const FormData:FC<TPopupDelete> = ({ open, onClickClose, refetch, data }) => {
-  const defaultValues = React.useMemo(()=> ({
-    title: data?.title,
-    authorName: data?.authorName,
-    price: data?.price,
-    stock: data?.stock,
-    publisher: data?.publisher,
-    description: data?.description,
-    printType: data?.printType,
-    numberOfPages: data?.numberOfPages,
-    isbn: data?.isbn,
-    
+const FormData: FC<TPopupDelete> = ({ open, onClickClose, refetch, data }) => {
+
+  const defaultValues = React.useMemo(() => ({
+    // title: data?.title,
+    // authorName: data?.authorName,
+    // price: data?.price,
+    // stock: data?.stock,
+    // publisher: data?.publisher,
+    // description: data?.description,
+    // printType: data?.printType,
+    // numberOfPages: data?.numberOfPages,
+    // isbn: data?.isbn,
+
   }), [data]);
 
   React.useEffect(() => {
@@ -56,7 +56,7 @@ const FormData:FC<TPopupDelete> = ({ open, onClickClose, refetch, data }) => {
   }, [open])
 
 
-  const { handleSubmit, watch, control, formState, setValue, reset } = useForm<TFormAdd>({
+  const { handleSubmit, watch, control, formState, setValue, reset } = useForm<TFormAddBook>({
     mode: "all",
     reValidateMode: "onChange",
     resolver: yupResolver(validationSchema),
@@ -67,13 +67,13 @@ const FormData:FC<TPopupDelete> = ({ open, onClickClose, refetch, data }) => {
   const { data: dataAddBook, error, loading, mutation } = useMutation<TMutationAddBook>({ method: "POST", url: "/api/book" })
 
   React.useEffect(() => {
-    if (dataAddBook?.data?.id) {
+    if (dataAddBook?.addBook.id) {
       onClickClose()
       refetch()
     }
   }, [dataAddBook])
 
-  const onSubmit = (values: TFormAdd) => {
+  const onSubmit = (values: TFormAddBook) => {
     mutation({
       body: {
         ...values
@@ -83,187 +83,186 @@ const FormData:FC<TPopupDelete> = ({ open, onClickClose, refetch, data }) => {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-          <div className="head"><p>Add Data</p><Button color="error" onClick={onClickClose}><CloseIcon /></Button></div>
-          <div className="content">
-            <FormWrapper>
-              <div className="section">
-                <Controller
-                  name="title"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="text"
-                      placeholder="Enter Title here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="Title"
-                      width="100%"
-                      onChange={onChange}
-                      id="title"
-                      disabled={loading}
-                    />
-                  )}
+      <div className="head"><p>Add Data</p><Button color="error" onClick={onClickClose}><CloseIcon /></Button></div>
+      <div className="content">
+        <FormWrapper>
+          <div className="section">
+            <Controller
+              name="title"
+              control={control}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <InputText
+                  type="text"
+                  placeholder="Enter Title here.."
+                  value={value}
+                  error={!!error}
+                  helperText={error?.message!}
+                  label="Title"
+                  width="100%"
+                  onChange={onChange}
+                  id="title"
+                  disabled={loading}
                 />
-                <Controller
-                  name="authorName"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="text"
-                      placeholder="Enter Author Name here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="Author Name"
-                      width="100%"
-                      onChange={onChange}
-                      id="authorName"
-                      disabled={loading}
-                    />
-                  )}
+              )}
+            />
+            <Controller
+              name="authorName"
+              control={control}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <InputText
+                  type="text"
+                  placeholder="Enter Author Name here.."
+                  value={value}
+                  error={!!error}
+                  helperText={error?.message!}
+                  label="Author Name"
+                  width="100%"
+                  onChange={onChange}
+                  id="authorName"
+                  disabled={loading}
                 />
-                <Controller
-                  name="description"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="textArea"
-                      placeholder="Enter Description here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="Description"
-                      width="100%"
-                      onChange={onChange}
-                      id="description"
-                      disabled={loading}
-                    />
-                  )}
+              )}
+            />
+            <Controller
+              name="description"
+              control={control}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <InputText
+                  type="textArea"
+                  placeholder="Enter Description here.."
+                  value={value}
+                  error={!!error}
+                  helperText={error?.message!}
+                  label="Description"
+                  width="100%"
+                  onChange={onChange}
+                  id="description"
+                  disabled={loading}
                 />
-                <InputGroup>
-                  <Controller
-                    name="price"
-                    control={control}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                      <InputText
-                        type="currency"
-                        placeholder="Enter Price here.."
-                        value={value}
-                        error={!!error}
-                        helperText={error?.message!}
-                        label="Price"
-                        width="100%"
-                        onChange={(value) => onChange(value?.floatValue)}
-                        id="price"
-                        disabled={loading}
-                      />
-                    )}
+              )}
+            />
+            <InputGroup>
+              <Controller
+                name="price"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <InputText
+                    type="currency"
+                    placeholder="Enter Price here.."
+                    value={value}
+                    error={!!error}
+                    helperText={error?.message!}
+                    label="Price"
+                    width="100%"
+                    onChange={(value) => onChange(value?.floatValue)}
+                    id="price"
+                    disabled={loading}
                   />
-                  <Controller
-                    name="stock"
-                    control={control}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                      <InputText
-                        type="numeric"
-                        placeholder="Enter Number of Pages here.."
-                        value={value}
-                        error={!!error}
-                        helperText={error?.message!}
-                        label="Stock"
-                        width="100%"
-                        onChange={(value) => onChange(value?.floatValue)}
-                        id="stock"
-                        disabled={loading}
-                      />
-                    )}
+                )}
+              />
+              <Controller
+                name="stock"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <InputText
+                    type="numeric"
+                    placeholder="Enter Number of Pages here.."
+                    value={value}
+                    error={!!error}
+                    helperText={error?.message!}
+                    label="Stock"
+                    width="100%"
+                    onChange={(value) => onChange(value?.floatValue)}
+                    id="stock"
+                    disabled={loading}
                   />
-                </InputGroup>
-                <Controller
-                  name="isbn"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="text"
-                      placeholder="Enter ISBN here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="ISBN"
-                      width="100%"
-                      onChange={onChange}
-                      id="ISBN"
-                      disabled={loading}
-                    />
-                  )}
+                )}
+              />
+            </InputGroup>
+            <Controller
+              name="isbn"
+              control={control}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <InputText
+                  type="text"
+                  placeholder="Enter ISBN here.."
+                  value={value}
+                  error={!!error}
+                  helperText={error?.message!}
+                  label="ISBN"
+                  width="100%"
+                  onChange={onChange}
+                  id="ISBN"
+                  disabled={loading}
                 />
-              </div>
-              <div className="section">
-                <Controller
-                  name="publisher"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="text"
-                      placeholder="Enter Publisher here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="Publisher"
-                      width="100%"
-                      onChange={onChange}
-                      id="publisher"
-                      disabled={loading}
-                    />
-                  )}
-                />
-                <InputGroup>
-                  <Controller
-                    name="printType"
-                    control={control}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                      <InputText
-                        type="text"
-                        placeholder="Enter Print Type here.."
-                        value={value}
-                        error={!!error}
-                        helperText={error?.message!}
-                        label="Print Type"
-                        width="100%"
-                        onChange={(e) => onChange(e.target.value)}
-                        id="Print Type"
-                        disabled={loading}
-                      />
-                    )}
-                  />
-                  <Controller
-                    name="numberOfPages"
-                    control={control}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                      <InputText
-                        type="numeric"
-                        placeholder="Enter Number of Pages here.."
-                        value={value}
-                        error={!!error}
-                        helperText={error?.message!}
-                        label="Number Of Pages"
-                        width="100%"
-                        onChange={(value) => onChange(value?.floatValue)}
-                        id="numberOfPages"
-                        disabled={loading}
-                      />
-                    )}
-                  />
-                </InputGroup>
-           
-              </div>
-            </FormWrapper>
+              )}
+            />
           </div>
-          <div className="footer">
-            <ButtonComp label="Update" type="submit" variant="contained" startIcon={loading && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || !isValid} />
-            <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading} />
+          <div className="section">
+            <Controller
+              name="publisher"
+              control={control}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <InputText
+                  type="text"
+                  placeholder="Enter Publisher here.."
+                  value={value}
+                  error={!!error}
+                  helperText={error?.message!}
+                  label="Publisher"
+                  width="100%"
+                  onChange={onChange}
+                  id="publisher"
+                  disabled={loading}
+                />
+              )}
+            />
+            <InputGroup>
+              <Controller
+                name="printType"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <InputText
+                    type="text"
+                    placeholder="Enter Print Type here.."
+                    value={value}
+                    error={!!error}
+                    helperText={error?.message!}
+                    label="Print Type"
+                    width="100%"
+                    onChange={(e) => onChange(e.target.value)}
+                    id="Print Type"
+                    disabled={loading}
+                  />
+                )}
+              />
+              <Controller
+                name="numberOfPages"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <InputText
+                    type="numeric"
+                    placeholder="Enter Number of Pages here.."
+                    value={value}
+                    error={!!error}
+                    helperText={error?.message!}
+                    label="Number Of Pages"
+                    width="100%"
+                    onChange={(value) => onChange(value?.floatValue)}
+                    id="numberOfPages"
+                    disabled={loading}
+                  />
+                )}
+              />
+            </InputGroup>
           </div>
-        </Form>
+        </FormWrapper>
+      </div>
+      <div className="footer">
+        <ButtonComp label="Update" type="submit" variant="contained" startIcon={loading && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || !isValid} />
+        <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading} />
+      </div>
+    </Form>
   )
 }
 
