@@ -1,39 +1,54 @@
+import { useQuery } from "@apollo/client"
 import { Fade } from "@mui/material"
 import Image from "next/image"
 import { useRouter } from "next/router"
-import { FC } from "react"
+import { FC, useMemo } from "react"
 import styled from "styled-components"
 import BookList from "../../components/BookList"
 import Button from "../../components/elements/Button"
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
+import { PUBLIC_BOOK_DETAIL } from "../../graphql/book.graphql"
 import { formatToCurrency } from "../../helpers/formatToCurrency"
 import { TBook } from "../../types/book"
 
-type TBookContainer = {
-  data: TBook;
-  loading: boolean
+type TBookDetail = { slug: string; }
+type TQuerybook = {
+  book: {
+    title: string;
+    authorName: string;
+    numberOfPages: number;
+    isbn: string;
+    publisher: string;
+    description: string;
+    price: number;
+    stock: number;
+    printType: string;
+    Images: { secureUrl: string; type: string; }[]
+  }
 }
 
-const Book: FC<TBookContainer> = ({ data, loading }) => {
+const BookDetail: FC<TBookDetail> = ({ slug }) => {
   const router = useRouter()
-  const detail = [
+  const { data, loading, error } = useQuery<TQuerybook>(PUBLIC_BOOK_DETAIL, { variables: { slug } })
+
+  const detail = useMemo(() => ([
     {
       label: "Jumlah Halaman",
-      value: data?.numberOfPages
+      value: data?.book?.numberOfPages
     },
     {
       label: "ISBN",
-      value: data?.isbn
+      value: data?.book?.isbn
     },
     {
       label: "Penerbit",
-      value: data?.publisher
+      value: data?.book?.publisher
     },
     {
       label: "Stok",
-      value: data?.stock
+      value: data?.book?.stock
     }
-  ]
+  ]), [data?.book])
 
   return (
     <Main>
@@ -44,13 +59,13 @@ const Book: FC<TBookContainer> = ({ data, loading }) => {
             <FacebookCircularProgress size={60} thickness={5} />
           </Loading>
         </Fade>
-        {!loading && data && (
+        {!loading && data?.book && (
           <div className="detail-wrapper">
             <CoverWrapper>
               <div>
-                {data?.Images?.find((val) => val.type === "COVER") ? (
+                {data?.book.Images?.find((val) => val.type === "COVER") ? (
                   <Image
-                    src={data?.Images?.find((val) => val.type === "COVER")?.secureUrl!}
+                    src={data?.book?.Images?.find((val) => val.type === "COVER")?.secureUrl!}
                     fill
                     alt="cover"
                   />) : null}
@@ -59,21 +74,21 @@ const Book: FC<TBookContainer> = ({ data, loading }) => {
             <BookInfo>
               <div className="main-info">
                 <div className="section-1">
-                  <p className="title">{data.title}</p>
-                  <p className="author">{data.authorName}</p>
+                  <p className="title">{data.book?.title}</p>
+                  <p className="author">{data.book?.authorName}</p>
                   <div className="additional">
-                    <div>{data.printType}</div>
+                    <div>{data.book?.printType}</div>
                   </div>
                 </div>
                 <div className="section-2">
-                  <p className="price">{`Rp ${formatToCurrency(data.price, 0)}`}</p>
+                  <p className="price">{`Rp ${formatToCurrency(data.book?.price, 0)}`}</p>
                   <Button type="button" onClick={() => window.open("https://wa.link/i4bf6x")} label="Beli Sekarang" variant="contained" />
                 </div>
               </div>
               <div className="additional-info">
                 <Description>
                   <p className="title">Deskripsi Buku</p>
-                  <p className="value">{data.description}</p>
+                  <p className="value">{data.book?.description}</p>
                 </Description>
                 <Detail>
                   <p className="title">Detail</p>
@@ -95,7 +110,7 @@ const Book: FC<TBookContainer> = ({ data, loading }) => {
   )
 }
 
-export default Book
+export default BookDetail
 
 const Main = styled.div`
   display: flex;
@@ -248,6 +263,7 @@ const Detail = styled.div`
   > div.item-wrapper {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
     > div {
       display: flex;
       flex-direction: column;

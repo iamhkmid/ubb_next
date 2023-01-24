@@ -110,6 +110,7 @@ const Action = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   padding: 0;
+  gap: 5px;
   > button.MuiButton-root {
     min-width: auto;
     min-height: auto;

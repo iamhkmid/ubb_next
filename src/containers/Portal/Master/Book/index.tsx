@@ -8,7 +8,7 @@ import PopupDelete from "../../../../components/Popups/PopupDeleteBook"
 import PopupUpdate from "../../../../components/Popups/PopupUpdateBook"
 import TableComponent from "../../../../components/Tables/TableComponent"
 import { TBookPortal } from "../../../../types/book"
-import { ADDBOOK, BOOKS } from "../../../../graphql/book.graphql"
+import { PORTAL_BOOK_LIST } from "../../../../graphql/book.graphql"
 
 const Book: React.FC = () => {
   const [popupDelete, setPopupDelete] = useState(false)
@@ -31,7 +31,7 @@ const Book: React.FC = () => {
     setPopupUpdate(true)
   }
 
-  const { data, error, loading, refetch } = useQuery<TResBook>(BOOKS)
+  const { data, error, loading, refetch } = useQuery<TResBook>(PORTAL_BOOK_LIST)
 
   const createData = (id: string, no: string, title: string, authorName: string, action: any) => ({ id, no, title, authorName, action });
 
@@ -109,6 +109,7 @@ const Action = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   padding: 0;
+  gap: 5px;
   > button.MuiButton-root {
     min-width: auto;
     min-height: auto;

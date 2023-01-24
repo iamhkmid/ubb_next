@@ -3,29 +3,24 @@ import { Fade } from "@mui/material"
 import { useRouter } from "next/router"
 import { FC, useState } from "react"
 import styled from "styled-components"
-import { BOOKS } from "../../graphql/book.graphql"
-import { TBook, TBookHome } from "../../types/book"
+import { PUBLIC_BOOK_LIST } from "../../graphql/book.graphql"
+import { TBookHome } from "../../types/book"
 import BookCard from "../BookCard"
+import Input from "../elements/Input/Input"
 import { FacebookCircularProgress } from "../Loading/LoadingWrapper"
 
-type TBookList = {
-}
+type TBookList = {}
 
-type TResBook = {
-  books: TBookHome[]
-}
+type TResBook = { books: TBookHome[] }
 
 const BookList: FC<TBookList> = () => {
   const router = useRouter()
   const [search, setSearch] = useState("")
 
-  const { data, error, loading } = useQuery<TResBook>(BOOKS)
+  const { data, error, loading } = useQuery<TResBook>(PUBLIC_BOOK_LIST)
 
   const onClickBook = (slug: string) => {
-    router.push({
-      pathname: '/book/[slug]',
-      query: { slug },
-    })
+    router.push({ pathname: '/book/[slug]', query: { slug } })
   }
 
   const filterBook = data?.books?.filter((val) => `${val.title.toLowerCase()} ${val.authorName.toLowerCase()}`.includes(search.toLowerCase()))
@@ -34,14 +29,14 @@ const BookList: FC<TBookList> = () => {
     <Main id="book-list">
       <Content>
         <div className="search">
-          <div className="input-wrapper">
-            <SearchIcon />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari berdasarkan judul/penulis"
-            />
-          </div>
+          <Input
+            type="text"
+            value={search}
+            width="500px"
+            label="Pencarian"
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Cari berdasarkan judul/penulis"
+          />
         </div>
         <Fade in={!loading && filterBook?.length! > 0} unmountOnExit>
           <div className="books-wrapper">
@@ -87,7 +82,6 @@ const Loading = styled.div`
   width: 100%;
   height: 300px;
   position: absolute;
-  background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
 `
 
 const Content = styled.div`
@@ -98,43 +92,8 @@ const Content = styled.div`
   gap: 40px;
   > div.search {
     display: flex;
-    align-items: center;
     justify-content: center;
     position: relative;
-    > div.input-wrapper {
-      display: flex;
-      position: relative;
-      > input {
-        outline: none;
-        border: 1px solid #dcecfd;
-        border-radius: 3px;
-        font-size: 16px;
-        padding: 9px 10px 9px 35px;
-        font-weight: 500;
-        width: 500px;
-        color: #384048;
-        ::-webkit-input-placeholder { /* Edge */
-          color: #3d5e7e;
-        }
-
-        :-ms-input-placeholder { /* Internet Explorer 10-11 */
-          color: #3d5e7e;
-        }
-
-        ::placeholder {
-          color: #3d5e7e;
-        }
-      }
-      > svg{
-        position: absolute;
-        left: 10px;
-        height: 100%;
-        width: 20px;
-        > path {
-          fill: #3d5e7e;
-        }
-      }
-    }
   }
   > div.books-wrapper {
     display: grid;
@@ -142,8 +101,6 @@ const Content = styled.div`
     width: 100%;
     gap: 20px;
     grid-template-columns: repeat( auto-fill, minmax(160px, 1fr) );
-    border-top: 2px dashed #5e7a95;
-    border-bottom: 2px dashed #5e7a95;
   }
 `
 
