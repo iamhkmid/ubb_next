@@ -221,6 +221,7 @@ const CategoryFilter = styled.div`
     overflow-y: auto;
   }
   .MuiListItem-root {
+    padding: 0 5px;
   }
   .MuiListItemButton-root {
     padding: 5px 10px;
@@ -228,6 +229,13 @@ const CategoryFilter = styled.div`
   }
   .MuiListItemText-primary {
     font-size: 13px;
+  }
+  .MuiCheckbox-root {
+    padding: 5px;
+    color: ${({theme})=>theme.colors?.primary?.default};
+  }
+  .MuiListItemIcon-root {
+    min-width: 30px;
   }
 `
 
