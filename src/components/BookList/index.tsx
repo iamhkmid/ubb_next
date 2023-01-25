@@ -113,7 +113,6 @@ const BookList: FC<TBookList> = () => {
             type="text"
             value={search}
             width="500px"
-            label="Pencarian"
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Cari berdasarkan judul/penulis"
           />
@@ -193,6 +192,7 @@ const Content = styled.div`
   gap: 40px;
   > div.search {
     display: flex;
+    gap: 10px;
     justify-content: center;
     position: relative;
   }
