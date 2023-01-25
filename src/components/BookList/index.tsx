@@ -1,6 +1,6 @@
 import React from "react"
 import { useQuery } from "@apollo/client"
-import { Button, Checkbox, Fade, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
+import { Fade, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
 import ButtonComp from "../elements/Button"
 import { useRouter } from "next/router"
 import { FC, useMemo, useState } from "react"
@@ -12,14 +12,15 @@ import Input from "../elements/Input/Input"
 import { FacebookCircularProgress } from "../Loading/LoadingWrapper"
 import { PUBLIC_BOOK_CATEGORIES } from "../../graphql/category.graphql"
 import { TQueryBookCategory } from "../../types/category"
+import Checkbox from "../elements/Checkbox"
 
 type TBookList = {}
 
 const BookList: FC<TBookList> = () => {
   const router = useRouter()
   const [search, setSearch] = useState("")
-  const [minAmount, setMinAmount] = useState<number | undefined>(undefined)
-  const [maxAmount, setMaxAmount] = useState<number | undefined>(undefined)
+  const [minAmount, setMinAmount] = useState<number | string | undefined>(undefined)
+  const [maxAmount, setMaxAmount] = useState<number | string | undefined>(undefined)
   const [categoryIds, setCategoryIds] = React.useState<string[]>([]);
 
   const onClickCategory = (props: { value: string; label: string; }) => () => {
@@ -27,6 +28,12 @@ const BookList: FC<TBookList> = () => {
     else if (categoryIds.includes(props.value)) setCategoryIds((prevState) => prevState.filter((val) => val !== props.value))
     else setCategoryIds((prevState) => ([...prevState, props.value]))
   };
+
+  const onClickReset = () => {
+    setMinAmount("")
+    setMaxAmount("")
+    setCategoryIds([])
+  }
 
   const { data, error, loading, refetch } = useQuery<TQueryBookHome>(PUBLIC_BOOK_LIST, {
     refetchWritePolicy: "overwrite",
@@ -83,7 +90,7 @@ const BookList: FC<TBookList> = () => {
               value={minAmount!}
               width="100%"
               placeholder="20.000"
-              onChange={(value) => setMinAmount(value?.floatValue)}
+              onChange={setMinAmount}
             />
             <Input
               type="currency"
@@ -91,11 +98,12 @@ const BookList: FC<TBookList> = () => {
               value={maxAmount!}
               width="100%"
               placeholder="50.000"
-              onChange={(value) => setMaxAmount(value?.floatValue)}
+              onChange={setMaxAmount}
             />
           </div>
         </NominalFilter>
         <div className="button-apply">
+          <ButtonComp label="Reset" variant="outlined" onClick={onClickReset} disabled={!categoryIds.length && !minAmount && !maxAmount}/>
           <ButtonComp label="Terapkan" onClick={onClickFilter} />
         </div>
       </Filter>
@@ -193,6 +201,7 @@ const Filter = styled.div`
     display: flex;
     width: 100%;
     justify-content: flex-end;
+    gap: 8px;
   }
 `
 
@@ -229,10 +238,6 @@ const CategoryFilter = styled.div`
   }
   .MuiListItemText-primary {
     font-size: 13px;
-  }
-  .MuiCheckbox-root {
-    padding: 5px;
-    color: ${({theme})=>theme.colors?.primary?.default};
   }
   .MuiListItemIcon-root {
     min-width: 30px;

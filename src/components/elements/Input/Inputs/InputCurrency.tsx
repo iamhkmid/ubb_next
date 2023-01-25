@@ -13,13 +13,13 @@ const InputCurrency: React.FC<InputProps & TInputCurrency> = (props) => {
   }, [props.value])
 
   const onChange: rnf.OnValueChange = (value) => {
-    props.onChange!(value)
+    props.onChange!(value.floatValue)
     setValue(value.floatValue)
   }
 
   const onClickClear = () => {
     setValue("")
-    props.onChange!({ floatValue: undefined, formattedValue: "", value: "" })
+    props.onChange!("")
   }
 
   return (

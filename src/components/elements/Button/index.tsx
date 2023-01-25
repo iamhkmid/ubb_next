@@ -45,9 +45,11 @@ const Main = styled.div`
   }
   .MuiButton-outlined {
     color: ${({ theme }) => theme?.colors?.primary?.default};
-    border-color: ${({ theme }) => theme?.colors?.primary?.default};
+    border-color: ${({ theme }) => theme?.colors?.primary?.Soft};
   }
   .MuiButton-root.Mui-disabled {
-    background: ${({ theme }) => theme?.colors?.primary?.Soft};
+    background: ${({ theme }) => theme?.colors?.primary?.ultrasoft};
+    border-color: ${({ theme }) => theme?.colors?.primary?.ultrasoft};
+    color: ${({ theme }) => theme?.colors?.text?.soft};
   }
 `

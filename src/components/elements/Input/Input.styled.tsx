@@ -76,7 +76,7 @@ type TInputText = {
 }
 
 export const InputText = styled.input<TInputText>`
-  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.default};
+  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.Soft};
   outline: none;
   border-radius: 25px;
   font-family: "Poppins";
@@ -108,6 +108,7 @@ export const InputText = styled.input<TInputText>`
   `}
 
   :focus {
+    box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
     ::placeholder { 
       color: ${({ theme }) => theme.colors?.text?.medium};
     }
@@ -181,8 +182,8 @@ type TInputNumeric = {
   label: string;
 }
 
-export const InputNumeric = styled(NumericFormat)<TInputNumeric>`
-  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.default};
+export const InputNumeric = styled(NumericFormat) <TInputNumeric>`
+  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.Soft};
   outline: none;
   border-radius: 25px;
   font-weight: 400;
@@ -214,6 +215,7 @@ export const InputNumeric = styled(NumericFormat)<TInputNumeric>`
   `}
   
   :focus {
+    box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
     ::placeholder { 
       color: ${({ theme }) => theme.colors?.text?.medium};
     }

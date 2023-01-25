@@ -22,14 +22,14 @@ export type TInputText = {
 
 export type TInputNumeric = {
   type: "numeric";
-  onChange?: (e: rnf.NumberFormatValues | undefined) => void;
+  onChange?: (value: string | number | undefined) => void;
   value?: number | string | undefined;
 }
 
 export type TInputPattern = {
   type: "pattern";
-  onChange?: (e: rnf.NumberFormatValues) => void;
-  value?: number;
+  onChange?: (value: string | number | undefined) => void;
+  value?: string | number | undefined;
   format: string;
 }
 export type TInputPassword = {
@@ -48,8 +48,8 @@ export type TOptionCurrency = { value: string; label: string; thousandSeparator:
 
 export type TInputCurrency = {
   type: "currency";
-  onChange?: (e: rnf.NumberFormatValues | undefined) => void;
-  value?: number;
+  onChange?: (value: string | number | undefined) => void;
+  value?: string | number | undefined;
 }
 
 export type TInput = InputProps & (TInputText | TInputNumeric | TInputPattern | TInputCurrency | TInputPassword | TInputTextArea)
