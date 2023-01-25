@@ -89,7 +89,7 @@ const Main = styled.div`
     > p.title {
       display: -webkit-box;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
       overflow: hidden;
       font-size: 12px;
       font-weight: 500;
