@@ -181,7 +181,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                     helperText={error?.message!}
                     label="Price"
                     width="100%"
-                    onChange={(value) => onChange(value?.floatValue)}
+                    onChange={onChange}
                     id="price"
                     disabled={loading}
                   />
@@ -199,7 +199,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                     helperText={error?.message!}
                     label="Stock"
                     width="100%"
-                    onChange={(value) => onChange(value?.floatValue)}
+                    onChange={onChange}
                     id="stock"
                     disabled={loading}
                   />
@@ -275,7 +275,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                     helperText={error?.message!}
                     label="Number Of Pages"
                     width="100%"
-                    onChange={(value) => onChange(value?.floatValue)}
+                    onChange={onChange}
                     id="numberOfPages"
                     disabled={loading}
                   />
