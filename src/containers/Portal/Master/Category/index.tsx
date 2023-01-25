@@ -71,7 +71,7 @@ const Category: React.FC = () => {
   return (
     <Main>
       <PopupDelete open={popupDelete} onClickClose={onCloseDeleteBook} data={deleteData} refetch={refetch} />
-      <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateBook} data={updateData} refetch={refetch} />
+      <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateBook} data={updateData} />
       <PopupAddCategory open={popupAdd} onClickClose={onCloseAddBook} refetch={refetch}/>
       <p className="title">Portal - Category</p>
       <Content>

@@ -1,35 +1,78 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Fade, Modal } from '@mui/material'
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import ButtonComp from '../elements/Button'
 import * as yup from "yup"
 import InputText from '../elements/Input/Input'
-import { TFormAddCategory, TMutationAddBookCategory, TMutationUpdateBookCategory } from '../../types/category'
-import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
 import { useMutation } from '@apollo/client'
-import { ADDBOOKCATEGORY, UPDATEBOOKCATEGORY } from '../../graphql/category.graphql'
-import Category from '../../containers/Portal/Master/Category'
+import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
+import { useQuery } from '@apollo/client'
+import { TCategory, TDefaultValueUpdateCategory, TFormAddCategory, TMutationUpdateBookCategory } from '../../types/category'
+import { BOOKCATEGORIES, PORTAL_INIT_CATEGORY_UPDATE, UPDATEBOOKCATEGORY } from '../../graphql/category.graphql'
 
-type TPopupDeleteCategory = {
+
+type TPopupDelete = {
   open: boolean;
+  data: { id: string | null };
   onClickClose: () => void;
-  data: {  id: string; name: string; };
-  refetch: (p?: any) => void;
 }
 
-const PopupUpdateBookCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, data, refetch }) => {
+const PopupUpdateBookCategory: FC<TPopupDelete> = (props) => {
+  type TResCategory = { bookCategory: TCategory }
+
+  const { data: dataInit, refetch, loading: loadInit } = useQuery<TResCategory>(PORTAL_INIT_CATEGORY_UPDATE, {
+    variables: { categoryId: props.data?.id! },
+    skip: !props.data?.id || !props.open,
+    fetchPolicy: "network-only",
+
+  })
+
+  useEffect(() => {
+    if (props.open) {
+      refetch({ categoryId: props.data.id })
+    }
+  }, [props.open])
+
+
+  const defaultValues = React.useMemo(() => ({
+    name: dataInit?.bookCategory?.name,
+  }), [dataInit]);
+
+  return (
+    <StyledModal open={props.open}>
+      <Fade in={props.open} unmountOnExit>
+        <Content>
+          <div className="head"><p>Update Data</p><Button color="error" onClick={props.onClickClose}><CloseIcon /></Button></div>
+          {loadInit && <div className="loading-wrapper"><FacebookCircularProgress size={50} thickness={4}/></div>}
+          <Fade in={props.open && !!dataInit?.bookCategory && !loadInit} unmountOnExit>
+            <div>
+              <FormData {...props} defaultValues={defaultValues} />
+            </div>
+          </Fade>
+        </Content>
+      </Fade>
+    </StyledModal>
+
+  );
+};
+
+type TFormdata = {
+  defaultValues: TDefaultValueUpdateCategory;
+  open: boolean;
+  data: { id: string | null };
+  onClickClose: () => void;
+}
+
+const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) => {
+
 
   React.useEffect(() => {
     if (open) {
       reset()
     }
   }, [open])
-
-  const defaultValues = {
-    name: data?.name,
-  };
 
 
   const { handleSubmit, watch, control, formState, setValue, reset } = useForm<TFormAddCategory>({
@@ -40,39 +83,33 @@ const PopupUpdateBookCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose,
   });
   const { isValid } = formState;
 
-  const [updateBookCategory, { data: datares, error, loading}] = useMutation<TMutationUpdateBookCategory>(UPDATEBOOKCATEGORY, {
+  const [updateBookCategory, { data: dataUpdate, error, loading }] = useMutation<TMutationUpdateBookCategory>(UPDATEBOOKCATEGORY, {
     errorPolicy: "all",
-    fetchPolicy: 'network-only'
+    refetchQueries: [
+      {query: BOOKCATEGORIES}
+    ], 
+    awaitRefetchQueries: true
   })
 
-
   React.useEffect(() => {
-    if (datares?.updateBookCategory) {
+    if (dataUpdate?.updateBookCategory) {
       onClickClose()
-      refetch()
     }
-  }, [datares])
+  }, [dataUpdate])
 
   const onSubmit = async (values: TFormAddCategory) => {
     try {
       await updateBookCategory({
         variables: {
-          data: {
-            categoryId : data.id,
-            name: values.name
-          }
+          data: { ...values, categoryId: data.id }
         }
       });
     } catch (error) { }
   }
-
-
   return (
-    <StyledModal open={open}>
-      <Fade in={open} unmountOnExit>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <div className="head"><p>Update Category</p><Button color="error" onClick={onClickClose}><CloseIcon /></Button></div>
-          <div className="content">
+    <Form onSubmit={handleSubmit(onSubmit)}>
+          
+          <div className="input-form">
             <FormWrapper>
               <div className="section">
                 <Controller
@@ -97,16 +134,12 @@ const PopupUpdateBookCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose,
             </FormWrapper>
           </div>
           <div className="footer">
-            <ButtonComp label="Update" type="submit" variant="contained" startIcon={loading && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || !isValid} />
+            <ButtonComp label="ADD" type="submit" variant="contained" startIcon={loading && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || !isValid} />
             <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading} />
           </div>
         </Form>
-      </Fade>
-    </StyledModal>
-  );
-};
-
-
+  )
+}
 
 export default PopupUpdateBookCategory;
 
@@ -123,7 +156,6 @@ const StyledModal = styled(Modal)`
   display: flex;
   justify-content: center;
   align-items: center;
-
   > div {
     outline: none;
   }
@@ -132,23 +164,30 @@ const StyledModal = styled(Modal)`
   } 
 `;
 
-const Form = styled.form`
+const Content = styled.div`
   display: flex;
   flex-direction: column;
-  width: 400px;
+  width: 1200px;
   background: #FFFFFF;
   border: 1px solid #BCC8E7;
   box-sizing: border-box;
   border-radius: 15px;
   padding: 10px;
   gap: 10px;
+  > div.loading-wrapper {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+  }
   >div.head{
     display: flex;
     align-items: center;
     justify-content: center;
     justify-content: space-between;
     > p {
-      padding-left: 16px;
+      padding-left: 10px;
       line-height: 1;
       font-size: 16px;
       font-weight: 500;
@@ -168,13 +207,18 @@ const Form = styled.form`
       }
     }
   }
-  >div.content {
+`
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  >div.input-form {
     display: flex;
     flex-direction: column;
     height: 100%;
     gap: 20px;
     border-radius: 5px;
-  
+    padding: 10px 20px;
     margin: 0 10px;
     max-height: 80vh;
     overflow-y: auto;
@@ -204,7 +248,8 @@ const Form = styled.form`
 
 const FormWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
   width: 100%;
   > div.section {
     display: flex;
@@ -214,5 +259,26 @@ const FormWrapper = styled.div`
   }
   @media screen and (max-width: 900px) {
     grid-template-columns: 1fr;
+  }
+`
+
+const InputGroup = styled.div`
+  display: flex;
+  gap: 15px;
+  @media screen and (max-width: 1200px) {
+    flex-direction: column;
+  }
+`
+
+const CoverInput = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  > p {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0;
+    line-height: 1;
+    color: ${({ theme }) => theme?.colors?.text?.darkGrey}
   }
 `

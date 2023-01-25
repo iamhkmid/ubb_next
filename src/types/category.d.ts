@@ -21,6 +21,13 @@ export type TMutationAddBookCategory = {
   }
 }
 
+export type TMutationUpdateBookCategory = {
+  updateBookCategory: {
+    id: string;
+    name: string;
+  }
+}
+
 export type TMutationDeleteBookCategory = {
   deleteBookCategory: {
     id: string;
@@ -28,9 +35,6 @@ export type TMutationDeleteBookCategory = {
   }
 }
 
-export type TMutationUpdateBookCategory = {
-  updateBookCategory: {
-    id: string;
-    name: string;
-  }
+export type TDefaultValueUpdateCategory = {
+  name?: string
 }
