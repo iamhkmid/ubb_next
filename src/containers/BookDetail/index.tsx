@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client"
 import { Fade } from "@mui/material"
+import Head from "next/head"
 import Image from "next/image"
 import { useRouter } from "next/router"
 import { FC, useMemo } from "react"
@@ -51,62 +52,68 @@ const BookDetail: FC<TBookDetail> = ({ slug }) => {
   ]), [data?.book])
 
   return (
-    <Main>
-      <div className="content">
-        <Back onClick={() => router.push({ pathname: "/", hash: "#book-list" })}>{"< Kembali"}</Back>
-        <Fade in={loading} unmountOnExit>
-          <Loading>
-            <FacebookCircularProgress size={60} thickness={5} />
-          </Loading>
-        </Fade>
-        {!loading && data?.book && (
-          <div className="detail-wrapper">
-            <CoverWrapper>
-              <div>
-                {data?.book.Images?.find((val) => val.type === "COVER") ? (
-                  <Image
-                    src={data?.book?.Images?.find((val) => val.type === "COVER")?.secureUrl!}
-                    fill
-                    alt="cover"
-                  />) : null}
-              </div>
-            </CoverWrapper>
-            <BookInfo>
-              <div className="main-info">
-                <div className="section-1">
-                  <p className="title">{data.book?.title}</p>
-                  <p className="author">{data.book?.authorName}</p>
-                  <div className="additional">
-                    <div>{data.book?.printType}</div>
+    <>
+      <Head>
+        <title>{`${data?.book.title} - ${data?.book.authorName}`|| slug}</title>
+        <link rel="icon" href="/icons/ubb_press_logo.png" />
+      </Head>
+      <Main>
+        <div className="content">
+          <Back onClick={() => router.push({ pathname: "/", hash: "#book-list" })}>{"< Kembali"}</Back>
+          <Fade in={loading} unmountOnExit>
+            <Loading>
+              <FacebookCircularProgress size={60} thickness={5} />
+            </Loading>
+          </Fade>
+          {!loading && data?.book && (
+            <div className="detail-wrapper">
+              <CoverWrapper>
+                <div>
+                  {data?.book.Images?.find((val) => val.type === "COVER") ? (
+                    <Image
+                      src={data?.book?.Images?.find((val) => val.type === "COVER")?.secureUrl!}
+                      fill
+                      alt="cover"
+                    />) : null}
+                </div>
+              </CoverWrapper>
+              <BookInfo>
+                <div className="main-info">
+                  <div className="section-1">
+                    <p className="title">{data.book?.title}</p>
+                    <p className="author">{data.book?.authorName}</p>
+                    <div className="additional">
+                      <div>{data.book?.printType}</div>
+                    </div>
+                  </div>
+                  <div className="section-2">
+                    <p className="price">{`Rp ${formatToCurrency(data.book?.price, 0)}`}</p>
+                    <Button type="button" onClick={() => window.open("https://wa.link/6e271h")} label="Beli Sekarang" variant="contained" />
                   </div>
                 </div>
-                <div className="section-2">
-                  <p className="price">{`Rp ${formatToCurrency(data.book?.price, 0)}`}</p>
-                  <Button type="button" onClick={() => window.open("https://wa.link/6e271h")} label="Beli Sekarang" variant="contained" />
+                <div className="additional-info">
+                  <Description>
+                    <p className="title">Deskripsi Buku</p>
+                    <p className="value">{data.book?.description}</p>
+                  </Description>
+                  <Detail>
+                    <p className="title">Detail</p>
+                    <div className="item-wrapper">
+                      {detail.map((val) => (
+                        <div key={val.label}>
+                          <p className="label">{val.label}</p>
+                          <p className="value">{val.value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </Detail>
                 </div>
-              </div>
-              <div className="additional-info">
-                <Description>
-                  <p className="title">Deskripsi Buku</p>
-                  <p className="value">{data.book?.description}</p>
-                </Description>
-                <Detail>
-                  <p className="title">Detail</p>
-                  <div className="item-wrapper">
-                    {detail.map((val) => (
-                      <div key={val.label}>
-                        <p className="label">{val.label}</p>
-                        <p className="value">{val.value}</p>
-                      </div>
-                    ))}
-                  </div>
-                </Detail>
-              </div>
-            </BookInfo>
-          </div>
-        )}
-      </div>
-    </Main>
+              </BookInfo>
+            </div>
+          )}
+        </div>
+      </Main>
+    </>
   )
 }
 
