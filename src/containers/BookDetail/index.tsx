@@ -226,9 +226,9 @@ const CoverWrapper = styled.div`
   aspect-ratio: 1/1;
   background: #d2e2f3;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 10px;
   >div{
-    border-radius: 3px;
+    border-radius: 8px;
     overflow: hidden;
     aspect-ratio: 2/2.9;
     position: relative;

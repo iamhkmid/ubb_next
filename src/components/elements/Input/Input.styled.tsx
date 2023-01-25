@@ -21,6 +21,7 @@ export const Main = styled.div<TMain>`
     > label {
       position: absolute;
       background: #ffffff;
+      border-radius: 5px;
       padding: 0 3px;
       height: fit-content;
       top: calc(50% - 7px);
@@ -76,7 +77,7 @@ type TInputText = {
 }
 
 export const InputText = styled.input<TInputText>`
-  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.Soft};
+  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.soft};
   outline: none;
   border-radius: 25px;
   font-family: "Poppins";
@@ -183,7 +184,7 @@ type TInputNumeric = {
 }
 
 export const InputNumeric = styled(NumericFormat) <TInputNumeric>`
-  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.Soft};
+  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.soft};
   outline: none;
   border-radius: 25px;
   font-weight: 400;

@@ -5,7 +5,7 @@ export const colors: TColors = {
     hard: "#4f65a1",
     default: "#667ab3",
     medium: "#8f9cdf",
-    Soft: "#b7bfee",
+    soft: "#b7bfee",
     ultrasoft: "#e8ebff"
   },
   text: {
