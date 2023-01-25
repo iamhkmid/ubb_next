@@ -20,7 +20,7 @@ const InputNumber: React.FC<InputProps & TInputNumeric> = (props) => {
 
   const onClickClear = () => {
     setValue("")
-    props.onChange!("")
+    props.onChange!(undefined)
   }
 
   return (

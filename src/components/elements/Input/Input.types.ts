@@ -22,7 +22,7 @@ export type TInputText = {
 
 export type TInputNumeric = {
   type: "numeric";
-  onChange?: (e: rnf.NumberFormatValues | string) => void;
+  onChange?: (e: rnf.NumberFormatValues | undefined) => void;
   value?: number | string | undefined;
 }
 
