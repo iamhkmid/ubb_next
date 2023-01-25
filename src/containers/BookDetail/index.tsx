@@ -54,7 +54,7 @@ const BookDetail: FC<TBookDetail> = ({ slug }) => {
   return (
     <>
       <Head>
-        <title>{`${data?.book.title} - ${data?.book.authorName}`|| slug}</title>
+        <title>{data?.book ? `${data?.book.title} - ${data?.book.authorName}` : slug}</title>
         <link rel="icon" href="/icons/ubb_press_logo.png" />
       </Head>
       <Main>
