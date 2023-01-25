@@ -1,5 +1,6 @@
+import React from "react"
 import { useQuery } from "@apollo/client"
-import { Button, Fade, List, ListItem, ListItemButton, ListItemText } from "@mui/material"
+import { Button, Checkbox, Fade, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
 import ButtonComp from "../elements/Button"
 import { useRouter } from "next/router"
 import { FC, useMemo, useState } from "react"
@@ -19,6 +20,13 @@ const BookList: FC<TBookList> = () => {
   const [search, setSearch] = useState("")
   const [minAmount, setMinAmount] = useState<number | undefined>(undefined)
   const [maxAmount, setMaxAmount] = useState<number | undefined>(undefined)
+  const [categoryIds, setCategoryIds] = React.useState<string[]>([]);
+
+  const onClickCategory = (props: { value: string; label: string; }) => () => {
+    if (props.value === "ALL") setCategoryIds([])
+    else if (categoryIds.includes(props.value)) setCategoryIds((prevState) => prevState.filter((val) => val !== props.value))
+    else setCategoryIds((prevState) => ([...prevState, props.value]))
+  };
 
   const { data, error, loading, refetch } = useQuery<TQueryBookHome>(PUBLIC_BOOK_LIST, {
     refetchWritePolicy: "overwrite",
@@ -28,12 +36,12 @@ const BookList: FC<TBookList> = () => {
 
   const onClickFilter = () => {
     console.log({ minAmount, maxAmount })
-    refetch({ filter: { minAmount: minAmount || undefined, maxAmount: maxAmount || undefined } })
+    refetch({ filter: { minAmount: minAmount || undefined, maxAmount: maxAmount || undefined, categoryIds: categoryIds.length ? categoryIds : undefined } })
   }
 
   const categories = useMemo(() => {
-    const initCategories = [{ id: "ALL", label: "Semua Kategori" }]
-    return [...initCategories, ...(dataCategories?.bookCategories || [])?.map((val) => ({ id: val.id, label: val.name }))]
+    const initCategories = [{ value: "ALL", label: "Semua Kategori" }]
+    return [...initCategories, ...(dataCategories?.bookCategories || [])?.map((val) => ({ value: val.id, label: val.name }))]
   }, [dataCategories?.bookCategories])
 
   const onClickBook = (slug: string) => {
@@ -49,8 +57,17 @@ const BookList: FC<TBookList> = () => {
           <p className="title">Daftar Kategori</p>
           <List>
             {categories.map((category) => (
-              <ListItem disablePadding key={category.id}>
-                <ListItemButton>
+              <ListItem disablePadding key={category.value}>
+                <ListItemButton onClick={onClickCategory(category)}>
+                  <ListItemIcon>
+                    <Checkbox
+                      edge="start"
+                      checked={(categoryIds.length === 0 && category.value === "ALL") || categoryIds.includes(category.value)}
+                      tabIndex={-1}
+                      disableRipple
+                      inputProps={{ 'aria-labelledby': category.label }}
+                    />
+                  </ListItemIcon>
                   <ListItemText primary={category.label} />
                 </ListItemButton>
               </ListItem>
