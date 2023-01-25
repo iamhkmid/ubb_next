@@ -82,7 +82,7 @@ const BookDetail: FC<TBookDetail> = ({ slug }) => {
                 </div>
                 <div className="section-2">
                   <p className="price">{`Rp ${formatToCurrency(data.book?.price, 0)}`}</p>
-                  <Button type="button" onClick={() => window.open("https://wa.link/i4bf6x")} label="Beli Sekarang" variant="contained" />
+                  <Button type="button" onClick={() => window.open("https://wa.link/6e271h")} label="Beli Sekarang" variant="contained" />
                 </div>
               </div>
               <div className="additional-info">
