@@ -85,7 +85,7 @@ export const InputText = styled.input<TInputText>`
   font-size: 14px;
   padding: 0 40px 0 18px;
   width: calc(100%-54px);
-  height: 46px;
+  height: 40px;
   caret-color: ${({ theme }) => theme.colors?.primary?.default};
   ::placeholder { 
     color: transparent;
@@ -189,7 +189,7 @@ export const InputNumeric = styled(NumericFormat) <TInputNumeric>`
   border-radius: 25px;
   font-weight: 400;
   font-size: 14px;
-  padding: 0 40px 0 13px;
+  padding: 0 40px 0 18px;
   width: calc(100%-54px);
   height: 46px;
   caret-color: ${({ theme }) => theme.colors?.primary?.default};
@@ -236,12 +236,12 @@ export const InputNumeric = styled(NumericFormat) <TInputNumeric>`
 `
 
 export const InputPattern = styled(PatternFormat)`
-  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.default};
+  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.soft};
   outline: none;
   border-radius: 10px;
   font-weight: 400;
   font-size: 14px;
-  padding: 0 40px 0 13px;
+  padding: 0 40px 0 18px;
   width: calc(100%-54px);
   height: 46px;
   caret-color: ${({ theme }) => theme.colors?.primary?.default};
@@ -255,6 +255,7 @@ export const InputPattern = styled(PatternFormat)`
     color: transparent;
   }
   :focus {
+    box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
     ::placeholder { 
       color: ${({ theme }) => theme.colors?.text?.medium};
     }
@@ -388,7 +389,7 @@ export const Option = styled.li<TOption>`
 
 
 export const InputTextArea = styled.textarea`
-  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.default};
+  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.soft};
   outline: none;
   font-family: "Poppins";
   border-radius: 15px;
@@ -409,6 +410,7 @@ export const InputTextArea = styled.textarea`
     color: transparent;
   }
   :focus {
+    box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
     ::placeholder { 
       color: ${({ theme }) => theme.colors?.text?.medium};
     }

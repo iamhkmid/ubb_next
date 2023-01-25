@@ -117,6 +117,7 @@ const BookList: FC<TBookList> = () => {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Cari berdasarkan judul/penulis"
           />
+          <ButtonComp label="Cari" onClick={onClickFilter} />
         </div>
         <Line />
         <Fade in={!loading && filterBook?.length! > 0} unmountOnExit>

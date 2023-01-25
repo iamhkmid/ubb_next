@@ -8,7 +8,6 @@ const httpLink = new HttpLink({
       if (response.status >= 500) {
         return Promise.reject(response.status)
       }
-      console.log({ response })
       return response
     }).catch(error => {
       return Promise.reject(error)
