@@ -14,7 +14,7 @@ const InputNumber: React.FC<InputProps & TInputNumeric> = (props) => {
   }, [props.value])
 
   const onChange: rnf.OnValueChange = (value) => {
-    props.onChange!(value)
+    props.onChange!(value.floatValue)
     setValue(value.floatValue)
   }
 

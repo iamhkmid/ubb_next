@@ -13,12 +13,13 @@ const InputPattern: React.FC<InputProps & TInputPattern> = (props) => {
   }, [props.value])
 
   const onChange: rnf.OnValueChange = (value) => {
-    props.onChange!(value)
+    props.onChange!(value.floatValue)
     setValue(value.floatValue)
   }
 
   const onClickClear = () => {
     setValue("")
+    props.onChange!("")
   }
 
   return (
