@@ -19,6 +19,7 @@ const InputCurrency: React.FC<InputProps & TInputCurrency> = (props) => {
 
   const onClickClear = () => {
     setValue("")
+    props.onChange!({ floatValue: undefined, formattedValue: "", value: "" })
   }
 
   return (

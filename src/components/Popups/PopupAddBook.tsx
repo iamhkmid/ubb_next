@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Backdrop, Button, Fade, Modal } from '@mui/material'
+import { Button, Fade, Modal } from '@mui/material'
 import React, { FC } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import styled from 'styled-components'
@@ -11,6 +11,7 @@ import { useMutation } from '@apollo/client'
 import { TFormAddBook, TMutationAddBook } from '../../types/book'
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
 import { ADDBOOK } from '../../graphql/book.graphql'
+import useMutationApi from '../../hooks/useMutation'
 
 type TPopupDelete = {
   open: boolean;
@@ -18,15 +19,20 @@ type TPopupDelete = {
   refetch: (p?: any) => void;
 }
 
-
+type TResUploadFile = {
+  statusCode: string;
+  data: { id: string; type: string; publicId: string; url: string; secureUrl: string; },
+  message: string;
+}
 
 const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
 
-  React.useEffect(() => {
-    if (open) {
-      reset()
-    }
-  }, [open])
+  React.useEffect(() => { if (open) reset() }, [open])
+
+  const { data: dataUploadFile, loading: loadUploadFile, mutation } = useMutationApi<TResUploadFile>({
+    url: "/upload/book-image",
+    method: "POST"
+  })
 
 
   const { handleSubmit, watch, control, formState, setValue, reset } = useForm<TFormAddBook>({
@@ -37,26 +43,28 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
   });
   const { isValid } = formState;
 
-  const [addBook, { data, error, loading}] = useMutation<TMutationAddBook>(ADDBOOK, {
+  const [addBook, { data, error, loading }] = useMutation<TMutationAddBook>(ADDBOOK, {
     errorPolicy: "all",
     fetchPolicy: 'network-only'
   })
 
-
   React.useEffect(() => {
-    if (data?.addBook) {
+    if (data?.addBook && dataUploadFile) {
       onClickClose()
       refetch()
     }
-  }, [data])
+  }, [data, dataUploadFile])
 
   const onSubmit = async (values: TFormAddBook) => {
+    const { cover, ...rest } = values
     try {
-      await addBook({
-        variables: {
-          data: values
+      const dataAddBook = await addBook({ variables: { data: rest } });
+      if (dataAddBook.data?.addBook) mutation({
+        body: {
+          type: "CREATE",
+          data: { bookId: dataAddBook.data?.addBook?.id, type: "COVER", file: cover }
         }
-      });
+      })
     } catch (error) { }
   }
 
@@ -83,7 +91,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                       width="100%"
                       onChange={onChange}
                       id="title"
-                      disabled={loading}
+                      disabled={loading || loadUploadFile}
                     />
                   )}
                 />
@@ -101,7 +109,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                       width="100%"
                       onChange={onChange}
                       id="authorName"
-                      disabled={loading}
+                      disabled={loading || loadUploadFile}
                     />
                   )}
                 />
@@ -119,7 +127,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                       width="100%"
                       onChange={onChange}
                       id="description"
-                      disabled={loading}
+                      disabled={loading || loadUploadFile}
                     />
                   )}
                 />
@@ -138,7 +146,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                         width="100%"
                         onChange={(value) => onChange(value?.floatValue)}
                         id="price"
-                        disabled={loading}
+                        disabled={loading || loadUploadFile}
                       />
                     )}
                   />
@@ -156,7 +164,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                         width="100%"
                         onChange={(value) => onChange(value?.floatValue)}
                         id="stock"
-                        disabled={loading}
+                        disabled={loading || loadUploadFile}
                       />
                     )}
                   />
@@ -175,7 +183,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                       width="100%"
                       onChange={onChange}
                       id="ISBN"
-                      disabled={loading}
+                      disabled={loading || loadUploadFile}
                     />
                   )}
                 />
@@ -195,7 +203,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                       width="100%"
                       onChange={onChange}
                       id="publisher"
-                      disabled={loading}
+                      disabled={loading || loadUploadFile}
                     />
                   )}
                 />
@@ -214,7 +222,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                         width="100%"
                         onChange={(e) => onChange(e.target.value)}
                         id="Print Type"
-                        disabled={loading}
+                        disabled={loading || loadUploadFile}
                       />
                     )}
                   />
@@ -232,12 +240,12 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                         width="100%"
                         onChange={(value) => onChange(value?.floatValue)}
                         id="numberOfPages"
-                        disabled={loading}
+                        disabled={loading || loadUploadFile}
                       />
                     )}
                   />
                 </InputGroup>
-                {/* <CoverInput>
+                <CoverInput>
                   <p>Cover File</p>
                   <Controller
                     name="cover"
@@ -249,13 +257,13 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                       />
                     )}
                   />
-                </CoverInput> */}
+                </CoverInput>
               </div>
             </FormWrapper>
           </div>
           <div className="footer">
-            <ButtonComp label="ADD" type="submit" variant="contained" startIcon={loading && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || !isValid} />
-            <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading} />
+            <ButtonComp label="ADD" type="submit" variant="contained" startIcon={(loading || loadUploadFile) && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || !isValid} />
+            <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading || loadUploadFile} />
           </div>
         </Form>
       </Fade>
@@ -276,7 +284,7 @@ const validationSchema =
     printType: yup.string().required("Required"),
     numberOfPages: yup.number().required("Required"),
     isbn: yup.string().required("Required"),
-    // cover: yup.string().required("Required")
+    cover: yup.string().required("Required")
   });
 
 const defaultValues = {

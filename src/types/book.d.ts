@@ -47,7 +47,7 @@ export type TFormAddBook = {
   printType: string;
   numberOfPages: number
   isbn: string;
-  // cover: string;
+  cover: string;
 }
 
 export type TMutationAddBook = {

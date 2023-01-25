@@ -22,7 +22,7 @@ export type TInputText = {
 
 export type TInputNumeric = {
   type: "numeric";
-  onChange?: (e: rnf.NumberFormatValues) => void;
+  onChange?: (e: rnf.NumberFormatValues | string) => void;
   value?: number | string | undefined;
 }
 
@@ -48,7 +48,7 @@ export type TOptionCurrency = { value: string; label: string; thousandSeparator:
 
 export type TInputCurrency = {
   type: "currency";
-  onChange?: (e: rnf.NumberFormatValues) => void;
+  onChange?: (e: rnf.NumberFormatValues | undefined) => void;
   value?: number;
 }
 

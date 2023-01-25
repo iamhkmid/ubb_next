@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const PUBLIC_BOOK_LIST = gql`
-  query {
-    books {
+  query ($filter: filterBooksInput) {
+    books(filter: $filter) {
       id
       title
       authorName
@@ -31,24 +31,6 @@ export const PUBLIC_BOOK_DETAIL = gql`
       stock
       printType
       Images {
-        secureUrl
-        type
-      }
-    }
-  }
-`;
-
-export const HOME_BOOK_LIST = gql`
-  query {
-    books {
-      id
-      title
-      authorName
-      slug
-      printType
-      price
-      Images {
-        url
         secureUrl
         type
       }

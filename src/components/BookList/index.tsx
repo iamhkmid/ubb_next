@@ -20,9 +20,16 @@ const BookList: FC<TBookList> = () => {
   const [minAmount, setMinAmount] = useState<number | undefined>(undefined)
   const [maxAmount, setMaxAmount] = useState<number | undefined>(undefined)
 
-
-  const { data, error, loading } = useQuery<TQueryBookHome>(PUBLIC_BOOK_LIST)
+  const { data, error, loading, refetch } = useQuery<TQueryBookHome>(PUBLIC_BOOK_LIST, {
+    refetchWritePolicy: "overwrite",
+    notifyOnNetworkStatusChange: true
+  })
   const { data: dataCategories, error: errCategories, loading: loadCategories } = useQuery<TQueryBookCategory>(PUBLIC_BOOK_CATEGORIES, { fetchPolicy: "cache-first" })
+
+  const onClickFilter = () => {
+    console.log({ minAmount, maxAmount })
+    refetch({ filter: { minAmount: minAmount || undefined, maxAmount: maxAmount || undefined } })
+  }
 
   const categories = useMemo(() => {
     const initCategories = [{ id: "ALL", label: "Semua Kategori" }]
@@ -59,7 +66,7 @@ const BookList: FC<TBookList> = () => {
               value={minAmount!}
               width="100%"
               placeholder="20.000"
-              onChange={(value) => setMinAmount(value.floatValue)}
+              onChange={(value) => setMinAmount(value?.floatValue)}
             />
             <Input
               type="currency"
@@ -67,12 +74,12 @@ const BookList: FC<TBookList> = () => {
               value={maxAmount!}
               width="100%"
               placeholder="50.000"
-              onChange={(value) => setMaxAmount(value.floatValue)}
+              onChange={(value) => setMaxAmount(value?.floatValue)}
             />
           </div>
         </NominalFilter>
         <div className="button-apply">
-          <ButtonComp label="Terapkan" />
+          <ButtonComp label="Terapkan" onClick={onClickFilter} />
         </div>
       </Filter>
       <Content>
