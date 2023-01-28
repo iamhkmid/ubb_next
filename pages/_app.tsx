@@ -13,9 +13,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThemeCtxProvider>
         <GlobalStyle />
         <ApolloClientProvider>
-        <Navigation>
-          <Component {...pageProps} />
-        </Navigation>
+          <Navigation>
+            <Component {...pageProps} />
+          </Navigation>
         </ApolloClientProvider>
       </ThemeCtxProvider>
     </>

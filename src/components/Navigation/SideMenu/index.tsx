@@ -36,6 +36,10 @@ const SideMenu = () => {
           label: "Category",
           pathname: "/portal/master/category"
         },
+        {
+          label: "Announcement",
+          pathname: "/portal/master/announcement"
+        },
       ]
     },
     {
