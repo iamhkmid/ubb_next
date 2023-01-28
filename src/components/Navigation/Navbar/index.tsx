@@ -24,7 +24,7 @@ const Main = styled.div`
   background: #fff;
   min-height: 60px;
   z-index: 10;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  /* box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; */
   > div.logo-wrapper {
     cursor: pointer;
     display: flex;

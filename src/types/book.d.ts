@@ -45,6 +45,7 @@ export type TFormAddBook = {
   publisher: string;
   description: string;
   printType: string;
+  publicationYear: number;
   numberOfPages: number
   isbn: string;
   cover: string;
@@ -57,6 +58,7 @@ export type TMutationAddBook = {
     authorName: string;
     price: number;
     stock: number;
+    publicationYear: number;
     publisher: string;
     description: string;
     printType: string;

@@ -1,6 +1,8 @@
+import { Tooltip, tooltipClasses, TooltipProps } from "@mui/material";
 import Image from "next/image";
-import { FC } from "react";
+import { FC, useContext } from "react";
 import styled from "styled-components"
+import { ThemeCtx } from "../../contexts/ThemeCtx";
 import { formatToCurrency } from "../../helpers/formatToCurrency";
 import { TBookCardHome } from "../../types/book";
 
@@ -10,6 +12,23 @@ type TBookCard = {
 }
 
 const BookCard: FC<TBookCard> = ({ data, onClick }) => {
+
+  const { theme } = useContext(ThemeCtx)
+
+  const LightTooltip = styled(({ className, ...props }: TooltipProps) => (<Tooltip {...props} classes={{ popper: className }} />
+  ))(({ }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme?.colors?.primary?.ultrasoft,
+      color: theme?.colors?.text?.dark,
+      boxShadow: "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;",
+      fontSize: 11,
+      textAlign: "center",
+      maxWidth: "250px"
+    },
+    [`& .${tooltipClasses.arrow}`]: {
+      color: theme?.colors?.primary?.soft,
+    },
+  }));
 
   return (
     <Main onClick={onClick}>
@@ -22,7 +41,9 @@ const BookCard: FC<TBookCard> = ({ data, onClick }) => {
           />) : null}
       </div>
       <div className="detail">
-        <p className="title">{data.title}</p>
+        <LightTooltip title={data?.title} arrow>
+          <p className="title">{data.title}</p>
+        </LightTooltip>
         <p className="author">{data.authorName}</p>
         <p className="price">{`Rp ${formatToCurrency(data.price, 0)}`}</p>
         <div className="additional">
@@ -46,8 +67,8 @@ const Main = styled.div`
   border: 1px solid transparent;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   :hover {
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
-    border: 1px solid #c2dbff;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px;
+    border: 1px solid ${({theme})=>theme.colors?.primary?.medium};
   }
   transition: 0.3s all ease;
   >div.cover {
@@ -58,7 +79,7 @@ const Main = styled.div`
     top: -15px;
     position: relative;  
     background: #fff;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
   }
   >div.detail {
     display: flex;
@@ -68,7 +89,7 @@ const Main = styled.div`
     > p.title {
       display: -webkit-box;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
       overflow: hidden;
       font-size: 12px;
       font-weight: 500;

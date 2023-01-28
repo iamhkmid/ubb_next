@@ -145,7 +145,7 @@ const Item = styled.div<TItem>`
   }
   :hover {
     color: ${({ theme }) => theme.colors?.text?.ultraSoft};
-    background: ${({ theme }) => theme.colors?.primary?.Soft};
+    background: ${({ theme }) => theme.colors?.primary?.soft};
     > div {
       > svg {
         path {
@@ -206,7 +206,7 @@ const SubMenu = styled.div<TSubMenu>`
   }
   :hover {
     color: ${({ theme }) => theme.colors?.text?.ultraSoft};
-    background: ${({ theme }) => theme.colors?.primary?.Soft};
+    background: ${({ theme }) => theme.colors?.primary?.soft};
     > div {
       > svg {
         path {
@@ -232,5 +232,5 @@ const SubMenu = styled.div<TSubMenu>`
 const SubMenuWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  border-top: 1px solid ${({ theme }) => theme.colors?.primary?.Soft};
+  border-top: 1px solid ${({ theme }) => theme.colors?.primary?.soft};
 `

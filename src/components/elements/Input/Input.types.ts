@@ -22,6 +22,7 @@ export type TInputText = {
 
 export type TInputNumeric = {
   type: "numeric";
+  maxLength?: number;
   onChange?: (value: string | number | undefined) => void;
   value?: number | string | undefined;
 }

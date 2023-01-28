@@ -25,7 +25,7 @@ type TColors = {
     hard?: string
     default?: string
     medium?: string
-    Soft?: string
+    soft?: string
     ultrasoft?: string
   },
   text?: {

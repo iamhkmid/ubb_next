@@ -45,7 +45,10 @@ const Main = styled.div`
   }
   .MuiButton-outlined {
     color: ${({ theme }) => theme?.colors?.primary?.default};
-    border-color: ${({ theme }) => theme?.colors?.primary?.Soft};
+    border-color: ${({ theme }) => theme?.colors?.primary?.soft};
+    :hover {
+      border-color: ${({ theme }) => theme?.colors?.primary?.medium};
+    }
   }
   .MuiButton-root.Mui-disabled {
     background: ${({ theme }) => theme?.colors?.primary?.ultrasoft};

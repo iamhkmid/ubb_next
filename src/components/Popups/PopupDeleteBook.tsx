@@ -153,7 +153,7 @@ const ContentWrapper = styled.div`
       width: fit-content;
     }
     .MuiButton-root.Mui-disabled {
-      background: ${({ theme }) => theme?.colors?.primary?.Soft};
+      background: ${({ theme }) => theme?.colors?.primary?.soft};
     }
   }
 `;

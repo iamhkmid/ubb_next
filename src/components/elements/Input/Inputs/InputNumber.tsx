@@ -29,8 +29,9 @@ const InputNumber: React.FC<InputProps & TInputNumeric> = (props) => {
         <label className="label" htmlFor={props.id}>{props.label}</label>
         <El.InputNumeric
           id={props.id}
-          value={value}
+          value={props.value}
           type="text"
+          maxLength={props.maxLength}
           onValueChange={onChange}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
@@ -57,6 +58,7 @@ InputNumber.defaultProps = {
   autoComplete: "off",
   placeholder: "Placeholder",
   value: undefined,
+  maxLength: undefined,
   type: "numeric"
 };
 

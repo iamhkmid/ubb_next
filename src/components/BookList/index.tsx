@@ -33,6 +33,7 @@ const BookList: FC<TBookList> = () => {
     setMinAmount("")
     setMaxAmount("")
     setCategoryIds([])
+    refetch({ filter: { minAmount: undefined, maxAmount: undefined, categoryIds: undefined } })
   }
 
   const { data, error, loading, refetch } = useQuery<TQueryBookHome>(PUBLIC_BOOK_LIST, {
@@ -42,7 +43,6 @@ const BookList: FC<TBookList> = () => {
   const { data: dataCategories, error: errCategories, loading: loadCategories } = useQuery<TQueryBookCategory>(PUBLIC_BOOK_CATEGORIES, { fetchPolicy: "cache-first" })
 
   const onClickFilter = () => {
-    console.log({ minAmount, maxAmount })
     refetch({ filter: { minAmount: minAmount || undefined, maxAmount: maxAmount || undefined, categoryIds: categoryIds.length ? categoryIds : undefined } })
   }
 
@@ -103,7 +103,7 @@ const BookList: FC<TBookList> = () => {
           </div>
         </NominalFilter>
         <div className="button-apply">
-          <ButtonComp label="Reset" variant="outlined" onClick={onClickReset} disabled={!categoryIds.length && !minAmount && !maxAmount}/>
+          <ButtonComp label="Reset" variant="outlined" onClick={onClickReset} disabled={!categoryIds.length && !minAmount && !maxAmount} />
           <ButtonComp label="Terapkan" onClick={onClickFilter} />
         </div>
       </Filter>
@@ -113,11 +113,12 @@ const BookList: FC<TBookList> = () => {
             type="text"
             value={search}
             width="500px"
-            label="Pencarian"
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Cari berdasarkan judul/penulis"
           />
+          <ButtonComp label="Cari" onClick={onClickFilter} />
         </div>
+        <Line />
         <Fade in={!loading && filterBook?.length! > 0} unmountOnExit>
           <div className="books-wrapper">
             {filterBook?.map((book) => (
@@ -142,7 +143,7 @@ export default BookList
 
 const Main = styled.div`
   display: flex;
-  padding: 90px 60px 60px 60px;
+  padding: 110px 60px 60px 60px;
   min-height: calc(100vh - 220px);
   gap: 50px;
   >p.title{
@@ -151,6 +152,25 @@ const Main = styled.div`
     font-weight: 700;
     margin: 0;
     line-height: 1;
+  }
+`
+
+const Line = styled.div`
+  display: flex;
+  width: 100%;
+  position: relative;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
+  ::before {
+    content: "";
+    position: absolute;
+    width: 10%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: #f02f59;
   }
 `
 
@@ -172,12 +192,13 @@ const Content = styled.div`
   gap: 40px;
   > div.search {
     display: flex;
+    gap: 10px;
     justify-content: center;
     position: relative;
   }
   > div.books-wrapper {
     display: grid;
-    padding: 40px 0;
+    padding: 10px 0;
     width: 100%;
     gap: 20px;
     grid-template-columns: repeat( auto-fill, minmax(160px, 1fr) );
@@ -210,6 +231,7 @@ const CategoryFilter = styled.div`
   flex-direction: column;
   width: 250px;
   padding: 5px;
+  background: #fff;
   height: fit-content;
   border-radius: 8px;
   box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
@@ -246,6 +268,7 @@ const CategoryFilter = styled.div`
 
 const NominalFilter = styled.div`
   display: flex;
+  background: #fff;
   flex-direction: column;
   width: 250px;
   padding: 5px;

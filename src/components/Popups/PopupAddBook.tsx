@@ -221,7 +221,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                         label="Print Type"
                         width="100%"
                         onChange={(e) => onChange(e.target.value)}
-                        id="Print Type"
+                        id="printType"
                         disabled={loading || loadUploadFile}
                       />
                     )}
@@ -245,6 +245,28 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                     )}
                   />
                 </InputGroup>
+
+                <InputGroup>
+                  <Controller
+                    name="publicationYear"
+                    control={control}
+                    render={({ field: { onChange, value }, fieldState: { error } }) => (
+                      <InputText
+                        type="numeric"
+                        placeholder="Enter Publication Year Type here.."
+                        value={value}
+                        maxLength={4}
+                        error={!!error}
+                        helperText={error?.message!}
+                        label="Publication Year"
+                        width="100%"
+                        onChange={onChange}
+                        id="publicationYear"
+                        disabled={loading || loadUploadFile}
+                      />
+                    )}
+                  />
+                </InputGroup>
                 <CoverInput>
                   <p>Cover File</p>
                   <Controller
@@ -262,7 +284,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
             </FormWrapper>
           </div>
           <div className="footer">
-            <ButtonComp label="ADD" type="submit" variant="contained" startIcon={(loading || loadUploadFile) && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || !isValid} />
+            <ButtonComp label="ADD" type="submit" variant="contained" startIcon={(loading || loadUploadFile) && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || loadUploadFile || !isValid} />
             <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading || loadUploadFile} />
           </div>
         </Form>
@@ -401,10 +423,11 @@ const FormWrapper = styled.div`
 `
 
 const InputGroup = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 15px;
   @media screen and (max-width: 1200px) {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 `
 
