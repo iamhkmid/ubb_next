@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from "react"
 import styled from "styled-components"
-import { useQuery } from "@apollo/client"
-import { TAnnouncement } from "../../../../types/announcement"
-import { PORTAL_ANNOUNCEMENT_LIST } from "../../../../graphql/announcement.graphql"
+import { useMutation, useQuery } from "@apollo/client"
+import { TAnnouncement, TFormAddAnnouncement, TMutationAddAnnouncement } from "../../../../types/announcement"
+import { ADDANNOUNCEMENT, PORTAL_ANNOUNCEMENT_LIST } from "../../../../graphql/announcement.graphql"
 import BannerUploader from "../../../../components/elements/BannerUploader/BannerUploader"
+import useMutationApi from "../../../../hooks/useMutation"
 
 const Book: React.FC = () => {
   const [popupDelete, setPopupDelete] = useState(false)
@@ -12,7 +13,36 @@ const Book: React.FC = () => {
     announcements: TAnnouncement[]
   }
 
+  type TResUploadAnnouncement = {
+    statusCode: string;
+    data: { id: string; secureUrl: string; },
+    message: string;
+  }
+  
+
   const { data, error, loading, refetch } = useQuery<TResAnnouncement>(PORTAL_ANNOUNCEMENT_LIST)
+
+  const { data: dataUploadFile, loading: loadUploadFile, mutation } = useMutationApi<TResUploadAnnouncement>({
+    url: "/upload/announcement",
+    method: "POST"
+  })
+
+
+  React.useEffect(() => {
+    if (dataUploadFile) {
+      refetch()
+    }
+  }, [dataUploadFile])
+
+
+  const onSubmit = (values: TFormAddAnnouncement) => {
+    mutation({
+      body: {
+        ...values
+      }
+    })
+  };
+
 
 
   // const createData = (id: string, no: string, secureUrl: string) => ({ id, no, secureUrl});

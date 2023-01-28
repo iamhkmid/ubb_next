@@ -8,3 +8,11 @@ export const PORTAL_ANNOUNCEMENT_LIST = gql`
     }
   }
 `;
+
+export const ADDANNOUNCEMENT = gql`
+mutation($data: addAnnouncement!){
+  addAnnouncement(data: $data){
+    updatedAt,
+    createdAt
+  }
+}`
