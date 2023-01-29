@@ -11,10 +11,13 @@ import { FacebookCircularProgress } from "../../../components/Loading/LoadingWra
 import { Fade } from "@mui/material";
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "../../../graphql/auth.graphql";
+import { useSnackbar } from "notistack"
 
 const Login: React.FC = () => {
   const router = useRouter();
   const [loadLogin, setLoadLogin] = React.useState(false)
+  const { enqueueSnackbar } = useSnackbar()
+  const [alert, setAlert] = React.useState(false)
   const PUBLIC_KEY = process.env.NEXT_PUBLIC_PUBLIC_KEY as string
 
   const encryptRSA = (text: string) => {
@@ -62,6 +65,10 @@ const Login: React.FC = () => {
     }
   }, [data])
 
+  React.useEffect(() => {
+    enqueueSnackbar(error?.message || "Something Went Wrong", {variant: "error", anchorOrigin: {vertical: "bottom", horizontal: "left"}, autoHideDuration: 5000})  
+  }, [error])
+
   const { handleSubmit, watch, control, formState, setValue } = useForm({
     mode: "all",
     reValidateMode: "onChange",
@@ -79,11 +86,14 @@ const Login: React.FC = () => {
           password: encryptRSA(values.password)
         }
       });
-    } catch (error) { }
+    } catch (error) { 
+      
+    }
   }
 
   return (
     <Fade in>
+      
       <Main>
         <div>
           <p className="title">LOGIN</p>
@@ -129,6 +139,7 @@ const Login: React.FC = () => {
         </div>
       </Main>
     </Fade>
+    
   )
 }
 
