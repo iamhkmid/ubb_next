@@ -16,7 +16,6 @@ export default function App({ Component, pageProps }: AppProps) {
         <ApolloClientProvider>
           <SnackbarProvider>
           <Navigation>
-          
             <Component {...pageProps} />
           </Navigation>
           </SnackbarProvider>
