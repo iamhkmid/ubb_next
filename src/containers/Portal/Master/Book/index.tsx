@@ -29,6 +29,7 @@ const Book: React.FC = () => {
   }
 
   const onClickUpdate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: TBookPortal) => {
+    e.stopPropagation()
     setUpdateData(data)
     setPopupUpdate(true)
   }

@@ -103,7 +103,7 @@ export const Dropdown = styled.div<TDrropdown>`
     > div.label {
       background: transparent;
       bottom: 15px;
-      font-size: 14px;
+      color: ${({ theme }) => theme.colors?.text?.medium};
     }
     > svg.end-icon {
       path {
