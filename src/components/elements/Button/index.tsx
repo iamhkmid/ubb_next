@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components";
 
 type TButton = {
-  label?: string
+  label?: string | JSX.Element
 }
 
 const Button: React.FC<ButtonProps & TButton> = (props) => {
@@ -23,10 +23,8 @@ Button.defaultProps = {
   type: "button",
   onClick: () => { },
   disabled: false,
-  label: "Button",
   color: "primary"
 }
-
 
 const Main = styled.div`
   display: flex;

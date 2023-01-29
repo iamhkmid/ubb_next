@@ -73,11 +73,11 @@ const PopupAddCategory: FC<TPopupDeleteCategory> = ({ open, onClickClose, refetc
                   render={({ field: { onChange, value }, fieldState: { error } }) => (
                     <InputText
                       type="text"
-                      placeholder="Enter Category here.."
+                      placeholder="Enter Category Name here.."
                       value={value}
                       error={!!error}
                       helperText={error?.message!}
-                      label="Category"
+                      label="Category Name"
                       width="100%"
                       onChange={onChange}
                       id="name"
@@ -127,7 +127,7 @@ const StyledModal = styled(Modal)`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  width: 400px;
+  width: 500px;
   background: #FFFFFF;
   border: 1px solid #BCC8E7;
   box-sizing: border-box;
@@ -166,7 +166,7 @@ const Form = styled.form`
     height: 100%;
     gap: 20px;
     border-radius: 5px;
-  
+    padding: 10px 5px;
     margin: 0 10px;
     max-height: 80vh;
     overflow-y: auto;
