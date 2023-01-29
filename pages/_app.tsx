@@ -5,6 +5,7 @@ import '../src/styles.css'
 import NextNProgress from 'nextjs-progressbar'
 import Navigation from '../src/components/Navigation'
 import ApolloClientProvider from '../src/hooks/apolloClient';
+import { SnackbarProvider } from 'notistack'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -13,9 +14,12 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThemeCtxProvider>
         <GlobalStyle />
         <ApolloClientProvider>
+          <SnackbarProvider>
           <Navigation>
+          
             <Component {...pageProps} />
           </Navigation>
+          </SnackbarProvider>
         </ApolloClientProvider>
       </ThemeCtxProvider>
     </>
