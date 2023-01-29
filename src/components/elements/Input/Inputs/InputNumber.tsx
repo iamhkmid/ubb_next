@@ -20,7 +20,7 @@ const InputNumber: React.FC<InputProps & TInputNumeric> = (props) => {
 
   const onClickClear = () => {
     setValue("")
-    props.onChange!(undefined)
+    props.onChange!("")
   }
 
   return (
@@ -39,9 +39,11 @@ const InputNumber: React.FC<InputProps & TInputNumeric> = (props) => {
           placeholder={props.placeholder}
           disabled={props.disabled}
           label={props.label!}
+          error={props?.error ? "error" : ""}
         />
         <El.CloseIcon onClick={onClickClear} show={value?.toString()?.length! > 0} disabled={props.disabled!}><XIcon /></El.CloseIcon>
       </div>
+      {props.helperText ? <El.HelperText error={props.error}>{props.helperText}</El.HelperText> : null}
     </El.Main>
   );
 }

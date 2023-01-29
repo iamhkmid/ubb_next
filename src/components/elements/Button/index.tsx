@@ -55,4 +55,10 @@ const Main = styled.div`
     border-color: ${({ theme }) => theme?.colors?.primary?.ultrasoft};
     color: ${({ theme }) => theme?.colors?.text?.soft};
   }
+  .MuiButton-startIcon {
+    > div {
+      display: flex;
+      align-items: center;
+    }
+  }
 `

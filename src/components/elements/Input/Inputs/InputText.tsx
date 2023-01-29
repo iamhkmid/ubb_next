@@ -7,7 +7,7 @@ const InputText: React.FC<InputProps & TInputText> = (props) => {
 
   const [value, setValue] = React.useState<string>("")
   const [isFocus, setIsFocus] = React.useState(false)
-  
+
   React.useEffect(() => {
     setValue(props.value!)
   }, [props.value])
@@ -40,9 +40,11 @@ const InputText: React.FC<InputProps & TInputText> = (props) => {
           placeholder={props.placeholder}
           disabled={props.disabled}
           label={props.label!}
+          error={!!props.error}
         />
         <El.CloseIcon onClick={onClickClear} show={value?.length! > 0} disabled={props.disabled!}><XIcon /></El.CloseIcon>
       </div>
+      {props.helperText && <El.HelperText error={props.error}>{props.helperText}</El.HelperText>}
     </El.Main>
   );
 }

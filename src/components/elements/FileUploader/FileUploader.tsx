@@ -86,6 +86,7 @@ const FileUploader: React.FC<FileUploaderProps> = (props) => {
     nativeInputValueSetter?.call(inputRef.current, "");
     const inputEvent = new Event('input', { bubbles: true });
     inputRef.current?.dispatchEvent(inputEvent);
+    props.onChange!("")
   }
 
   return (

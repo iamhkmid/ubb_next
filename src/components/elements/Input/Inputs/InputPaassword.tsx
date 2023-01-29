@@ -41,9 +41,11 @@ const InputPaassword: React.FC<InputProps & TInputPassword> = (props) => {
           placeholder={props.placeholder}
           disabled={props.disabled}
           label={props.label!}
+          error={props.error}
         />
         <El.CloseIcon onClick={onClickClear} show={value?.length! > 0} disabled={props.disabled!}><XIcon /></El.CloseIcon>
       </div>
+      {props.helperText && <El.HelperText error={props.error}>{props.helperText}</El.HelperText>}
     </El.Main>
   );
 }

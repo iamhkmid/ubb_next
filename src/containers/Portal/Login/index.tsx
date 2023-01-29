@@ -100,6 +100,8 @@ const Login: React.FC = () => {
                     placeholder="Masukan username anda"
                     value={value}
                     autoComplete="off"
+                    error={!!error}
+                    helperText={error?.message}
                     onChange={(e) => onChange(e.target.value)}
                     disabled={loading || loadLogin}
                   />
@@ -115,7 +117,9 @@ const Login: React.FC = () => {
                     label="Password"
                     placeholder="Masukan password anda"
                     value={value}
+                    error={!!error}
                     autoComplete="off"
+                    helperText={error?.message}
                     onChange={(e) => onChange(e.target.value)}
                     disabled={loading || loadLogin}
                   />

@@ -122,7 +122,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
               disabled={option.disabled}
             >
               <div className="label-wrapper">
-                <Checkbox checked={checked.includes(option?.value)} />
+                <Checkbox checked={checked.includes(option?.value)} style={{ pointerEvents: "none" }} tabIndex={1} />
                 {props.renderOption!(option)}
               </div>
               {option.value === selected && <CheckOutline />}

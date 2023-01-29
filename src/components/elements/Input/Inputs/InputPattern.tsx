@@ -35,6 +35,7 @@ const InputPattern: React.FC<InputProps & TInputPattern> = (props) => {
           autoComplete={props.autoComplete}
           placeholder={props.placeholder}
           disabled={props.disabled}
+          error={props?.error ? "error" : ""}
           // @ts-ignore
           format={format}
         />

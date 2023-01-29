@@ -10,8 +10,7 @@ type TMain = {
 
 export const Main = styled.div<TMain>`
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
   width: ${({ width }) => width};
   > div.Input-wrapper {
     display: flex;
@@ -74,18 +73,20 @@ export const Main = styled.div<TMain>`
 
 type TInputText = {
   label: string;
+  error?: boolean;
 }
 
 export const InputText = styled.input<TInputText>`
   border: 1.5px solid ${({ theme }) => theme.colors?.primary?.soft};
   outline: none;
+  color: ${({ theme }) => theme.colors?.text?.dark};
   border-radius: 25px;
   font-family: "Poppins";
   font-weight: 400;
   font-size: 14px;
   padding: 0 40px 0 18px;
   width: calc(100%-54px);
-  height: 40px;
+  height: 45px;
   caret-color: ${({ theme }) => theme.colors?.primary?.default};
   ::placeholder { 
     color: transparent;
@@ -107,6 +108,11 @@ export const InputText = styled.input<TInputText>`
       color: ${({ theme }) => theme.colors?.text?.medium};
     }
   `}
+  
+  ${({ error }) => error && css`
+    color: ${({ theme }) => theme.colors?.text?.medium};
+    border: 1.5px solid ${({ theme }) => theme.colors?.red?.["05"]};
+  `}
 
   :focus {
     box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
@@ -119,6 +125,9 @@ export const InputText = styled.input<TInputText>`
     ::-ms-input-placeholder {
       color: ${({ theme }) => theme.colors?.text?.medium};
     }
+    ${({ error }) => error && css`
+      box-shadow: ${({ theme }) => theme.colors?.red?.["02"]} 0px 0px 0px 2.5px;
+    `}
   }
   :disabled {
     background: ${({ theme }) => theme.colors?.gray?.["02"]};
@@ -134,12 +143,14 @@ type THelperText = {
 export const HelperText = styled.div<THelperText>`
   display: flex;
   gap: 5px;
+  margin: 0;
   align-items: center;
   line-height: 1;
   padding: 0 2px;
   padding-top: 5px;
   font-weight: 400;
   font-size: 12px;
+  margin-left: 17px;
   color: ${({ theme }) => theme.colors?.text?.darkGrey};;
   ${({ error }) => error && css`
     color: ${({ theme }) => theme.colors?.stateColor?.red?.medium};
@@ -181,11 +192,13 @@ export const CloseIcon = styled.div<TCloseIcon>`
 
 type TInputNumeric = {
   label: string;
+  error?: string;
 }
 
 export const InputNumeric = styled(NumericFormat) <TInputNumeric>`
   border: 1.5px solid ${({ theme }) => theme.colors?.primary?.soft};
   outline: none;
+  color: ${({ theme }) => theme.colors?.text?.dark};
   border-radius: 25px;
   font-weight: 400;
   font-size: 14px;
@@ -215,6 +228,11 @@ export const InputNumeric = styled(NumericFormat) <TInputNumeric>`
     }
   `}
   
+  ${({ error }) => error && css`
+    color: ${({ theme }) => theme.colors?.text?.medium};
+    border: 1.5px solid ${({ theme }) => theme.colors?.red?.["05"]};
+  `}
+
   :focus {
     box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
     ::placeholder { 
@@ -226,6 +244,9 @@ export const InputNumeric = styled(NumericFormat) <TInputNumeric>`
     ::-ms-input-placeholder {
       color: ${({ theme }) => theme.colors?.text?.medium};
     }
+    ${({ error }) => error && css`
+      box-shadow: ${({ theme }) => theme.colors?.red?.["02"]} 0px 0px 0px 2.5px;
+    `}
   }
   :disabled {
     background: ${({ theme }) => theme.colors?.gray?.["02"]};
@@ -235,9 +256,14 @@ export const InputNumeric = styled(NumericFormat) <TInputNumeric>`
   transition: .2s all ease;
 `
 
-export const InputPattern = styled(PatternFormat)`
+type TInputPattern = {
+  error?: string;
+}
+
+export const InputPattern = styled(PatternFormat)<TInputPattern>`
   border: 1.5px solid ${({ theme }) => theme.colors?.primary?.soft};
   outline: none;
+  color: ${({ theme }) => theme.colors?.text?.dark};
   border-radius: 10px;
   font-weight: 400;
   font-size: 14px;
@@ -254,6 +280,10 @@ export const InputPattern = styled(PatternFormat)`
   ::-ms-input-placeholder {
     color: transparent;
   }
+  ${({ error }) => error && css`
+    color: ${({ theme }) => theme.colors?.text?.medium};
+    border: 1.5px solid ${({ theme }) => theme.colors?.red?.["05"]};
+  `}
   :focus {
     box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
     ::placeholder { 
@@ -265,6 +295,9 @@ export const InputPattern = styled(PatternFormat)`
     ::-ms-input-placeholder {
       color: ${({ theme }) => theme.colors?.text?.medium};
     }
+    ${({ error }) => error && css`
+      box-shadow: ${({ theme }) => theme.colors?.red?.["02"]} 0px 0px 0px 2.5px;
+    `}
   }
   :disabled {
     background: ${({ theme }) => theme.colors?.gray?.["02"]};
@@ -387,7 +420,11 @@ export const Option = styled.li<TOption>`
   transition: all 0.2s ease;
 `
 
-export const InputTextArea = styled.textarea`
+type TTextArea = {
+  error?: boolean;
+}
+
+export const InputTextArea = styled.textarea<TTextArea>`
   border: 1.5px solid ${({ theme }) => theme.colors?.primary?.soft};
   outline: none;
   font-family: "Poppins";
@@ -408,6 +445,10 @@ export const InputTextArea = styled.textarea`
   ::-ms-input-placeholder {
     color: transparent;
   }
+  ${({ error }) => error && css`
+    color: ${({ theme }) => theme.colors?.text?.medium};
+    border: 1.5px solid ${({ theme }) => theme.colors?.red?.["05"]};
+  `}
   :focus {
     box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
     ::placeholder { 
@@ -419,6 +460,9 @@ export const InputTextArea = styled.textarea`
     ::-ms-input-placeholder {
       color: ${({ theme }) => theme.colors?.text?.medium};
     }
+    ${({ error }) => error && css`
+      box-shadow: ${({ theme }) => theme.colors?.red?.["02"]} 0px 0px 0px 2.5px;
+    `}
   }
   :disabled {
     background: ${({ theme }) => theme.colors?.gray?.["02"]};

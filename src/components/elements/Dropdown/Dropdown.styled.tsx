@@ -25,16 +25,17 @@ export const Dropdown = styled.div<TDrropdown>`
   border: 1.5px solid ${({ theme }) => theme.colors?.primary?.soft};
   color: transparent;
   border-radius: 25px;
-  min-height: 46px;
+  min-height: 45px;
   padding: 0 15px;
   justify-content: space-between;
+  outline: none;
   cursor: pointer;
   > div.label {
     position: absolute;
     background: #ffffff;
     padding: 0 3px;
     height: fit-content;
-    top: calc(50% - 7px);
+    top: calc(50% - 9px);
     left: 0;
     color: ${({ theme }) => theme.colors?.text?.darkGrey};
     margin-left: 13px;
@@ -48,7 +49,7 @@ export const Dropdown = styled.div<TDrropdown>`
     margin: 0;
     line-height: 1;
     > span.multiple {
-      color: ${({theme})=>theme.colors?.primary?.default};
+      color: ${({ theme }) => theme.colors?.primary?.default};
     }
   }
   > p.placeholder {
@@ -59,6 +60,10 @@ export const Dropdown = styled.div<TDrropdown>`
     font-size: 14px;
     opacity: 0;
     transition: 0.2s opacity ease;
+  }
+
+  :focus {
+    box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
   }
   
   > svg.end-icon {
@@ -203,11 +208,15 @@ export const Option = styled.li<TOption>`
   padding: 0 12px;
   cursor: pointer;
   font-weight: 500;
+  outline: none;
   font-size: 14px;
   color: ${({ theme }) => theme.colors?.text?.darkGrey};
   background: #ffffff;
   max-height: 0;
   overflow: hidden;
+  :focus {
+    background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
+  }
   :hover {
     background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
   }

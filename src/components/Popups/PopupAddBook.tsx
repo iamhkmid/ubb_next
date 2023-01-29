@@ -74,7 +74,6 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
     } catch (error) { }
   }
 
-
   return (
     <StyledModal open={open}>
       <Fade in={open} unmountOnExit>
@@ -300,6 +299,8 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                       <FileUploader
                         width="99.9%"
                         onChange={(e) => onChange(e)}
+                        herlperText={error?.message}
+                        error={!!error}
                       />
                     )}
                   />
@@ -308,7 +309,7 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
             </FormWrapper>
           </div>
           <div className="footer">
-            <ButtonComp label="ADD" type="submit" variant="contained" startIcon={(loading || loadUploadFile) && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || loadUploadFile || !isValid} />
+            <ButtonComp label="ADD" type="submit" variant="contained" startIcon={(loading || loadUploadFile) && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || loadUploadFile} />
             <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading || loadUploadFile} />
           </div>
         </Form>
@@ -323,14 +324,15 @@ const validationSchema =
   yup.object({
     title: yup.string().required("Required"),
     authorName: yup.string().required("Required"),
-    price: yup.number().required("Required"),
-    stock: yup.number().required("Required"),
+    price: yup.number(),
+    stock: yup.number(),
     publisher: yup.string().required("Required"),
     description: yup.string().required("Required"),
     printType: yup.string().required("Required"),
     numberOfPages: yup.number().required("Required"),
+    publicationYear: yup.number().required("Required").transform((val) => (isNaN(val) ? undefined : val)).integer(),
     isbn: yup.string().required("Required"),
-    cover: yup.string().required("Required")
+    cover: yup.string().required("Cover is Required")
   });
 
 const defaultValues = {
