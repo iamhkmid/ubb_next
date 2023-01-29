@@ -13,8 +13,10 @@ import { PORTAL_INIT_BOOK_UPDATE, UPDATEBOOK } from '../../graphql/book.graphql'
 import { useQuery } from '@apollo/client'
 import data from '../../data/content'
 import { TQueryBookCategory } from '../../types/category'
+import useMutationApi from '../../hooks/useMutation'
 import { BOOKCATEGORIES } from '../../graphql/category.graphql'
 import Dropdown from '../elements/Dropdown/Dropdown'
+import { useSnackbar } from 'notistack'
 import PopupAddCategory from './PopupAddCategory'
 import FileUploader from '../elements/FileUploader/FileUploader'
 
@@ -26,10 +28,16 @@ type TPopupDelete = {
   refetch: () => void;
 }
 
+type TResUploadFile = {
+  statusCode: string;
+  data: { id: string; type: string; publicId: string; url: string; secureUrl: string; },
+  message: string;
+}
+
 const PopupUpdateBook: FC<TPopupDelete> = (props) => {
   type TResBook = { book: TUpdateBook }
 
-  const { data: dataInit, refetch, loading: loadInit } = useQuery<TResBook>(PORTAL_INIT_BOOK_UPDATE, {
+  const { data: dataInit, refetch:refetchInit, loading: loadInit } = useQuery<TResBook>(PORTAL_INIT_BOOK_UPDATE, {
     variables: { bookId: props.data?.id! },
     skip: !props.data?.id || !props.open,
     fetchPolicy: "network-only"
@@ -39,7 +47,7 @@ const PopupUpdateBook: FC<TPopupDelete> = (props) => {
 
   useEffect(() => {
     if (props.open) {
-      refetch({ bookId: props.data.id })
+      refetchInit({ bookId: props.data.id })
     }
   }, [props.open])
 
@@ -67,7 +75,7 @@ const PopupUpdateBook: FC<TPopupDelete> = (props) => {
           {loadInit && <div className="loading-wrapper"><FacebookCircularProgress size={50} thickness={4}/></div>}
           <Fade in={props.open && !!dataInit?.book && !loadInit} unmountOnExit>
             <div>
-              <FormData {...props} defaultValues={defaultValues} />
+              <FormData {...props} defaultValues={defaultValues} coverPreview={dataInit?.book?.Images?.find((val)=> val.type === "COVER")!} />
             </div>
           </Fade>
         </Content>
@@ -82,10 +90,14 @@ type TFormdata = {
   open: boolean;
   data: { id: string | null };
   onClickClose: () => void;
+  coverPreview?: {id: string; secureUrl: string; publicId: string;};
+  refetch: () => void;
 }
 
-const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) => {
+const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data, coverPreview, refetch }) => {
   const [popupAddCategory, setPopupAddCategory] = React.useState(false)
+
+  const { enqueueSnackbar } = useSnackbar()
 
   React.useEffect(() => {
     if (open) {
@@ -94,6 +106,11 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
   }, [open])
 
   const { data: dataCategories, refetch: refetchCategories } = useQuery<TQueryBookCategory>(BOOKCATEGORIES)
+
+  const { data: dataUploadFile, loading: loadUploadFile, mutation, error: errorUploadFile } = useMutationApi<TResUploadFile>({
+    url: "/upload/book-image",
+    method: "POST"
+  })
 
   const categoryOptions = React.useMemo(() => dataCategories?.bookCategories?.map((val) => ({ value: val?.id, label: val?.name })), [dataCategories])
 
@@ -110,18 +127,38 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
   })
 
   React.useEffect(() => {
-    if (dataUpdate?.updateBook) {
+    if (error)
+      enqueueSnackbar(error?.message || "Something went wrong", { variant: "error", anchorOrigin: { vertical: "bottom", horizontal: "left" }, autoHideDuration: 4000 })
+  }, [error])
+
+  React.useEffect(() => {
+    if (errorUploadFile)
+      enqueueSnackbar("Cover failed to upload", { variant: "error", anchorOrigin: { vertical: "bottom", horizontal: "left" }, autoHideDuration: 4000 })
+  }, [errorUploadFile])
+
+  React.useEffect(() => {
+    if (dataUpdate && (dataUploadFile || errorUploadFile)) {
+      refetch()
+      enqueueSnackbar("Book updated successfully", { variant: "success", anchorOrigin: { vertical: "bottom", horizontal: "left" }, autoHideDuration: 4000 })
       onClickClose()
     }
-  }, [dataUpdate])
+  }, [dataUpdate, dataUploadFile, errorUploadFile])
+
 
   const onSubmit = async (values: TFormAddBook) => {
+    const {cover, ...rest} = values 
     try {
-      await updateBook({
+     const dataUpdate = await updateBook({
         variables: {
-          data: { ...values, bookId: data.id }
+          data: { ...rest, bookId: data.id }
         }
       });
+      if (dataUpdate.data?.updateBook && coverPreview) mutation({
+        body: {
+          type: "UPDATE",
+          data: { imageId: coverPreview.id, publicId: coverPreview?.publicId  , type: "COVER", file: cover }
+        }
+      })
     } catch (error) { }
   }
 
@@ -149,7 +186,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                   width="100%"
                   onChange={onChange}
                   id="title"
-                  disabled={loading}
+                  disabled={loading || loadUploadFile}
                 />
               )}
             />
@@ -167,7 +204,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                   width="100%"
                   onChange={onChange}
                   id="authorName"
-                  disabled={loading}
+                  disabled={loading || loadUploadFile}
                 />
               )}
             />
@@ -186,7 +223,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                       width="100%"
                       onChange={onChange}
                       options={categoryOptions}
-                      disabled={loading}
+                      disabled={loading || loadUploadFile}
                     />
                   )}
                 />
@@ -206,7 +243,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                   width="100%"
                   onChange={onChange}
                   id="description"
-                  disabled={loading}
+                  disabled={loading || loadUploadFile}
                 />
               )}
             />
@@ -225,7 +262,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                     width="100%"
                     onChange={onChange}
                     id="price"
-                    disabled={loading}
+                    disabled={loading || loadUploadFile}
                   />
                 )}
               />
@@ -243,7 +280,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                     width="100%"
                     onChange={onChange}
                     id="stock"
-                    disabled={loading}
+                    disabled={loading || loadUploadFile}
                   />
                 )}
               />
@@ -262,7 +299,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                   width="100%"
                   onChange={onChange}
                   id="ISBN"
-                  disabled={loading}
+                  disabled={loading || loadUploadFile}
                 />
               )}
             />
@@ -282,7 +319,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                   width="100%"
                   onChange={onChange}
                   id="publisher"
-                  disabled={loading}
+                  disabled={loading || loadUploadFile}
                 />
               )}
             />
@@ -301,7 +338,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                     width="100%"
                     onChange={(e) => onChange(e.target.value)}
                     id="Print Type"
-                    disabled={loading}
+                    disabled={loading || loadUploadFile}
                   />
                 )}
               />
@@ -319,7 +356,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                     width="100%"
                     onChange={onChange}
                     id="numberOfPages"
-                    disabled={loading}
+                    disabled={loading || loadUploadFile}
                   />
                 )}
               />
@@ -340,7 +377,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                       width="100%"
                       onChange={onChange}
                       id="publicationYear"
-                      disabled={loading}
+                      disabled={loading || loadUploadFile}
                     />
                   )}
                 />
@@ -356,6 +393,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
                       onChange={(e) => onChange(e)}
                       herlperText={error?.message}
                       error={!!error}
+                      preview={coverPreview?.secureUrl}
                     />
                   )}
                 />
@@ -364,8 +402,8 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
         </FormWrapper>
       </div>
       <div className="footer">
-        <ButtonComp label="Update" type="submit" variant="contained" startIcon={loading && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading} />
-        <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading} />
+        <ButtonComp label="Update" type="submit" variant="contained" startIcon={(loading || loadUploadFile) && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || loadUploadFile} />
+        <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading || loadUploadFile} />
       </div>
     </Form>
     </>

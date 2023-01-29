@@ -59,6 +59,8 @@ export const PORTAL_INIT_BOOK_UPDATE = gql`
       Images {
         secureUrl
         type
+        publicId
+        id
       }
     }
   }

@@ -8,4 +8,5 @@ export type FileUploaderProps = {
   loading?: boolean;
   loadingPercent?: number;
   width?: string;
+  preview?: string;
 }

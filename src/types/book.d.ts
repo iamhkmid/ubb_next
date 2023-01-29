@@ -125,7 +125,7 @@ export type TUpdateBook = {
   description?: string;
   Categories?: {id: string; name: string;}[];
   publicationYear?: number;
-  Images?: { url: string; type: string; secureUrl: string; }[]
+  Images?: { id: string; url: string; type: string; secureUrl: string; publicId: string; }[]
   printType?: string;
   isbn?: string;
   slug?: string;

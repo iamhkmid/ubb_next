@@ -8,6 +8,7 @@ import { FileUploaderProps } from "./FileUploader.types";
 const FileUploader: React.FC<FileUploaderProps> = (props) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = React.useState(false);
+  const [preview, setPreview] = React.useState<string | undefined>(props.preview);
   const [file, setFile] = React.useState<string | null>(null);
   const [error, setError] = React.useState<boolean | undefined>(false);
   const [herlperText, setHerlperText] = React.useState<string | undefined>("")
@@ -87,6 +88,7 @@ const FileUploader: React.FC<FileUploaderProps> = (props) => {
     const inputEvent = new Event('input', { bubbles: true });
     inputRef.current?.dispatchEvent(inputEvent);
     props.onChange!("")
+    setPreview(undefined);
   }
 
   return (
@@ -108,10 +110,13 @@ const FileUploader: React.FC<FileUploaderProps> = (props) => {
         <div><p>Format : <span>{dataTypes}</span></p></div>
       </div>
       {dragActive && <div className="drag-file-element" onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}></div>}
-      {file && (
+      {(file || preview) && (
         <El.ImagePreview>
-          <div><Image src={file} alt="preview" fill style={{ objectFit: "contain" }} />
-          <El.CloseIcon onClick={onClickClear}><XIcon /></El.CloseIcon></div>
+          <div>
+          {file ? <Image src={file} alt="preview" fill style={{ objectFit: "contain" }} /> : null}
+          {preview ? <Image src={preview} alt="preview" fill style={{ objectFit: "contain" }} /> : null}
+          <El.CloseIcon onClick={onClickClear}><XIcon /></El.CloseIcon>
+          </div>
         </El.ImagePreview>
       )}
     </El.Main>
