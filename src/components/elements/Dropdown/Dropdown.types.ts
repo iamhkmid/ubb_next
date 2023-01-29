@@ -16,18 +16,16 @@ export type DropdownProps =
     helperText?: string;
     width?: string;
     maxHeight?: string;
+    renderSelected?: (props: TOption) => ReactElement | string | number;
+    renderOption?: (props: TOption) => ReactElement | string | number;
   } &
   ({
     type?: "SINGLE";
     onChange?: (props: string | number) => void;
-    renderSelected?: (props: TOption) => ReactElement | string;
-    renderOption?: (props: TOption) => ReactElement | string;
   } |
   {
     type?: "MULTIPLE";
     onChange?: (props: (string | number)[]) => void;
-    renderSelected?: (props: string) => ReactElement | string;
-    renderOption?: (props: TOption) => ReactElement | string;
   })
 
 export type StringArray = {

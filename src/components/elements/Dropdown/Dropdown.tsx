@@ -86,10 +86,10 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
 
   return (
     <El.Main className={`Dropdown-root ${props.className}`} ref={ref!} width={props.width}>
-      <El.Dropdown className="DropdownSelected-root" isSelected={!!options.find((val) => val.value === selected)} onClick={onClickDropdown} isOpen={isOpen} tabIndex={props.disabled ? undefined : 0} onKeyDown={onKeyDownDropdown} disabled={props.disabled}>
+      <El.Dropdown className="DropdownSelected-root" isSelected={!!options.find((val) => val.value === selected) || !!checked.length} onClick={onClickDropdown} isOpen={isOpen} type={props.type!!} tabIndex={props.disabled ? undefined : 0} onKeyDown={onKeyDownDropdown} disabled={props.disabled}>
         <div className="label">{props.label}</div>
         {props.type === "SINGLE" && <p className="value">{props.renderSelected!(options.find((val) => val.value === selected)!!)}</p>}
-        {props.type === "MULTIPLE" && <p className="value">{props.renderSelected!(`${checked.length} items selected`)}</p>}
+        {props.type === "MULTIPLE" && <p className="value"><span className="multiple">{!!checked.length && props.renderSelected!({ label: `${checked.length} items selected`, value: `${checked.length} items selected` })}</span></p>}
         {props.placeholder && <p className="placeholder">{props.placeholder}</p>}
         <ChevronUp />
       </El.Dropdown>

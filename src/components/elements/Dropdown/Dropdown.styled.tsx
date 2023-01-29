@@ -16,6 +16,7 @@ type TDrropdown = {
   isOpen: boolean;
   disabled?: boolean;
   isSelected: boolean;
+  type: "SINGLE" | "MULTIPLE"
 }
 export const Dropdown = styled.div<TDrropdown>`
   display: flex;
@@ -44,6 +45,11 @@ export const Dropdown = styled.div<TDrropdown>`
   > p.value {
     font-weight: 400;
     font-size: 14px;
+    margin: 0;
+    line-height: 1;
+    > span.multiple {
+      color: ${({theme})=>theme.colors?.primary?.default};
+    }
   }
   > p.placeholder {
     position: absolute;
@@ -117,6 +123,7 @@ export const Options = styled.ul<TOptions>`
   top: calc(100% - 10px);
   background: #ffffff;
   overflow: hidden;
+  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.ultrasoft};
   flex-direction: column;
   box-shadow: 0px 4px 12px 1px rgba(175, 173, 200, 0.2);
   border-radius: 10px;
