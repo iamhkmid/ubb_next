@@ -35,7 +35,7 @@ const PopupAddBook: FC<TPopupAddBook> = (props) => {
     <StyledModal open={props.open}>
       <Fade in={props.open}>
         <Content>
-          <div className="head"><p>Update Data</p><Button color="error" onClick={props.onClickClose}><CloseIcon /></Button></div>
+          <div className="head"><p>Add Book Data</p><Button color="error" onClick={props.onClickClose}><CloseIcon /></Button></div>
           <FormData {...props} />
         </Content>
       </Fade>
