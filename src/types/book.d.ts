@@ -35,11 +35,13 @@ export type TBookPortal = {
   id: string;
   title: string;
   authorName: string;
+  createdAt: Date;
 }
 
 export type TFormAddBook = {
   title: string;
   authorName: string;
+  categoryIds: string;
   price: number;
   stock: number;
   publisher: string;

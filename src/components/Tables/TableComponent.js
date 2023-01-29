@@ -1,7 +1,8 @@
 /* eslint-disable no-multiple-empty-lines */
-import { Box, Checkbox, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import Checkbox from '../elements/Checkbox';
 import { FacebookCircularProgress } from '../Loading/LoadingWrapper';
 
 const TableComponent = ({ dataTable, onChange = () => { }, checkbox = false, maxHeight = "350px", minHeight = "auto", loading }) => {

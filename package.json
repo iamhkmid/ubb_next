@@ -22,6 +22,7 @@
     "graphql": "^16.6.0",
     "jimp": "^0.16.2",
     "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
     "next": "latest",
     "nextjs-progressbar": "^0.0.16",
     "react": "^18.2.0",

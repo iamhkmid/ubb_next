@@ -6,13 +6,15 @@ import Button from "../../../components/elements/Button"
 import InputText from "../../../components/elements/Input/Input"
 import { defaultValues, validationSchema } from "./validationSchema";
 import crypto from "crypto"
-import Router from "next/router"
-import LoadingWrapper from "../../../components/Loading/LoadingWrapper";
+import Router, { useRouter } from "next/router"
+import { FacebookCircularProgress } from "../../../components/Loading/LoadingWrapper";
 import { Fade } from "@mui/material";
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "../../../graphql/auth.graphql";
 
 const Login: React.FC = () => {
+  const router = useRouter();
+  const [loadLogin, setLoadLogin] = React.useState(false)
   const PUBLIC_KEY = process.env.NEXT_PUBLIC_PUBLIC_KEY as string
 
   const encryptRSA = (text: string) => {
@@ -26,18 +28,27 @@ const Login: React.FC = () => {
     return encrypted.toString("base64");
   }
 
+  React.useEffect(() => {
+    router.events.on('routeChangeStart', (url, { shallow }) => {
+      setLoadLogin(true)
+    });
+    router.events.on('routeChangeComplete', (url) => {
+      setLoadLogin(false)
+    });
+  }, [])
+  
+
   useEffect(() => {
     sessionStorage.removeItem("token")
   }, [])
 
   type TLoginMutaion = {
+    token: string;
     login: {
       message: string;
-      token: string;
       user: { fullName: string; role: string; username: string };
     }
   }
-
 
   const [login, { data, error, loading}] = useMutation<TLoginMutaion>(LOGIN, {
     errorPolicy: "all",
@@ -45,8 +56,8 @@ const Login: React.FC = () => {
   })
 
   React.useEffect(() => {
-    if (data?.login?.token) {
-      sessionStorage.setItem("token", data?.login?.token)
+    if (data?.token) {
+      sessionStorage.setItem("token", data?.token)
       Router.push("/portal")
     }
   }, [data])
@@ -74,7 +85,6 @@ const Login: React.FC = () => {
   return (
     <Fade in>
       <Main>
-        <LoadingWrapper open={loading} />
         <div>
           <p className="title">LOGIN</p>
           <Form onSubmit={handleSubmit(onSubmit)}>
@@ -91,6 +101,7 @@ const Login: React.FC = () => {
                     value={value}
                     autoComplete="off"
                     onChange={(e) => onChange(e.target.value)}
+                    disabled={loading || loadLogin}
                   />
                 )}
               />
@@ -106,12 +117,13 @@ const Login: React.FC = () => {
                     value={value}
                     autoComplete="off"
                     onChange={(e) => onChange(e.target.value)}
+                    disabled={loading || loadLogin}
                   />
                 )}
               />
             </div>
             <div className="button-wrapper">
-              <Button label="Login" variant="contained" type="submit" disabled={!isValid} />
+              <Button label="Login" variant="contained" type="submit" startIcon={(loading || loadLogin) && <FacebookCircularProgress size={20} thickness={3} />} disabled={!isValid || loading || loadLogin} />
             </div>
           </Form>
         </div>

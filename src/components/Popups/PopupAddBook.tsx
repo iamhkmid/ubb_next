@@ -7,11 +7,14 @@ import ButtonComp from '../elements/Button'
 import * as yup from "yup"
 import InputText from '../elements/Input/Input'
 import FileUploader from '../elements/FileUploader/FileUploader'
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { TFormAddBook, TMutationAddBook } from '../../types/book'
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
 import { ADDBOOK } from '../../graphql/book.graphql'
 import useMutationApi from '../../hooks/useMutation'
+import Dropdown from '../elements/Dropdown/Dropdown'
+import { BOOKCATEGORIES } from '../../graphql/category.graphql'
+import { TQueryBookCategory } from '../../types/category'
 
 type TPopupDelete = {
   open: boolean;
@@ -29,11 +32,14 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
 
   React.useEffect(() => { if (open) reset() }, [open])
 
+  const { data: dataCategories } = useQuery<TQueryBookCategory>(BOOKCATEGORIES)
+
+  const categoryOptions = React.useMemo(() => dataCategories?.bookCategories?.map((val) => ({ value: val?.id, label: val?.name })), [dataCategories])
+
   const { data: dataUploadFile, loading: loadUploadFile, mutation } = useMutationApi<TResUploadFile>({
     url: "/upload/book-image",
     method: "POST"
   })
-
 
   const { handleSubmit, watch, control, formState, setValue, reset } = useForm<TFormAddBook>({
     mode: "all",
@@ -109,6 +115,24 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
                       width="100%"
                       onChange={onChange}
                       id="authorName"
+                      disabled={loading || loadUploadFile}
+                    />
+                  )}
+                />
+                <Controller
+                  name="categoryIds"
+                  control={control}
+                  render={({ field: { onChange, value }, fieldState: { error } }) => (
+                    <Dropdown
+                      placeholder="Choose Categories.."
+                      value={value}
+                      type="MULTIPLE"
+                      error={!!error}
+                      helperText={error?.message!}
+                      label="Categories"
+                      width="100%"
+                      onChange={onChange}
+                      options={categoryOptions}
                       disabled={loading || loadUploadFile}
                     />
                   )}
