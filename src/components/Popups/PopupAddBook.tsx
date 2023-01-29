@@ -484,10 +484,11 @@ const FormWrapper = styled.div`
 `
 
 const InputGroup = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 15px;
   @media screen and (max-width: 1200px) {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 `
 
