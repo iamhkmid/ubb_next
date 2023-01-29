@@ -114,7 +114,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data, cove
 
   const categoryOptions = React.useMemo(() => dataCategories?.bookCategories?.map((val) => ({ value: val?.id, label: val?.name })), [dataCategories])
 
-  const { handleSubmit, watch, control, formState, setValue, reset } = useForm<TFormAddBook>({
+  const { handleSubmit, watch, control, formState, getValues, reset } = useForm<TFormAddBook>({
     mode: "all",
     reValidateMode: "onChange",
     resolver: yupResolver(validationSchema),
@@ -137,7 +137,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data, cove
   }, [errorUploadFile])
 
   React.useEffect(() => {
-    if (dataUpdate && (dataUploadFile || errorUploadFile)) {
+    if (dataUpdate && (getValues("cover") ? (dataUploadFile || errorUploadFile) : true)) {
       refetch()
       enqueueSnackbar("Book updated successfully", { variant: "success", anchorOrigin: { vertical: "bottom", horizontal: "left" }, autoHideDuration: 4000 })
       onClickClose()
