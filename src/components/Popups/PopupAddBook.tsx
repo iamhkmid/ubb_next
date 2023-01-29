@@ -15,8 +15,9 @@ import useMutationApi from '../../hooks/useMutation'
 import Dropdown from '../elements/Dropdown/Dropdown'
 import { BOOKCATEGORIES } from '../../graphql/category.graphql'
 import { TQueryBookCategory } from '../../types/category'
+import { useSnackbar } from 'notistack'
 
-type TPopupDelete = {
+type TPopupAddBook = {
   open: boolean;
   onClickClose: () => void;
   refetch: (p?: any) => void;
@@ -28,15 +29,32 @@ type TResUploadFile = {
   message: string;
 }
 
-const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
+const PopupAddBook: FC<TPopupAddBook> = (props) => {
+
+  return (
+    <StyledModal open={props.open}>
+      <Fade in={props.open}>
+        <Content>
+          <div className="head"><p>Update Data</p><Button color="error" onClick={props.onClickClose}><CloseIcon /></Button></div>
+          <FormData {...props} />
+        </Content>
+      </Fade>
+    </StyledModal>
+  );
+};
+
+type TFormdata = { open: boolean; onClickClose: () => void; refetch: () => void }
+
+const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
 
   React.useEffect(() => { if (open) reset() }, [open])
+  const { enqueueSnackbar } = useSnackbar()
 
   const { data: dataCategories } = useQuery<TQueryBookCategory>(BOOKCATEGORIES)
 
   const categoryOptions = React.useMemo(() => dataCategories?.bookCategories?.map((val) => ({ value: val?.id, label: val?.name })), [dataCategories])
 
-  const { data: dataUploadFile, loading: loadUploadFile, mutation } = useMutationApi<TResUploadFile>({
+  const { data: dataUploadFile, loading: loadUploadFile, mutation, error: errorUploadFile } = useMutationApi<TResUploadFile>({
     url: "/upload/book-image",
     method: "POST"
   })
@@ -55,11 +73,22 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
   })
 
   React.useEffect(() => {
-    if (data?.addBook && dataUploadFile) {
-      onClickClose()
+    if (error)
+      enqueueSnackbar(error?.message || "Something went wrong", { variant: "error", anchorOrigin: { vertical: "bottom", horizontal: "left" }, autoHideDuration: 4000 })
+  }, [error])
+
+  React.useEffect(() => {
+    if (errorUploadFile)
+      enqueueSnackbar("Cover failed to upload", { variant: "error", anchorOrigin: { vertical: "bottom", horizontal: "left" }, autoHideDuration: 4000 })
+  }, [errorUploadFile])
+
+  React.useEffect(() => {
+    if (data && (dataUploadFile || errorUploadFile)) {
       refetch()
+      enqueueSnackbar("Book added successfully", { variant: "success", anchorOrigin: { vertical: "bottom", horizontal: "left" }, autoHideDuration: 4000 })
+      onClickClose()
     }
-  }, [data, dataUploadFile])
+  }, [data, dataUploadFile, errorUploadFile])
 
   const onSubmit = async (values: TFormAddBook) => {
     const { cover, ...rest } = values
@@ -75,248 +104,242 @@ const PopupAddBook: FC<TPopupDelete> = ({ open, onClickClose, refetch }) => {
   }
 
   return (
-    <StyledModal open={open}>
-      <Fade in={open} unmountOnExit>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <div className="head"><p>Add Data</p><Button color="error" onClick={onClickClose}><CloseIcon /></Button></div>
-          <div className="content">
-            <FormWrapper>
-              <div className="section">
-                <Controller
-                  name="title"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="text"
-                      placeholder="Enter Title here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="Title"
-                      width="100%"
-                      onChange={onChange}
-                      id="title"
-                      disabled={loading || loadUploadFile}
-                    />
-                  )}
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <div className="input-form">
+        <FormWrapper>
+          <div className="section">
+            <Controller
+              name="title"
+              control={control}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <InputText
+                  type="text"
+                  placeholder="Enter Title here.."
+                  value={value}
+                  error={!!error}
+                  helperText={error?.message!}
+                  label="Title"
+                  width="100%"
+                  onChange={onChange}
+                  id="title"
+                  disabled={loading || loadUploadFile}
                 />
-                <Controller
-                  name="authorName"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="text"
-                      placeholder="Enter Author Name here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="Author Name"
-                      width="100%"
-                      onChange={onChange}
-                      id="authorName"
-                      disabled={loading || loadUploadFile}
-                    />
-                  )}
+              )}
+            />
+            <Controller
+              name="authorName"
+              control={control}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <InputText
+                  type="text"
+                  placeholder="Enter Author Name here.."
+                  value={value}
+                  error={!!error}
+                  helperText={error?.message!}
+                  label="Author Name"
+                  width="100%"
+                  onChange={onChange}
+                  id="authorName"
+                  disabled={loading || loadUploadFile}
                 />
-                <Controller
-                  name="categoryIds"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <Dropdown
-                      placeholder="Choose Categories.."
-                      value={value}
-                      type="MULTIPLE"
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="Categories"
-                      width="100%"
-                      onChange={onChange}
-                      options={categoryOptions}
-                      disabled={loading || loadUploadFile}
-                    />
-                  )}
+              )}
+            />
+            <Controller
+              name="categoryIds"
+              control={control}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <Dropdown
+                  placeholder="Choose Categories.."
+                  value={value}
+                  type="MULTIPLE"
+                  error={!!error}
+                  helperText={error?.message!}
+                  label="Categories"
+                  width="100%"
+                  onChange={onChange}
+                  options={categoryOptions}
+                  disabled={loading || loadUploadFile}
                 />
-                <Controller
-                  name="description"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="textArea"
-                      placeholder="Enter Description here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="Description"
-                      width="100%"
-                      onChange={onChange}
-                      id="description"
-                      disabled={loading || loadUploadFile}
-                    />
-                  )}
+              )}
+            />
+            <Controller
+              name="description"
+              control={control}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <InputText
+                  type="textArea"
+                  placeholder="Enter Description here.."
+                  value={value}
+                  error={!!error}
+                  helperText={error?.message!}
+                  label="Description"
+                  width="100%"
+                  onChange={onChange}
+                  id="description"
+                  disabled={loading || loadUploadFile}
                 />
-                <InputGroup>
-                  <Controller
-                    name="price"
-                    control={control}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                      <InputText
-                        type="currency"
-                        placeholder="Enter Price here.."
-                        value={value}
-                        error={!!error}
-                        helperText={error?.message!}
-                        label="Price"
-                        width="100%"
-                        onChange={onChange}
-                        id="price"
-                        disabled={loading || loadUploadFile}
-                      />
-                    )}
+              )}
+            />
+            <InputGroup>
+              <Controller
+                name="price"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <InputText
+                    type="currency"
+                    placeholder="Enter Price here.."
+                    value={value}
+                    error={!!error}
+                    helperText={error?.message!}
+                    label="Price"
+                    width="100%"
+                    onChange={onChange}
+                    id="price"
+                    disabled={loading || loadUploadFile}
                   />
-                  <Controller
-                    name="stock"
-                    control={control}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                      <InputText
-                        type="numeric"
-                        placeholder="Enter Number of Pages here.."
-                        value={value}
-                        error={!!error}
-                        helperText={error?.message!}
-                        label="Stock"
-                        width="100%"
-                        onChange={onChange}
-                        id="stock"
-                        disabled={loading || loadUploadFile}
-                      />
-                    )}
+                )}
+              />
+              <Controller
+                name="stock"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <InputText
+                    type="numeric"
+                    placeholder="Enter Number of Pages here.."
+                    value={value}
+                    error={!!error}
+                    helperText={error?.message!}
+                    label="Stock"
+                    width="100%"
+                    onChange={onChange}
+                    id="stock"
+                    disabled={loading || loadUploadFile}
                   />
-                </InputGroup>
-                <Controller
-                  name="isbn"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="text"
-                      placeholder="Enter ISBN here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="ISBN"
-                      width="100%"
-                      onChange={onChange}
-                      id="ISBN"
-                      disabled={loading || loadUploadFile}
-                    />
-                  )}
+                )}
+              />
+            </InputGroup>
+            <Controller
+              name="isbn"
+              control={control}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <InputText
+                  type="text"
+                  placeholder="Enter ISBN here.."
+                  value={value}
+                  error={!!error}
+                  helperText={error?.message!}
+                  label="ISBN"
+                  width="100%"
+                  onChange={onChange}
+                  id="ISBN"
+                  disabled={loading || loadUploadFile}
                 />
-              </div>
-              <div className="section">
-                <Controller
-                  name="publisher"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="text"
-                      placeholder="Enter Publisher here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="Publisher"
-                      width="100%"
-                      onChange={onChange}
-                      id="publisher"
-                      disabled={loading || loadUploadFile}
-                    />
-                  )}
-                />
-                <InputGroup>
-                  <Controller
-                    name="printType"
-                    control={control}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                      <InputText
-                        type="text"
-                        placeholder="Enter Print Type here.."
-                        value={value}
-                        error={!!error}
-                        helperText={error?.message!}
-                        label="Print Type"
-                        width="100%"
-                        onChange={(e) => onChange(e.target.value)}
-                        id="printType"
-                        disabled={loading || loadUploadFile}
-                      />
-                    )}
-                  />
-                  <Controller
-                    name="numberOfPages"
-                    control={control}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                      <InputText
-                        type="numeric"
-                        placeholder="Enter Number of Pages here.."
-                        value={value}
-                        error={!!error}
-                        helperText={error?.message!}
-                        label="Number Of Pages"
-                        width="100%"
-                        onChange={onChange}
-                        id="numberOfPages"
-                        disabled={loading || loadUploadFile}
-                      />
-                    )}
-                  />
-                </InputGroup>
-
-                <InputGroup>
-                  <Controller
-                    name="publicationYear"
-                    control={control}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                      <InputText
-                        type="numeric"
-                        placeholder="Enter Publication Year Type here.."
-                        value={value}
-                        maxLength={4}
-                        error={!!error}
-                        helperText={error?.message!}
-                        label="Publication Year"
-                        width="100%"
-                        onChange={onChange}
-                        id="publicationYear"
-                        disabled={loading || loadUploadFile}
-                      />
-                    )}
-                  />
-                </InputGroup>
-                <CoverInput>
-                  <p>Cover File</p>
-                  <Controller
-                    name="cover"
-                    control={control}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                      <FileUploader
-                        width="99.9%"
-                        onChange={(e) => onChange(e)}
-                        herlperText={error?.message}
-                        error={!!error}
-                      />
-                    )}
-                  />
-                </CoverInput>
-              </div>
-            </FormWrapper>
+              )}
+            />
           </div>
-          <div className="footer">
-            <ButtonComp label="ADD" type="submit" variant="contained" startIcon={(loading || loadUploadFile) && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || loadUploadFile} />
-            <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading || loadUploadFile} />
+          <div className="section">
+            <Controller
+              name="publisher"
+              control={control}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <InputText
+                  type="text"
+                  placeholder="Enter Publisher here.."
+                  value={value}
+                  error={!!error}
+                  helperText={error?.message!}
+                  label="Publisher"
+                  width="100%"
+                  onChange={onChange}
+                  id="publisher"
+                  disabled={loading || loadUploadFile}
+                />
+              )}
+            />
+            <InputGroup>
+              <Controller
+                name="printType"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <InputText
+                    type="text"
+                    placeholder="Enter Print Type here.."
+                    value={value}
+                    error={!!error}
+                    helperText={error?.message!}
+                    label="Print Type"
+                    width="100%"
+                    onChange={(e) => onChange(e.target.value)}
+                    id="printType"
+                    disabled={loading || loadUploadFile}
+                  />
+                )}
+              />
+              <Controller
+                name="numberOfPages"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <InputText
+                    type="numeric"
+                    placeholder="Enter Number of Pages here.."
+                    value={value}
+                    error={!!error}
+                    helperText={error?.message!}
+                    label="Number Of Pages"
+                    width="100%"
+                    onChange={onChange}
+                    id="numberOfPages"
+                    disabled={loading || loadUploadFile}
+                  />
+                )}
+              />
+            </InputGroup>
+            <InputGroup>
+              <Controller
+                name="publicationYear"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <InputText
+                    type="numeric"
+                    placeholder="Enter Publication Year Type here.."
+                    value={value}
+                    maxLength={4}
+                    error={!!error}
+                    helperText={error?.message!}
+                    label="Publication Year"
+                    width="100%"
+                    onChange={onChange}
+                    id="publicationYear"
+                    disabled={loading || loadUploadFile}
+                  />
+                )}
+              />
+            </InputGroup>
+            <CoverInput>
+              <p>Cover File</p>
+              <Controller
+                name="cover"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <FileUploader
+                    width="99.9%"
+                    onChange={(e) => onChange(e)}
+                    herlperText={error?.message}
+                    error={!!error}
+                  />
+                )}
+              />
+            </CoverInput>
           </div>
-        </Form>
-      </Fade>
-    </StyledModal>
-  );
-};
+        </FormWrapper>
+      </div>
+      <div className="footer">
+        <ButtonComp label="Save" type="submit" variant="contained" startIcon={(loading || loadUploadFile) && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || loadUploadFile} />
+        <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading || loadUploadFile} />
+      </div>
+    </Form>
+  )
+}
 
 export default PopupAddBook;
 
@@ -362,7 +385,7 @@ const StyledModal = styled(Modal)`
   } 
 `;
 
-const Form = styled.form`
+const Content = styled.div`
   display: flex;
   flex-direction: column;
   width: 1200px;
@@ -372,6 +395,13 @@ const Form = styled.form`
   border-radius: 15px;
   padding: 10px;
   gap: 10px;
+  > div.loading-wrapper {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+  }
   >div.head{
     display: flex;
     align-items: center;
@@ -398,7 +428,12 @@ const Form = styled.form`
       }
     }
   }
-  >div.content {
+`
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  >div.input-form {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -449,11 +484,10 @@ const FormWrapper = styled.div`
 `
 
 const InputGroup = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 15px;
   @media screen and (max-width: 1200px) {
-    grid-template-columns: 1fr;
+    flex-direction: column;
   }
 `
 

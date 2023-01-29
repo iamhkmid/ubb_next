@@ -74,7 +74,6 @@ type TFormdata = {
 
 const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) => {
 
-
   React.useEffect(() => {
     if (open) {
       reset()

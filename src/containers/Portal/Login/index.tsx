@@ -95,7 +95,6 @@ const Login: React.FC = () => {
 
   return (
     <Fade in>
-
       <Main>
         <div>
           <p className="title">LOGIN</p>
