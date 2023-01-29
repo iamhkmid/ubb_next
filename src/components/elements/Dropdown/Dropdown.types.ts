@@ -5,7 +5,6 @@ export type TOption = ({ label?: string; value: string; disabled?: boolean; } & 
 export type DropdownProps =
   {
     label?: string;
-    value?: string;
     placeholder?: string;
     className?: string;
     options?: TOption[];
@@ -21,10 +20,12 @@ export type DropdownProps =
   } &
   ({
     type?: "SINGLE";
+    value?: string;
     onChange?: (props: string | number) => void;
   } |
   {
     type?: "MULTIPLE";
+    value?: string[];
     onChange?: (props: (string | number)[]) => void;
   })
 

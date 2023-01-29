@@ -41,7 +41,7 @@ export type TBookPortal = {
 export type TFormAddBook = {
   title: string;
   authorName: string;
-  categoryIds: string;
+  categoryIds: string[];
   price: number;
   stock: number;
   publisher: string;

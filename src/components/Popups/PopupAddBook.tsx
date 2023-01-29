@@ -364,6 +364,7 @@ const validationSchema =
     publisher: yup.string().required("Required"),
     description: yup.string().required("Required"),
     printType: yup.string().required("Required"),
+    categoryIds: yup.array().of(yup.string()),
     numberOfPages: yup.number().required("Required"),
     publicationYear: yup.number().required("Required").transform((val) => (isNaN(val) ? undefined : val)).integer(),
     isbn: yup.string().required("Required"),
@@ -378,6 +379,7 @@ const defaultValues = {
   publisher: "",
   description: "",
   printType: "",
+  categoryIds: [] as string[],
   numberOfPages: undefined,
   isbn: "",
   cover: undefined

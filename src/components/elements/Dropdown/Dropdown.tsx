@@ -28,7 +28,16 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
   }, [ref]);
 
   React.useEffect(() => {
-    setSelected(props.value!);
+    switch (props.type) {
+      case "SINGLE":
+        setSelected(props.value!)
+        break
+      case "MULTIPLE":
+        setChecked(props.value!)
+        break
+      default:
+        break;
+    }
   }, [props.value]);
 
   React.useEffect(() => {
