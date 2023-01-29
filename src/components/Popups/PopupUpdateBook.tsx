@@ -37,13 +37,13 @@ type TResUploadFile = {
 const PopupUpdateBook: FC<TPopupDelete> = (props) => {
   type TResBook = { book: TUpdateBook }
 
-  const { data: dataInit, refetch:refetchInit, loading: loadInit } = useQuery<TResBook>(PORTAL_INIT_BOOK_UPDATE, {
+  const { data: dataInit, refetch: refetchInit, loading: loadInit } = useQuery<TResBook>(PORTAL_INIT_BOOK_UPDATE, {
     variables: { bookId: props.data?.id! },
     skip: !props.data?.id || !props.open,
     fetchPolicy: "network-only"
   })
 
-  
+
 
   useEffect(() => {
     if (props.open) {
@@ -72,10 +72,10 @@ const PopupUpdateBook: FC<TPopupDelete> = (props) => {
       <Fade in={props.open} unmountOnExit>
         <Content>
           <div className="head"><p>Update Data</p><Button color="error" onClick={props.onClickClose}><CloseIcon /></Button></div>
-          {loadInit && <div className="loading-wrapper"><FacebookCircularProgress size={50} thickness={4}/></div>}
+          {loadInit && <div className="loading-wrapper"><FacebookCircularProgress size={50} thickness={4} /></div>}
           <Fade in={props.open && !!dataInit?.book && !loadInit} unmountOnExit>
             <div>
-              <FormData {...props} defaultValues={defaultValues} coverPreview={dataInit?.book?.Images?.find((val)=> val.type === "COVER")!} />
+              <FormData {...props} defaultValues={defaultValues} coverPreview={dataInit?.book?.Images?.find((val) => val.type === "COVER")!} />
             </div>
           </Fade>
         </Content>
@@ -90,7 +90,7 @@ type TFormdata = {
   open: boolean;
   data: { id: string | null };
   onClickClose: () => void;
-  coverPreview?: {id: string; secureUrl: string; publicId: string;};
+  coverPreview?: { id: string; secureUrl: string; publicId: string; };
   refetch: () => void;
 }
 
@@ -146,17 +146,17 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data, cove
 
 
   const onSubmit = async (values: TFormAddBook) => {
-    const {cover, ...rest} = values 
+    const { cover, ...rest } = values
     try {
-     const dataUpdate = await updateBook({
+      const dataUpdate = await updateBook({
         variables: {
           data: { ...rest, bookId: data.id }
         }
       });
-      if (dataUpdate.data?.updateBook && coverPreview) mutation({
+      if (dataUpdate.data?.updateBook && coverPreview && cover) mutation({
         body: {
           type: "UPDATE",
-          data: { imageId: coverPreview.id, publicId: coverPreview?.publicId  , type: "COVER", file: cover }
+          data: { imageId: coverPreview.id, publicId: coverPreview?.publicId, type: "COVER", file: cover }
         }
       })
     } catch (error) { }
@@ -167,48 +167,48 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data, cove
   }
   return (
     <>
-    <PopupAddCategory open={popupAddCategory} onClickClose={onClickClosePCategory} refetch={refetchCategories} />
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <div className="input-form">
-        <FormWrapper>
-          <div className="section">
-            <Controller
-              name="title"
-              control={control}
-              render={({ field: { onChange, value }, fieldState: { error } }) => (
-                <InputText
-                  type="text"
-                  placeholder="Enter Title here.."
-                  value={value}
-                  error={!!error}
-                  helperText={error?.message!}
-                  label="Title"
-                  width="100%"
-                  onChange={onChange}
-                  id="title"
-                  disabled={loading || loadUploadFile}
-                />
-              )}
-            />
-            <Controller
-              name="authorName"
-              control={control}
-              render={({ field: { onChange, value }, fieldState: { error } }) => (
-                <InputText
-                  type="text"
-                  placeholder="Enter Author Name here.."
-                  value={value}
-                  error={!!error}
-                  helperText={error?.message!}
-                  label="Author Name"
-                  width="100%"
-                  onChange={onChange}
-                  id="authorName"
-                  disabled={loading || loadUploadFile}
-                />
-              )}
-            />
-            <InputGroup className="with-button">
+      <PopupAddCategory open={popupAddCategory} onClickClose={onClickClosePCategory} refetch={refetchCategories} />
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <div className="input-form">
+          <FormWrapper>
+            <div className="section">
+              <Controller
+                name="title"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <InputText
+                    type="text"
+                    placeholder="Enter Title here.."
+                    value={value}
+                    error={!!error}
+                    helperText={error?.message!}
+                    label="Title"
+                    width="100%"
+                    onChange={onChange}
+                    id="title"
+                    disabled={loading || loadUploadFile}
+                  />
+                )}
+              />
+              <Controller
+                name="authorName"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <InputText
+                    type="text"
+                    placeholder="Enter Author Name here.."
+                    value={value}
+                    error={!!error}
+                    helperText={error?.message!}
+                    label="Author Name"
+                    width="100%"
+                    onChange={onChange}
+                    id="authorName"
+                    disabled={loading || loadUploadFile}
+                  />
+                )}
+              />
+              <InputGroup className="with-button">
                 <Controller
                   name="categoryIds"
                   control={control}
@@ -229,139 +229,139 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data, cove
                 />
                 <ButtonComp label={<PlusIcon />} variant="contained" onClick={() => setPopupAddCategory(true)} />
               </InputGroup>
-            <Controller
-              name="description"
-              control={control}
-              render={({ field: { onChange, value }, fieldState: { error } }) => (
-                <InputText
-                  type="textArea"
-                  placeholder="Enter Description here.."
-                  value={value}
-                  error={!!error}
-                  helperText={error?.message!}
-                  label="Description"
-                  width="100%"
-                  onChange={onChange}
-                  id="description"
-                  disabled={loading || loadUploadFile}
-                />
-              )}
-            />
-            <InputGroup className='default'>
               <Controller
-                name="price"
+                name="description"
                 control={control}
                 render={({ field: { onChange, value }, fieldState: { error } }) => (
                   <InputText
-                    type="currency"
-                    placeholder="Enter Price here.."
+                    type="textArea"
+                    placeholder="Enter Description here.."
                     value={value}
                     error={!!error}
                     helperText={error?.message!}
-                    label="Price"
+                    label="Description"
                     width="100%"
                     onChange={onChange}
-                    id="price"
+                    id="description"
                     disabled={loading || loadUploadFile}
                   />
                 )}
               />
-              <Controller
-                name="stock"
-                control={control}
-                render={({ field: { onChange, value }, fieldState: { error } }) => (
-                  <InputText
-                    type="numeric"
-                    placeholder="Enter Number of Pages here.."
-                    value={value}
-                    error={!!error}
-                    helperText={error?.message!}
-                    label="Stock"
-                    width="100%"
-                    onChange={onChange}
-                    id="stock"
-                    disabled={loading || loadUploadFile}
-                  />
-                )}
-              />
-            </InputGroup>
-            <Controller
-              name="isbn"
-              control={control}
-              render={({ field: { onChange, value }, fieldState: { error } }) => (
-                <InputText
-                  type="text"
-                  placeholder="Enter ISBN here.."
-                  value={value}
-                  error={!!error}
-                  helperText={error?.message!}
-                  label="ISBN"
-                  width="100%"
-                  onChange={onChange}
-                  id="ISBN"
-                  disabled={loading || loadUploadFile}
+              <InputGroup className='default'>
+                <Controller
+                  name="price"
+                  control={control}
+                  render={({ field: { onChange, value }, fieldState: { error } }) => (
+                    <InputText
+                      type="currency"
+                      placeholder="Enter Price here.."
+                      value={value}
+                      error={!!error}
+                      helperText={error?.message!}
+                      label="Price"
+                      width="100%"
+                      onChange={onChange}
+                      id="price"
+                      disabled={loading || loadUploadFile}
+                    />
+                  )}
                 />
-              )}
-            />
-          </div>
-          <div className="section">
-            <Controller
-              name="publisher"
-              control={control}
-              render={({ field: { onChange, value }, fieldState: { error } }) => (
-                <InputText
-                  type="text"
-                  placeholder="Enter Publisher here.."
-                  value={value}
-                  error={!!error}
-                  helperText={error?.message!}
-                  label="Publisher"
-                  width="100%"
-                  onChange={onChange}
-                  id="publisher"
-                  disabled={loading || loadUploadFile}
+                <Controller
+                  name="stock"
+                  control={control}
+                  render={({ field: { onChange, value }, fieldState: { error } }) => (
+                    <InputText
+                      type="numeric"
+                      placeholder="Enter Number of Pages here.."
+                      value={value}
+                      error={!!error}
+                      helperText={error?.message!}
+                      label="Stock"
+                      width="100%"
+                      onChange={onChange}
+                      id="stock"
+                      disabled={loading || loadUploadFile}
+                    />
+                  )}
                 />
-              )}
-            />
-            <InputGroup className='default'>
+              </InputGroup>
               <Controller
-                name="printType"
+                name="isbn"
                 control={control}
                 render={({ field: { onChange, value }, fieldState: { error } }) => (
                   <InputText
                     type="text"
-                    placeholder="Enter Print Type here.."
+                    placeholder="Enter ISBN here.."
                     value={value}
                     error={!!error}
                     helperText={error?.message!}
-                    label="Print Type"
+                    label="ISBN"
                     width="100%"
-                    onChange={(e) => onChange(e.target.value)}
-                    id="Print Type"
+                    onChange={onChange}
+                    id="ISBN"
                     disabled={loading || loadUploadFile}
                   />
                 )}
               />
+            </div>
+            <div className="section">
               <Controller
-                name="numberOfPages"
+                name="publisher"
                 control={control}
                 render={({ field: { onChange, value }, fieldState: { error } }) => (
                   <InputText
-                    type="numeric"
-                    placeholder="Enter Number of Pages here.."
+                    type="text"
+                    placeholder="Enter Publisher here.."
                     value={value}
                     error={!!error}
                     helperText={error?.message!}
-                    label="Number Of Pages"
+                    label="Publisher"
                     width="100%"
                     onChange={onChange}
-                    id="numberOfPages"
+                    id="publisher"
                     disabled={loading || loadUploadFile}
                   />
                 )}
               />
-            </InputGroup>
-            <InputGroup className="default">
+              <InputGroup className='default'>
+                <Controller
+                  name="printType"
+                  control={control}
+                  render={({ field: { onChange, value }, fieldState: { error } }) => (
+                    <InputText
+                      type="text"
+                      placeholder="Enter Print Type here.."
+                      value={value}
+                      error={!!error}
+                      helperText={error?.message!}
+                      label="Print Type"
+                      width="100%"
+                      onChange={(e) => onChange(e.target.value)}
+                      id="Print Type"
+                      disabled={loading || loadUploadFile}
+                    />
+                  )}
+                />
+                <Controller
+                  name="numberOfPages"
+                  control={control}
+                  render={({ field: { onChange, value }, fieldState: { error } }) => (
+                    <InputText
+                      type="numeric"
+                      placeholder="Enter Number of Pages here.."
+                      value={value}
+                      error={!!error}
+                      helperText={error?.message!}
+                      label="Number Of Pages"
+                      width="100%"
+                      onChange={onChange}
+                      id="numberOfPages"
+                      disabled={loading || loadUploadFile}
+                    />
+                  )}
+                />
+              </InputGroup>
+              <InputGroup className="default">
                 <Controller
                   name="publicationYear"
                   control={control}
@@ -382,7 +382,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data, cove
                   )}
                 />
               </InputGroup>
-            <CoverInput>
+              <CoverInput>
                 <p>Cover File</p>
                 <Controller
                   name="cover"
@@ -398,14 +398,14 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data, cove
                   )}
                 />
               </CoverInput>
-          </div>
-        </FormWrapper>
-      </div>
-      <div className="footer">
-        <ButtonComp label="Update" type="submit" variant="contained" startIcon={(loading || loadUploadFile) && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || loadUploadFile} />
-        <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading || loadUploadFile} />
-      </div>
-    </Form>
+            </div>
+          </FormWrapper>
+        </div>
+        <div className="footer">
+          <ButtonComp label="Update" type="submit" variant="contained" startIcon={(loading || loadUploadFile) && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || loadUploadFile} />
+          <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading || loadUploadFile} />
+        </div>
+      </Form>
     </>
   )
 }
@@ -429,10 +429,10 @@ const validationSchema =
 
 
 
-  const PlusIcon = () => (<svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M256 112v288M400 256H112" /></svg>)
-  const CloseIcon = () => (<svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M368 368L144 144M368 144L144 368" /></svg>)
-  
-  const StyledModal = styled(Modal)`
+const PlusIcon = () => (<svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M256 112v288M400 256H112" /></svg>)
+const CloseIcon = () => (<svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M368 368L144 144M368 144L144 368" /></svg>)
+
+const StyledModal = styled(Modal)`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -443,8 +443,8 @@ const validationSchema =
       background: #070814ba;
     } 
   `;
-  
-  const Content = styled.div`
+
+const Content = styled.div`
     display: flex;
     flex-direction: column;
     width: 1200px;
@@ -488,8 +488,8 @@ const validationSchema =
       }
     }
   `
-  
-  const Form = styled.form`
+
+const Form = styled.form`
     display: flex;
     flex-direction: column;
     >div.input-form {
@@ -525,8 +525,8 @@ const validationSchema =
       width: 98vw;
     }
   `;
-  
-  const FormWrapper = styled.div`
+
+const FormWrapper = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 25px;
@@ -541,8 +541,8 @@ const validationSchema =
       grid-template-columns: 1fr;
     }
   `
-  
-  const InputGroup = styled.div`
+
+const InputGroup = styled.div`
     &.default {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -576,8 +576,8 @@ const validationSchema =
       }
     }
   `
-  
-  const CoverInput = styled.div`
+
+const CoverInput = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
