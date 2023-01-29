@@ -9,6 +9,8 @@ import PopupUpdate from "../../../../components/Popups/PopupUpdateBook"
 import TableComponent from "../../../../components/Tables/TableComponent"
 import { TBookPortal } from "../../../../types/book"
 import { PORTAL_BOOK_LIST } from "../../../../graphql/book.graphql"
+import moment from "moment"
+import "moment/locale/id"
 
 const Book: React.FC = () => {
   const [popupDelete, setPopupDelete] = useState(false)
@@ -26,71 +28,72 @@ const Book: React.FC = () => {
     setDeleteData(dataProps)
   }
 
-  const onClickUpdate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: TBookPortal) =>{
+  const onClickUpdate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: TBookPortal) => {
     setUpdateData(data)
     setPopupUpdate(true)
   }
 
   const { data, error, loading, refetch } = useQuery<TResBook>(PORTAL_BOOK_LIST)
 
-  const createData = (id: string, no: string, title: string, authorName: string, action: any) => ({ id, no, title, authorName, action });
+  const createData = (id: string, no: string, title: string, authorName: string, createdAt: string, action: any) => ({ id, no, title, authorName, createdAt, action });
 
-  const dataTable = useMemo(() => {
-    const columns = [
-      { id: "id", label: "id", width: "auto", align: "left", display: "hidden" },
-      { id: "no", label: "No", width: "auto", align: "left" },
-      { id: "title", label: "Title", width: "auto", align: "left" },
-      { id: "authorName", label: "Author Name", width: "auto", align: "left" },
-      { id: "action", label: "Action", width: "0", align: "center" },
-    ];
-    const rows = data?.books?.map((val, idx) => {
-      return createData(
-        val?.id,
-        String(idx + 1),
-        val?.title,
-        val?.authorName,
-        <Action>
-          
-          <Button onClick={(e) => onClickUpdate(e, val)}><EditIcon /></Button>
-          <Button onClick={(e) => onClickDelete(e, { id: val?.id, title: val?.title })}><XIcon /></Button>
-        </Action>
-      );
-    }, []);
-    return { columns, rows };
-  }, [data]);
+const dataTable = useMemo(() => {
+  const columns = [
+    { id: "id", label: "id", width: "auto", align: "left", display: "hidden" },
+    { id: "no", label: "No", width: "auto", align: "left" },
+    { id: "title", label: "Title", width: "auto", align: "left" },
+    { id: "authorName", label: "Author Name", width: "auto", align: "left" },
+    { id: "createdAt", label: "Created At", width: "auto", align: "left" },
+    { id: "action", label: "Action", width: "0", align: "center" },
+  ];
+  const rows = data?.books?.map((val, idx) => {
+    return createData(
+      val?.id,
+      String(idx + 1),
+      val?.title,
+      val?.authorName,
+      moment(val?.createdAt).locale("id").format("DD/MM/YYYY HH:mm:ss"),
+      <Action>
+        <Button onClick={(e) => onClickUpdate(e, val)}><EditIcon /></Button>
+        <Button onClick={(e) => onClickDelete(e, { id: val?.id, title: val?.title })}><XIcon /></Button>
+      </Action>
+    );
+  }, []);
+  return { columns, rows };
+}, [data]);
 
-  const onCloseAddBook = () => {
-    setPopupAdd(false)
-  }
-  const onCloseDeleteBook = () => {
-    setPopupDelete(false)
-  }
+const onCloseAddBook = () => {
+  setPopupAdd(false)
+}
+const onCloseDeleteBook = () => {
+  setPopupDelete(false)
+}
 
-  const onCloseUpdateBook = () => {
-    setPopupUpdate(false)
-  }
+const onCloseUpdateBook = () => {
+  setPopupUpdate(false)
+}
 
-  return (
-    <Main>
-      <PopupDelete open={popupDelete} onClickClose={onCloseDeleteBook} data={deleteData} refetch={refetch} />
-      <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateBook} data={updateData!}/>
-      <PopupAddBook open={popupAdd} onClickClose={onCloseAddBook} refetch={refetch}/>
-      <p className="title">Portal - Book</p>
-      <Content>
-        <div className="action">
-          <ButtonComp label="ADD" startIcon={<PlusIcon />} onClick={() => setPopupAdd(true)} />
-        </div>
-        <TableComponent dataTable={dataTable} loading={loading} checkbox maxHeight="600px" />
-      </Content>
-    </Main>
-  )
+return (
+  <Main>
+    <PopupDelete open={popupDelete} onClickClose={onCloseDeleteBook} data={deleteData} refetch={refetch} />
+    <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateBook} data={updateData!} />
+    <PopupAddBook open={popupAdd} onClickClose={onCloseAddBook} refetch={refetch} />
+    <p className="title">Portal - Book</p>
+    <Content>
+      <div className="action">
+        <ButtonComp label="ADD" startIcon={<PlusIcon />} onClick={() => setPopupAdd(true)} />
+      </div>
+      <TableComponent dataTable={dataTable} loading={loading} checkbox maxHeight="600px" />
+    </Content>
+  </Main>
+)
 }
 
 export default Book
 
 const XIcon = () => (<svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M368 368L144 144M368 144L144 368" /></svg>)
 const PlusIcon = () => (<svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="54" d="M256 112v288M400 256H112" /></svg>)
-const EditIcon = () => (<svg viewBox="0 0 512 512"><title>Pencil</title><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="44" d="M358.62 129.28L86.49 402.08 70 442l39.92-16.49 272.8-272.13-24.1-24.1zM413.07 74.84l-11.79 11.78 24.1 24.1 11.79-11.79a16.51 16.51 0 000-23.34l-.75-.75a16.51 16.51 0 00-23.35 0z"/></svg>)
+const EditIcon = () => (<svg viewBox="0 0 512 512"><title>Pencil</title><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="44" d="M358.62 129.28L86.49 402.08 70 442l39.92-16.49 272.8-272.13-24.1-24.1zM413.07 74.84l-11.79 11.78 24.1 24.1 11.79-11.79a16.51 16.51 0 000-23.34l-.75-.75a16.51 16.51 0 00-23.35 0z" /></svg>)
 
 const Main = styled.div`
   display: flex;

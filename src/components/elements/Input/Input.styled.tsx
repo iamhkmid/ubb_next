@@ -387,7 +387,6 @@ export const Option = styled.li<TOption>`
   transition: all 0.2s ease;
 `
 
-
 export const InputTextArea = styled.textarea`
   border: 1.5px solid ${({ theme }) => theme.colors?.primary?.soft};
   outline: none;

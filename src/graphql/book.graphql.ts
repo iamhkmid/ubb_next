@@ -65,6 +65,7 @@ export const PORTAL_BOOK_LIST = gql`
       id
       title
       authorName
+      createdAt
     }
   }
 `;

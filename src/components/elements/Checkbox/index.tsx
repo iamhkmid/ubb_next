@@ -12,7 +12,7 @@ export default Checkbox
 
 const SCheckbox = styled(MuiCheckbox)`
   &.MuiCheckbox-root.MuiCheckbox-colorPrimary {
-    padding: 5px;
+    padding: 0;
     color: ${({ theme }) => theme.colors?.primary?.soft};
     ${({ checked }) => checked && css`
       color: ${({ theme }) => theme.colors?.primary?.default};
