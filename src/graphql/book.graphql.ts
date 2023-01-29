@@ -47,10 +47,15 @@ export const PORTAL_INIT_BOOK_UPDATE = gql`
       numberOfPages
       isbn
       publisher
+      Categories{
+        id
+        name
+      }
       description
       price
       stock
       printType
+      publicationYear
       Images {
         secureUrl
         type

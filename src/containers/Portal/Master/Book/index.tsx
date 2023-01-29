@@ -76,7 +76,7 @@ const onCloseUpdateBook = () => {
 return (
   <Main>
     <PopupAddBook open={popupAdd} onClickClose={onCloseAddBook} refetch={refetch} />
-    <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateBook} data={updateData!} />
+    <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateBook} data={updateData!} refetch={refetch}/>
     <PopupDelete open={popupDelete} onClickClose={onCloseDeleteBook} data={deleteData} refetch={refetch} />
     <p className="title">Portal - Book</p>
     <Content>

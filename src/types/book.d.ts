@@ -7,6 +7,8 @@ export type TBook = {
   stock: number;
   publisher: string;
   description: string;
+  Categories: {id: string; name: string;}[];
+  publicationYear: number;
   Images: { url: string; type: string; secureUrl: string; }[]
   printType: string;
   isbn: string;
@@ -104,9 +106,27 @@ export type TDefaultValueUpdateBook = {
   authorName?: string;
   price?: number;
   stock?: number;
+  Categories: string[];
   publisher?: string;
   description?: string;
   printType?: string;
   numberOfPages?: number
   isbn?: string;
+}
+
+export type TUpdateBook = {
+  id?: string;
+  title?: string;
+  authorName?: string;
+  price?: number,
+  numberOfPages?: number,
+  stock?: number;
+  publisher?: string;
+  description?: string;
+  Categories?: {id: string; name: string;}[];
+  publicationYear?: number;
+  Images?: { url: string; type: string; secureUrl: string; }[]
+  printType?: string;
+  isbn?: string;
+  slug?: string;
 }
