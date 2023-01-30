@@ -8,10 +8,8 @@ type TButton = {
 
 const Button: React.FC<ButtonProps & TButton> = (props) => {
   return (
-    <Main>
-      <ButtonComp {...props}>
-        {props.label}
-      </ButtonComp>
+    <Main {...props}>
+      {props.label}
     </Main>
   );
 };
@@ -26,34 +24,35 @@ Button.defaultProps = {
   color: "primary"
 }
 
-const Main = styled.div`
+const Main = styled(ButtonComp)`
   display: flex;
-  .MuiButton-root {
+  &.MuiButton-root {
     border-radius: 25px;
     margin: 0;
+    width: fit-content;
     height: 40px;
     line-height: 1;
     text-transform: none;
   }
-  .MuiButton-contained {
+  &.MuiButton-contained {
     background: ${({ theme }) => theme?.colors?.primary?.default};
     :hover {
       background: ${({ theme }) => theme?.colors?.primary?.hard};
     }
   }
-  .MuiButton-outlined {
+  &.MuiButton-outlined {
     color: ${({ theme }) => theme?.colors?.primary?.default};
     border-color: ${({ theme }) => theme?.colors?.primary?.soft};
     :hover {
       border-color: ${({ theme }) => theme?.colors?.primary?.medium};
     }
   }
-  .MuiButton-root.Mui-disabled {
+  &.MuiButton-root.Mui-disabled {
     background: ${({ theme }) => theme?.colors?.primary?.ultrasoft};
     border-color: ${({ theme }) => theme?.colors?.primary?.ultrasoft};
     color: ${({ theme }) => theme?.colors?.text?.soft};
   }
-  .MuiButton-startIcon {
+  &.MuiButton-startIcon {
     > div {
       display: flex;
       align-items: center;

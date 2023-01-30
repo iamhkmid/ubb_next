@@ -7,7 +7,7 @@ export type TBook = {
   stock: number;
   publisher: string;
   description: string;
-  Categories: {id: string; name: string;}[];
+  Categories: { id: string; name: string; }[];
   publicationYear: number;
   Images: { url: string; type: string; secureUrl: string; }[]
   printType: string;
@@ -16,7 +16,22 @@ export type TBook = {
 }
 
 export type TQueryBookDetail = {
-  book: TBook
+  book: {
+    id: string;
+    title: string;
+    authorName: string;
+    price: number,
+    numberOfPages: number,
+    stock: number;
+    publisher: string;
+    description: string;
+    Categories: { name: string; }[];
+    publicationYear: number;
+    Images: { type: string; secureUrl: string; }[]
+    printType: string;
+    isbn: string;
+    slug: string;
+  }
 }
 
 export type TBookCardHome = {
@@ -123,7 +138,7 @@ export type TUpdateBook = {
   stock?: number;
   publisher?: string;
   description?: string;
-  Categories?: {id: string; name: string;}[];
+  Categories?: { id: string; name: string; }[];
   publicationYear?: number;
   Images?: { id: string; url: string; type: string; secureUrl: string; publicId: string; }[]
   printType?: string;

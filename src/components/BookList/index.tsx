@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useQuery } from "@apollo/client"
 import { Fade, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
 import ButtonComp from "../elements/Button"
@@ -15,6 +15,10 @@ import { TQueryBookCategory } from "../../types/category"
 import Checkbox from "../elements/Checkbox"
 
 type TBookList = {}
+type TQueryObj = { [key: string]: string | number | undefined }
+type TOnChangeFilter = (
+  p: { type: "MIN_AMOUNT" | "MAX_AMOUNT"; value: string | number | undefined; } | { type: "CATEGORY", value: string; }
+) => void
 
 const BookList: FC<TBookList> = () => {
   const router = useRouter()
@@ -22,34 +26,85 @@ const BookList: FC<TBookList> = () => {
   const [minAmount, setMinAmount] = useState<number | string | undefined>(undefined)
   const [maxAmount, setMaxAmount] = useState<number | string | undefined>(undefined)
   const [categoryIds, setCategoryIds] = React.useState<string[]>([]);
-
-  const onClickCategory = (props: { value: string; label: string; }) => () => {
-    if (props.value === "ALL") setCategoryIds([])
-    else if (categoryIds.includes(props.value)) setCategoryIds((prevState) => prevState.filter((val) => val !== props.value))
-    else setCategoryIds((prevState) => ([...prevState, props.value]))
-  };
-
-  const onClickReset = () => {
-    setMinAmount("")
-    setMaxAmount("")
-    setCategoryIds([])
-    refetch({ filter: { minAmount: undefined, maxAmount: undefined, categoryIds: undefined } })
-  }
+  const [query, setQuery] = React.useState<TQueryObj>(router.query as TQueryObj)
 
   const { data, error, loading, refetch } = useQuery<TQueryBookHome>(PUBLIC_BOOK_LIST, {
     refetchWritePolicy: "overwrite",
     notifyOnNetworkStatusChange: true
   })
-  const { data: dataCategories, error: errCategories, loading: loadCategories } = useQuery<TQueryBookCategory>(PUBLIC_BOOK_CATEGORIES, { fetchPolicy: "cache-first" })
+
+  const { data: dataCategories, error: errCategories, loading: loadCategories } = useQuery<TQueryBookCategory>(
+    PUBLIC_BOOK_CATEGORIES,
+    {
+      skip: !router.query,
+      fetchPolicy: "cache-first",
+    }
+  )
 
   const onClickFilter = () => {
-    refetch({ filter: { minAmount: minAmount || undefined, maxAmount: maxAmount || undefined, categoryIds: categoryIds.length ? categoryIds : undefined } })
+    Object.keys(query).forEach(key => {
+      if (query[key as string] === undefined) delete query[key];
+    });
+    router.replace({ query })
   }
+
+  useEffect(() => {
+    if (router.query) {
+      const categories = ((router.query as TQueryObj)["categories"] as string || "").split("+")
+      const filter = {
+        categoryIds: (dataCategories?.bookCategories || []).filter((cat) => categories.includes(cat.name)).map((cat) => cat.id),
+        minAmount: (router.query as TQueryObj)["min"] ? Number((router.query as TQueryObj)["min"]) : "",
+        maxAmount: (router.query as TQueryObj)["max"] ? Number((router.query as TQueryObj)["max"]) : ""
+      }
+      setCategoryIds(filter.categoryIds)
+      setMinAmount(filter.minAmount)
+      setMaxAmount(filter.maxAmount)
+      refetch({ filter: { minAmount: filter.minAmount || undefined, maxAmount: filter.maxAmount || undefined, categoryIds: filter.categoryIds.length ? filter.categoryIds : undefined } })
+    }
+  }, [router.query, dataCategories])
+
 
   const categories = useMemo(() => {
     const initCategories = [{ value: "ALL", label: "Semua Kategori" }]
     return [...initCategories, ...(dataCategories?.bookCategories || [])?.map((val) => ({ value: val.id, label: val.name }))]
   }, [dataCategories?.bookCategories])
+
+  const onChangeFilter: TOnChangeFilter = (params) => {
+    const query: TQueryObj = (router.query || {}) as TQueryObj
+    switch (params.type) {
+      case "CATEGORY": {
+        const categories = dataCategories?.bookCategories || []
+        let currCats: string[] = []
+        if (params.value === "ALL") currCats = []
+        else if (categoryIds.includes(params.value)) currCats = categoryIds.filter((val) => val !== params.value)
+        else currCats = [...categoryIds, params.value]
+        setCategoryIds(currCats)
+        query["categories"] = currCats.length ? categories.filter((cat) => currCats.includes(cat.id)).map((cat) => cat.name).join("+") : undefined
+        break
+      }
+      case "MIN_AMOUNT": {
+        setMinAmount(params.value)
+        query["min"] = params.value || undefined
+        break
+      }
+      case "MAX_AMOUNT": {
+        setMaxAmount(params.value)
+        query["max"] = params.value || undefined
+        break
+      }
+      default:
+        break;
+    }
+    setQuery(query)
+  }
+
+  const onClickReset = () => {
+    setMinAmount("")
+    setMaxAmount("")
+    setCategoryIds([])
+    router.replace({ query: undefined })
+    refetch({ filter: { minAmount: undefined, maxAmount: undefined, categoryIds: undefined } })
+  }
 
   const onClickBook = (slug: string) => {
     router.push({ pathname: '/book/[slug]', query: { slug } })
@@ -65,7 +120,7 @@ const BookList: FC<TBookList> = () => {
           <List>
             {categories.map((category) => (
               <ListItem disablePadding key={category.value}>
-                <ListItemButton onClick={onClickCategory(category)}>
+                <ListItemButton onClick={() => onChangeFilter({ type: "CATEGORY", value: category.value })}>
                   <ListItemIcon>
                     <Checkbox
                       edge="start"
@@ -90,7 +145,7 @@ const BookList: FC<TBookList> = () => {
               value={minAmount!}
               width="100%"
               placeholder="20.000"
-              onChange={setMinAmount}
+              onChange={(value) => onChangeFilter({ type: "MIN_AMOUNT", value })}
             />
             <Input
               type="currency"
@@ -98,7 +153,7 @@ const BookList: FC<TBookList> = () => {
               value={maxAmount!}
               width="100%"
               placeholder="50.000"
-              onChange={setMaxAmount}
+              onChange={(value) => onChangeFilter({ type: "MAX_AMOUNT", value })}
             />
           </div>
         </NominalFilter>

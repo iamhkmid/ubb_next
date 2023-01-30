@@ -29,6 +29,9 @@ export const PUBLIC_BOOK_DETAIL = gql`
       description
       price
       publicationYear
+      Categories {
+        name
+      }
       stock
       printType
       Images {

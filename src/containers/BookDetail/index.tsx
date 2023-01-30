@@ -5,32 +5,21 @@ import Image from "next/image"
 import { useRouter } from "next/router"
 import { FC, useMemo } from "react"
 import styled from "styled-components"
-import BookList from "../../components/BookList"
 import Button from "../../components/elements/Button"
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
 import { PUBLIC_BOOK_DETAIL } from "../../graphql/book.graphql"
 import { formatToCurrency } from "../../helpers/formatToCurrency"
-import { TBook } from "../../types/book"
+import { TQueryBookDetail } from "../../types/book"
 
 type TBookDetail = { slug: string; }
-type TQuerybook = {
-  book: {
-    title: string;
-    authorName: string;
-    numberOfPages: number;
-    isbn: string;
-    publisher: string;
-    description: string;
-    price: number;
-    stock: number;
-    printType: string;
-    Images: { secureUrl: string; type: string; }[]
-  }
-}
 
 const BookDetail: FC<TBookDetail> = ({ slug }) => {
   const router = useRouter()
-  const { data, loading, error } = useQuery<TQuerybook>(PUBLIC_BOOK_DETAIL, { variables: { slug } })
+  const { data, loading, error } = useQuery<TQueryBookDetail>(PUBLIC_BOOK_DETAIL, { variables: { slug } })
+
+  const onClickCategory = (category: string) => {
+    router.push({ pathname: "/", query: { categories: category } })
+  }
 
   const detail = useMemo(() => ([
     {
@@ -48,6 +37,10 @@ const BookDetail: FC<TBookDetail> = ({ slug }) => {
     {
       label: "Stok",
       value: data?.book?.stock
+    },
+    {
+      label: "Tahun Terbit",
+      value: data?.book?.publicationYear
     }
   ]), [data?.book])
 
@@ -96,6 +89,12 @@ const BookDetail: FC<TBookDetail> = ({ slug }) => {
                     <p className="title">Deskripsi Buku</p>
                     <p className="value">{data.book?.description}</p>
                   </Description>
+                  <Categories>
+                    <p className="title">Kategori</p>
+                    <div className="item-wrapper">
+                      {data?.book?.Categories?.map((cat) => <div><Button label={cat.name} variant="outlined" onClick={() => onClickCategory(cat.name)} /></div>)}
+                    </div>
+                  </Categories>
                   <Detail>
                     <p className="title">Detail</p>
                     <div className="item-wrapper">
@@ -256,6 +255,7 @@ const Description = styled.div`
     color: #495569;
   }
 `
+
 const Detail = styled.div`
   display: flex;
   flex-direction: column;
@@ -311,4 +311,36 @@ const Back = styled.div`
     color:#3c4a6c;
   }
   transition: 0.3s all ease;
+`
+
+const Categories = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  > p.title {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+    color: #466899;
+  }
+  > div.item-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    > div {
+      display: flex;
+    }
+    > div >div {
+      display: flex;
+      width: 100%;
+    }
+    .MuiButton-root {
+      border-radius: 25px;
+      width: 100%;
+      margin: 0;
+      height: 30px;
+      box-shadow: none;
+    }
+  }
 `

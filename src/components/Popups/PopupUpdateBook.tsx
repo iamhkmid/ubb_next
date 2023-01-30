@@ -43,8 +43,6 @@ const PopupUpdateBook: FC<TPopupDelete> = (props) => {
     fetchPolicy: "network-only"
   })
 
-
-
   useEffect(() => {
     if (props.open) {
       refetchInit({ bookId: props.data.id })
@@ -227,7 +225,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data, cove
                     />
                   )}
                 />
-                <ButtonComp label={<PlusIcon />} variant="contained" onClick={() => setPopupAddCategory(true)} />
+                <ButtonComp label={<PlusIcon />} variant="contained" onClick={() => setPopupAddCategory(true)} disabled={loading || loadUploadFile}/>
               </InputGroup>
               <Controller
                 name="description"

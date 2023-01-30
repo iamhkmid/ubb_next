@@ -171,7 +171,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
                     />
                   )}
                 />
-                <ButtonComp label={<PlusIcon />} variant="contained" onClick={() => setPopupAddCategory(true)} />
+                <ButtonComp label={<PlusIcon />} variant="contained" onClick={() => setPopupAddCategory(true)} disabled={loading || loadUploadFile}/>
               </InputGroup>
               <Controller
                 name="description"
