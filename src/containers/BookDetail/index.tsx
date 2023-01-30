@@ -89,12 +89,14 @@ const BookDetail: FC<TBookDetail> = ({ slug }) => {
                     <p className="title">Deskripsi Buku</p>
                     <p className="value">{data.book?.description}</p>
                   </Description>
-                  <Categories>
-                    <p className="title">Kategori</p>
-                    <div className="item-wrapper">
-                      {data?.book?.Categories?.map((cat) => <div><Button label={cat.name} variant="outlined" onClick={() => onClickCategory(cat.name)} /></div>)}
-                    </div>
-                  </Categories>
+                  {data?.book?.Categories?.length && (
+                    <Categories>
+                      <p className="title">Kategori</p>
+                      <div className="item-wrapper">
+                        {data?.book?.Categories?.map((cat) => <div><Button label={cat.name} variant="outlined" onClick={() => onClickCategory(cat.name)} /></div>)}
+                      </div>
+                    </Categories>
+                  )}
                   <Detail>
                     <p className="title">Detail</p>
                     <div className="item-wrapper">
