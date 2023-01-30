@@ -1,17 +1,17 @@
 import Head from "next/head";
 import React from "react";
 
-import CategoryComponent from "../../../src/containers/Portal/Master/Category";
+import ContactComponent from "../../../src/containers/Portal/Webinfo/Contact";
 
 
 const Book: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Portal - Category</title>
+        <title>Portal - Contact</title>
         <link rel="icon" href="/icons/dklogo.svg" />
       </Head>
-      <CategoryComponent />
+      <ContactComponent />
     </>
   );
 };
