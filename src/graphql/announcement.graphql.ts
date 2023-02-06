@@ -1,18 +1,36 @@
 import { gql } from "@apollo/client";
 
-export const PORTAL_ANNOUNCEMENT_LIST = gql`
-  query {
-    announcements {
-      id
-      secureUrl
-    }
+export const ANNOUNCEMENT = gql`
+  query{
+  banners{
+    createdAt
+    id
+    image
+    publicId
+    title
+    updatedAt
   }
+}
 `;
 
 export const ADDANNOUNCEMENT = gql`
-mutation($data: addAnnouncement!){
-  addAnnouncement(data: $data){
-    updatedAt,
+mutation($data: addBannerInput!){
+  addBanner(data: $data){
     createdAt
+    id
+    title
   }
 }`
+
+export const PORTAL_ANNOUNCEMENT_LIST = gql`
+  query{
+  banners{
+    createdAt
+    id
+    image
+    publicId
+    title
+    updatedAt
+  }
+}
+`;

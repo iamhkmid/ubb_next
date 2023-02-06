@@ -1,12 +1,11 @@
 export type TAnnouncement = {
   id: string;
-  secureUrl: string;
+  image: string
 }
 
 export type TMutationAddAnnouncement = {
   addAnnouncement: {
     id: string;
-    secureUrl: string;
   }
 }
 
