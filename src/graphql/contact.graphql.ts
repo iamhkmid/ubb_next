@@ -1,16 +1,14 @@
 import { gql } from "@apollo/client";
 
 
-export const CONTACT = gql`
+export const CONTACTS = gql`
   query{
-    contact{
-      id
-      whatsApp
-      twitter
-      facebook
-      email
-      instagram
-    }
+  contacts{
+    id
+    name
+    image
+    url
+  }
 }`
 
 
@@ -23,14 +21,12 @@ mutation($data: updateContactInput!){
 }`
 
 export const PORTAL_INIT_CONTACT_UPDATE = gql`
-  query($categoryId: ID!) {
-    contact(categoryId: $categoryId) {
+  query($contactId: ID!) {
+    contact(contactId: $contactId) {
       id
-      whatsApp
-      twitter
-      facebook
-      email
-      instagram
+      name
+      image
+      url
     }
   }
 `;

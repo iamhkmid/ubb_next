@@ -1,43 +1,32 @@
 export type TContact = {
   id: string;
-  whatsApp: string;
-  instagram: string;
-  twitter: string;
-  email: string
-  facebook: string;
+  name: string;
+  image: string;
+  url: string;
 }
 
 export type TMutationUpdateContact = {
   updateContact: {
-    id: string;
-    whatsApp: string;
-    instagram: string;
-    twitter: string;
-    email: string
-    facebook: string;
+    url: string;
   }
 }
 
+export type TContactPortal = {
+  id: string;
+  name: string;
+  url: string;
+}
+
+
 export type TFormUpdateContact = {
-  whatsApp?: string;
-  instagram?: string;
-  twitter?: string;
-  email?: string;
-  facebook?: string;
+  url?: string;
 }
 
 export type TDefaultValueUpdateContact = {
-  whatsApp: string;
-  instagram: string;
-  twitter: string;
-  email: string;
-  facebook: string;
+  url: string;
 }
 
 export type TUpdateContact = {
   id?: string;
-  whatsApp?: string;
-  instagram?: string;
-  twitter?: string;
-  email?: string;
+  url?: string;
 }

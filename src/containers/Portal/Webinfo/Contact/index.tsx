@@ -1,50 +1,44 @@
 import { Button } from "@mui/material"
 import React, { useMemo, useState } from "react"
 import styled from "styled-components"
-import PopupUpdate from "../../../../components/Popups/PopupUpdateBook"
+import PopupUpdate from "../../../../components/Popups/PopupUpdateContact"
 import TableComponent from "../../../../components/Tables/TableComponent"
 import { useQuery } from "@apollo/client"
-import { TContact } from "../../../../types/contact"
-import { CONTACT } from "../../../../graphql/contact.graphql"
+import { TContact, TContactPortal } from "../../../../types/contact"
+import { CONTACTS } from "../../../../graphql/contact.graphql"
 
 const Contact: React.FC = () => {
   type TResContact = {
-    contact: TContact[]
+    contacts: TContactPortal[]
   }
 
-  const [updateData, setUpdateData] = useState<TContact | null>(null)
+  const [updateData, setUpdateData] = useState<TContactPortal | null>(null)
   const [popupUpdate, setPopupUpdate] = useState(false)
   
 
-  const { data, error, loading, refetch } = useQuery<TResContact>(CONTACT)
+  const { data, error, loading, refetch } = useQuery<TResContact>(CONTACTS)
 
-  const onClickUpdate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: TContact) => {
+  const onClickUpdate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: TContactPortal) => {
     e.stopPropagation()
     setUpdateData(data)
     setPopupUpdate(true)
   }
-  const createData = (id: string, no: string, whatsApp: string, facebook: string, instagram: string, email: string, twitter: string, action: any) => ({ id, no, whatsApp, facebook, instagram, email, twitter , action });
+  const createData = (id: string, no: string, name: string, url: string, action: any) => ({ id, no, name , url, action });
 
   const dataTable = useMemo(() => {
     const columns = [
       { id: "id", label: "id", width: "auto", align: "left", display: "hidden" },
       { id: "no", label: "No", width: "10px", align: "left" },
-      { id: "whatsApp", label: "whatsApp", width: "auto", align: "left" },
-      { id: "facebook", label: "Facebook", width: "auto", align: "left" },
-      { id: "instagram", label: "Instagram", width: "auto", align: "left" },
-      { id: "email", label: "Email", width: "auto", align: "left" },
-      { id: "twitter", label: "Twitter", width: "auto", align: "left" },
+      { id: "name", label: "Name", width: "auto", align: "left" },
+      { id: "url", label: "URL", width: "auto", align: "left" },
       { id: "action", label: "Action", width: "0", align: "center" },
     ];
-    const rows = data?.contact?.map((val, idx) => {
+    const rows = data?.contacts?.map((val, idx) => {
       return createData(
         val?.id,
         String(idx + 1),
-        val?.whatsApp,
-        val?.facebook,
-        val?.instagram,
-        val?.email,
-        val?.twitter,
+        val?.name,
+        val?.url,
         <Action>
           <Button onClick={(e) => onClickUpdate(e, val)}><EditIcon /></Button>
         </Action>
@@ -54,13 +48,13 @@ const Contact: React.FC = () => {
   }, [data]);
 
 
-  const onCloseUpdateBook = () => {
+  const onCloseUpdateContact = () => {
     setPopupUpdate(false)
   }
 
   return (
     <Main>
-      <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateBook} data={updateData!} refetch={refetch}/>
+      <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateContact} data={updateData!} refetch={refetch}/>
       <p className="title">Portal - Contact</p>
       <Content>
         <TableComponent dataTable={dataTable} loading={loading}  maxHeight="600px" />

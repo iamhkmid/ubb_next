@@ -1,6 +1,13 @@
+import { useQuery } from "@apollo/client"
 import styled from "styled-components"
+import { CONTACTS } from "../../graphql/contact.graphql"
+import { TContact } from "../../types/contact"
 
 const Footer = () => {
+  type TResContact = {
+    contacts: TContact[]
+  }
+  const { data } = useQuery<TResContact>(CONTACTS)
   return (
     <Main>
       <div className="content">
@@ -15,21 +22,11 @@ const Footer = () => {
         <Media>
           <p>Sosial Media</p>
           <div className="icon-wrapper">
-            <div onClick={() => window.open("https://www.facebook.com/TP3IUBB/")}>
-              <Facebook />
-            </div>
-            <div onClick={() => window.open("https://www.instagram.com/TP3IUBB/?hl=id")}>
-              <Instagram />
-            </div>
-            <div onClick={() => window.open("https://publisher.tp3i.ubb.ac.id/#")}>
-              <Twitter />
-            </div>
-            <div onClick={() => window.open("mailto:tp3ubb@gmail.com?subject")}>
-              <Gmail />
-            </div>
-            <div onClick={() => window.open("https://publisher.tp3i.ubb.ac.id/#")}>
-              <Whatsapp />
-            </div>
+          {data?.contacts?.map((val) => (
+            <div onClick={() => window.open(val.url)}>
+                 <img src={val.image} alt={val.name}/>
+            </div>     
+                      ))}
           </div>
         </Media>
       </div>
@@ -124,7 +121,7 @@ const Media = styled.div`
     display: grid;
     grid-template-columns: repeat( auto-fit, 40px );
     gap: 10px;
-    > div {
+    > img {
       display: flex;
       box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
       border-radius: 100%;
@@ -137,6 +134,7 @@ const Media = styled.div`
     }
   }
 `
+
 
 const Facebook = () => (
   <svg
@@ -218,7 +216,7 @@ const Instagram = () => (
   </svg>
 )
 
-const Twitter = () => (
+const IMG = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 512 512"

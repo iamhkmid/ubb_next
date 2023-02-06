@@ -9,23 +9,22 @@ import InputText from '../elements/Input/Input'
 import { useMutation } from '@apollo/client'
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
 import { useQuery } from '@apollo/client'
-import { TCategory, TDefaultValueUpdateCategory, TFormAddCategory, TMutationUpdateBookCategory } from '../../types/category'
-import { BOOKCATEGORIES, PORTAL_INIT_CATEGORY_UPDATE, UPDATEBOOKCATEGORY } from '../../graphql/category.graphql'
 import { TContact, TFormUpdateContact, TMutationUpdateContact, TUpdateContact } from '../../types/contact'
-import { CONTACT, PORTAL_INIT_CONTACT_UPDATE, UPDATECONTACT } from '../../graphql/contact.graphql'
+import { CONTACTS, PORTAL_INIT_CONTACT_UPDATE, UPDATECONTACT } from '../../graphql/contact.graphql'
 
 
 type TPopupDelete = {
   open: boolean;
   data: { id: string | null };
   onClickClose: () => void;
+  refetch: () => void;
 }
 
 const PopupUpdateContact: FC<TPopupDelete> = (props) => {
   type TResContact = { contact: TContact }
 
   const { data: dataInit, refetch, loading: loadInit } = useQuery<TResContact>(PORTAL_INIT_CONTACT_UPDATE, {
-    variables: { id: props.data?.id! },
+    variables: { contactId: props.data?.id! },
     skip: !props.data?.id || !props.open,
     fetchPolicy: "network-only",
 
@@ -39,11 +38,7 @@ const PopupUpdateContact: FC<TPopupDelete> = (props) => {
 
 
   const defaultValues = React.useMemo(() => ({
-    whatsApp: dataInit?.contact?.whatsApp,
-    instagram: dataInit?.contact?.instagram,
-    twitter: dataInit?.contact?.twitter,
-    email: dataInit?.contact?.email,
-    facebook: dataInit?.contact?.facebook
+    url: dataInit?.contact?.url,
   }), [dataInit]);
 
   return (
@@ -92,7 +87,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
   const [updateContact, { data: dataUpdate, error, loading }] = useMutation<TMutationUpdateContact>(UPDATECONTACT, {
     errorPolicy: "all",
     refetchQueries: [
-      {query: CONTACT}
+      {query: CONTACTS}
     ], 
     awaitRefetchQueries: true
   })
@@ -107,7 +102,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
     try {
       await updateContact({
         variables: {
-          data: { ...values, categoryId: data.id }
+          data: { ...values, contactId: data.id }
         }
       });
     } catch (error) { }
@@ -119,91 +114,19 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
             <FormWrapper>
               <div className="section">
                 <Controller
-                  name="whatsApp"
+                  name="url"
                   control={control}
                   render={({ field: { onChange, value }, fieldState: { error } }) => (
                     <InputText
                       type="text"
-                      placeholder="Enter WhatsApp number here.."
+                      placeholder="Enter URL here.."
                       value={value}
                       error={!!error}
                       helperText={error?.message!}
-                      label="WhatsApp"
+                      label="URL"
                       width="100%"
                       onChange={onChange}
-                      id="whatsApp"
-                      disabled={loading}
-                    />
-                  )}
-                />
-                <Controller
-                  name="instagram"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="text"
-                      placeholder="Enter Instagram link here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="Instagram"
-                      width="100%"
-                      onChange={onChange}
-                      id="name"
-                      disabled={loading}
-                    />
-                  )}
-                />
-                <Controller
-                  name="twitter"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="text"
-                      placeholder="Enter Twitter link here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="Twitter"
-                      width="100%"
-                      onChange={onChange}
-                      id="twitter"
-                      disabled={loading}
-                    />
-                  )}
-                />
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="text"
-                      placeholder="Enter Email here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="Email"
-                      width="100%"
-                      onChange={onChange}
-                      id="email"
-                      disabled={loading}
-                    />
-                  )}
-                />
-                <Controller
-                  name="facebook"
-                  control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <InputText
-                      type="text"
-                      placeholder="Enter Facebook link here.."
-                      value={value}
-                      error={!!error}
-                      helperText={error?.message!}
-                      label="Facebook"
-                      width="100%"
-                      onChange={onChange}
-                      id="facebook"
+                      id="url"
                       disabled={loading}
                     />
                   )}
@@ -212,7 +135,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, defaultValues, data }) =>
             </FormWrapper>
           </div>
           <div className="footer">
-            <ButtonComp label="ADD" type="submit" variant="contained" startIcon={loading && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || !isValid} />
+            <ButtonComp label="Update" type="submit" variant="contained" startIcon={loading && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || !isValid} />
             <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading} />
           </div>
         </Form>
@@ -223,12 +146,7 @@ export default PopupUpdateContact;
 
 const validationSchema =
   yup.object({
-    name: yup.string().required("Required"),
-    whatsApp: yup.string().required("Required"),
-    instagram: yup.string().required("Required"),
-    twitter: yup.string().required("Required"),
-    email: yup.string().required("Required"),
-    facebook: yup.string().required("Required"),
+    url: yup.string().required("Required"),
   });
 
 
