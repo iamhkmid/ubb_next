@@ -30,3 +30,10 @@ export const PORTAL_INIT_CONTACT_UPDATE = gql`
     }
   }
 `;
+
+export const CONTACTWA = gql`
+query{
+  contact(name: "Whatsapp"){
+    url
+  }
+}`

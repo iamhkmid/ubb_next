@@ -121,17 +121,7 @@ const Media = styled.div`
     display: grid;
     grid-template-columns: repeat( auto-fit, 40px );
     gap: 10px;
-    > img {
-      display: flex;
-      box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-      border-radius: 100%;
-      padding: 5px;
-      cursor: pointer;
-      :hover {
-        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-      }
-      transition: 0.2s all ease;
-    }
+    
   }
 `
 
