@@ -58,7 +58,7 @@ const BookDetail: FC<TBookDetail> = ({ slug }) => {
       </Head>
       <Main>
         <div className="content">
-          <Back onClick={() => router.push({ pathname: "/", hash: "#book-list" })}>{"< Kembali"}</Back>
+          <Back onClick={() => router.back()}>{"< Kembali"}</Back>
           <Fade in={loading} unmountOnExit>
             <Loading>
               <FacebookCircularProgress size={60} thickness={5} />
