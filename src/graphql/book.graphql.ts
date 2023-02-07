@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const PUBLIC_BOOK_LIST = gql`
-  query ($filter: filterBooksInput) {
-    books(filter: $filter) {
+  query ($options: queryBookOptionsInput) {
+    books(options: $options) {
       id
       title
       authorName

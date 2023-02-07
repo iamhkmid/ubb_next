@@ -1,5 +1,5 @@
 import React from 'react';
-import { Backdrop } from '@mui/material';
+import { Backdrop, Fade } from '@mui/material';
 import CircularProgress, {
   circularProgressClasses,
   CircularProgressProps,
@@ -7,10 +7,11 @@ import CircularProgress, {
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import styled from 'styled-components';
+import Image from 'next/image';
 
 export const FacebookCircularProgress = (props: CircularProgressProps) => {
   return (
-    <Box sx={{ position: 'relative' }}>
+    <Box sx={{ position: 'relative', display: "flex", alignItems: "center" }}>
       <CircularProgress
         variant="determinate"
         sx={{
@@ -44,9 +45,12 @@ export const FacebookCircularProgress = (props: CircularProgressProps) => {
 const LoadingWrapper = ({ open = false }) => {
   return (
     <StyledModal slots={{ backdrop: Backdrop }} open={open}>
-      <div>
-        <FacebookCircularProgress size={70} thickness={5}/>
-      </div>
+      <Fade in={open}>
+        <Content>
+          <Image src="/icons/ubb_press.png" height={50} width={190} alt="logo" style={{ zIndex: "100" }} />
+          <FacebookCircularProgress size={35} thickness={5} />
+        </Content>
+      </Fade>
     </StyledModal>
   );
 };
@@ -58,9 +62,20 @@ const StyledModal = styled(Modal)`
   align-items: center;
   justify-content: center;
   .MuiBackdrop-root  {
-    background: #e7eaf0d1;
+    background: white;
   } 
-  span {
+  > div {
     outline: none;
   }
 `;
+
+const Content = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  gap: 20px;
+  > img {
+    margin-bottom: 10px;
+  }
+`

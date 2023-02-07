@@ -12,3 +12,10 @@ export type TMutationAddAnnouncement = {
 export type TFormAddAnnouncement = {
   image: string;
 }
+
+export type TQueryPlublicBanners = {
+  banners: {
+    id: string;
+    image: string;
+  }[]
+}

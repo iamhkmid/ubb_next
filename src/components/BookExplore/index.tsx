@@ -20,7 +20,7 @@ type TOnChangeFilter = (
   p: { type: "MIN_AMOUNT" | "MAX_AMOUNT"; value: string | number | undefined; } | { type: "CATEGORY", value: string; }
 ) => void
 
-const BookList: FC<TBookList> = () => {
+const BookExplore: FC<TBookList> = () => {
   const router = useRouter()
   const [search, setSearch] = useState("")
   const [minAmount, setMinAmount] = useState<number | string | undefined>(undefined)
@@ -59,7 +59,7 @@ const BookList: FC<TBookList> = () => {
       setCategoryIds(filter.categoryIds)
       setMinAmount(filter.minAmount)
       setMaxAmount(filter.maxAmount)
-      refetch({ filter: { minAmount: filter.minAmount || undefined, maxAmount: filter.maxAmount || undefined, categoryIds: filter.categoryIds.length ? filter.categoryIds : undefined } })
+      refetch({ options: { minAmount: filter.minAmount || undefined, maxAmount: filter.maxAmount || undefined, categoryIds: filter.categoryIds.length ? filter.categoryIds : undefined } })
     }
   }, [router.query, dataCategories])
 
@@ -103,7 +103,7 @@ const BookList: FC<TBookList> = () => {
     setMaxAmount("")
     setCategoryIds([])
     router.replace({ query: undefined })
-    refetch({ filter: { minAmount: undefined, maxAmount: undefined, categoryIds: undefined } })
+    refetch({ options: { minAmount: undefined, maxAmount: undefined, categoryIds: undefined } })
   }
 
   const onClickBook = (slug: string) => {
@@ -194,11 +194,11 @@ const BookList: FC<TBookList> = () => {
   )
 }
 
-export default BookList
+export default BookExplore
 
 const Main = styled.div`
   display: flex;
-  padding: 110px 60px 60px 60px;
+  padding: 0 60px 60px 60px;
   min-height: calc(100vh - 220px);
   gap: 50px;
   >p.title{
