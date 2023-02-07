@@ -13,7 +13,7 @@ export const Main = styled.div<TMain>`
   justify-content: space-between;
   width: ${({ width  }) => width || "1000px"};
   gap: 50px;
-  height: 300px;
+  height: 250px;
   border-radius: 20px;
   padding: 40px 16px 16px 16px;
   overflow: hidden;

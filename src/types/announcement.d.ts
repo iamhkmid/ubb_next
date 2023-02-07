@@ -1,14 +1,22 @@
-export type TAnnouncement = {
+export type TBanner = {
   id: string;
   image: string
+  length: any
 }
 
-export type TMutationAddAnnouncement = {
-  addAnnouncement: {
+export type TMutationAddBanner = {
+  addBanner: {
+    id: string;
+    image: string;
+  }
+}
+
+export type TMutationDeleteBanner = {
+  deleteBanner: {
     id: string;
   }
 }
 
-export type TFormAddAnnouncement = {
-  image: string;
+export type TFormAddBanner = {
+  image: string ;
 }

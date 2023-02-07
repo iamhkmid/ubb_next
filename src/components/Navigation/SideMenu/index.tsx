@@ -112,8 +112,10 @@ const Main = styled.div`
   flex-direction: column;
   justify-content: center;
   height: 100vh;
-  position: relative;
+  z-index: 100;
+  position: fixed;
   width: 250px;
+  
   box-sizing: border-box;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 `
