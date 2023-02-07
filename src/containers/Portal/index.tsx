@@ -13,6 +13,7 @@ const Portal: React.FC = () => {
 export default Portal
 
 const Main = styled.div`
+  left: 250px;
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 220px);

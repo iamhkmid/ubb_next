@@ -4,13 +4,17 @@ import { ThemeCtx } from "../../../contexts/ThemeCtx";
 import { FacebookCircularProgress } from "../../Loading/LoadingWrapper";
 import * as El from "./BannerUploader.styled"
 import { BannerUploaderProps } from "./BannerUploader.types";
+import ButtonComp from '../../elements/Button'
 
 const BannerUploader: React.FC<BannerUploaderProps> = (props) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = React.useState(false);
+  const [preview, setPreview] = React.useState<string | undefined>(props.preview);
   const [file, setFile] = React.useState<string | null>(null);
   const [error, setError] = React.useState<boolean | undefined>(false);
   const [herlperText, setHerlperText] = React.useState<string | undefined>("")
+
+  
 
   React.useEffect(() => {
     setHerlperText(props.herlperText)
@@ -71,6 +75,8 @@ const BannerUploader: React.FC<BannerUploaderProps> = (props) => {
     }
   };
 
+
+
   const accept = props.accept!.join(",")
   const dataTypes = props.accept!.map((val) => val.split("/")[1].toLocaleUpperCase()).join(", ")
   const maxSize = () => {
@@ -86,6 +92,12 @@ const BannerUploader: React.FC<BannerUploaderProps> = (props) => {
     nativeInputValueSetter?.call(inputRef.current, "");
     const inputEvent = new Event('input', { bubbles: true });
     inputRef.current?.dispatchEvent(inputEvent);
+    props.onChange!("")
+    setPreview(undefined);
+  }
+
+  const onSubmit = () => {
+    
   }
 
   return (
@@ -107,10 +119,13 @@ const BannerUploader: React.FC<BannerUploaderProps> = (props) => {
         <div><p>Format : <span>{dataTypes}</span></p></div>
       </div>
       {dragActive && <div className="drag-file-element" onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}></div>}
-      {file && (
+      
+      {(preview) && (
         <El.ImagePreview>
-          <div><Image src={file} alt="preview" fill style={{ objectFit: "contain" }} />
-          <El.CloseIcon onClick={onClickClear}><XIcon /></El.CloseIcon></div>
+          <div>
+          {preview ? <Image src={preview} alt="preview" fill style={{ objectFit: "contain" }} /> : null}
+          <El.CloseIcon onClick={onClickClear}><XIcon /></El.CloseIcon>
+          </div>
         </El.ImagePreview>
       )}
     </El.Main>

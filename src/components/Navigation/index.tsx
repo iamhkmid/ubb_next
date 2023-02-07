@@ -17,7 +17,9 @@ const Navigation: React.FC<TNavigation> = ({ children }) => {
     <Main isPortal={isPortal}>
       {!isPortal && <Navbar />}
       {isPortal && !pathname.includes("login") && <SideMenu />}
+      <div className="child">
       {children}
+      </div>
       {!isPortal && <Footer />}
     </Main>
   )
@@ -35,4 +37,8 @@ const Main = styled.div<TMain>`
   ${({isPortal})=>isPortal && css`
     flex-direction: row;
   `}
+  > div.child {
+    margin-left: 250px;
+    width: 100%
+  }
 `

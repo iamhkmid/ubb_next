@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const ANNOUNCEMENT = gql`
+export const BANNNERS = gql`
   query{
     banners{
       createdAt
@@ -12,16 +12,16 @@ export const ANNOUNCEMENT = gql`
   }
 `;
 
-export const ADDANNOUNCEMENT = gql`
-  mutation($data: addBannerInput!){
-    addBanner(data: $data){
+export const ADDBANNER = gql`
+  mutation($data: String!){
+    addBanner(imageBase64: $data){
       createdAt
       id
     }
   }
 `
 
-export const PORTAL_ANNOUNCEMENT_LIST = gql`
+export const PORTAL_BANNERS_LIST = gql`
   query{
     banners{
       createdAt
@@ -32,6 +32,15 @@ export const PORTAL_ANNOUNCEMENT_LIST = gql`
     }
   }
 `;
+
+export const DELETEBANNER = gql`
+  mutation($data: ID!){
+    deleteBanner(bannerId: $data){
+      createdAt
+      id
+    }
+  }
+`
 
 export const PUBLIC_ANNOUNCEMENT = gql`
   query{

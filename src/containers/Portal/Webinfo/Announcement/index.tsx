@@ -1,49 +1,71 @@
 import React, { useMemo, useState } from "react"
 import styled from "styled-components"
+import { Fade } from "@mui/material"
 import { useMutation, useQuery } from "@apollo/client"
-import { TAnnouncement, TFormAddAnnouncement, TMutationAddAnnouncement } from "../../../../types/announcement"
-import { ADDANNOUNCEMENT, PORTAL_ANNOUNCEMENT_LIST } from "../../../../graphql/announcement.graphql"
+import { TBanner, TFormAddBanner, TMutationAddBanner, TMutationDeleteBanner } from "../../../../types/announcement"
+import { FacebookCircularProgress } from "../../../../components/Loading/LoadingWrapper"
+import {  ADDBANNER, DELETEBANNER, PORTAL_BANNERS_LIST } from "../../../../graphql/announcement.graphql"
+import BannerPreview from "../../../../components/elements/BannerUploader/BannerPreview"
 import BannerUploader from "../../../../components/elements/BannerUploader/BannerUploader"
-import useMutationApi from "../../../../hooks/useMutation"
 
 const Book: React.FC = () => {
-  const [popupDelete, setPopupDelete] = useState(false)
-  const [deleteData, setDeleteData] = useState<{ id: string;}>({ id: ""})
-  type TResAnnouncement = {
-    announcements: TAnnouncement[]
-  }
-
-  type TResUploadAnnouncement = {
-    statusCode: string;
-    data: { id: string; secureUrl: string; },
-    message: string;
+  const [loader, setLoader] = React.useState<any>(false)
+  type TResBanner = {
+    banners: TBanner[]
   }
   
 
-  const { data, error, loading, refetch } = useQuery<TResAnnouncement>(PORTAL_ANNOUNCEMENT_LIST)
+  const { data: allData, loading,  refetch } = useQuery<TResBanner>(PORTAL_BANNERS_LIST) 
 
-  const { data: dataUploadFile, loading: loadUploadFile, mutation } = useMutationApi<TResUploadAnnouncement>({
-    url: "/upload/announcement",
-    method: "POST"
+
+  const [addBanner, { data, loading: addLoading}] = useMutation<TMutationAddBanner>(ADDBANNER, {
+    errorPolicy: "all",
+    fetchPolicy: 'network-only',
+    refetchQueries: [
+      {query: PORTAL_BANNERS_LIST},
+      'GetImage'
+    ]
+    
+  })
+
+  const [deleteBanner, { data: dataDelete, loading: deleteLoading}] = useMutation<TMutationDeleteBanner>(DELETEBANNER, {
+    errorPolicy: "all",
+    fetchPolicy: 'network-only',
+    refetchQueries: [
+      {query: PORTAL_BANNERS_LIST},
+      'GetImage'
+    ]
+    
   })
 
 
-  React.useEffect(() => {
-    if (dataUploadFile) {
-      refetch()
-    }
-  }, [dataUploadFile])
+
+  
+  const onDelete =  (values: any) => {
+    try {
+      setLoader(true)
+      deleteBanner({
+        variables: {
+          data: values
+        }
+      });
+      setLoader(false)
+    } catch (error) { }
+  }
 
 
-  const onSubmit = (values: TFormAddAnnouncement) => {
-    mutation({
-      body: {
-        ...values
-      }
-    })
-  };
 
-
+  const onSubmit =  (values: any) => {
+    setLoader(true)
+    try {
+      addBanner({
+        variables: {
+          data: values
+        }
+      });
+      setLoader(false)
+    } catch (error) { }
+  }
 
   // const createData = (id: string, no: string, secureUrl: string) => ({ id, no, secureUrl});
 
@@ -67,7 +89,26 @@ const Book: React.FC = () => {
     <Main>
       <p className="title">Portal - Announncement</p>
       <Upload>
-        <BannerUploader onChange={undefined} />
+      <Fade in={loading || addLoading || deleteLoading } unmountOnExit>
+            <Loading>
+              <FacebookCircularProgress size={60} thickness={5} />
+            </Loading>
+      </Fade>
+          {!loading && !addLoading && !deleteLoading && allData?.banners?.map((val) => (
+            <div >
+                 <BannerPreview  preview={val.image} onChange={() => onDelete(val.id)}  />
+            </div> 
+                      ))}
+          
+          {!loading && allData?.banners?.length === 5 ? null : 
+          <BannerUploader   onChange={onSubmit} />}
+
+           
+           
+          
+        
+                  
+
       </Upload>
      
      
@@ -93,6 +134,7 @@ const Upload = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 15px;
 `
 
 const Action = styled.div`
@@ -146,4 +188,16 @@ const Content = styled.div`
   .MuiButton-startIcon {
     height: 17px;
   }
+`
+
+const Loading = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 500px;
+  left: 0;
+  position: absolute;
+  background: white;
+  z-index: 2;
 `
