@@ -67,7 +67,7 @@ const SideMenu = () => {
     if (nPathname === "/logout") {
       sessionStorage.removeItem("token")
       replace("/portal/login")
-    } else setSelectedMenu((prev) => prev ? "" : nPathname)
+    } else setSelectedMenu((prev) => prev === nPathname ? "" : nPathname)
   }
 
   return (
