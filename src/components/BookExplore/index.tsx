@@ -17,12 +17,12 @@ import Checkbox from "../elements/Checkbox"
 type TBookList = {}
 type TQueryObj = { [key: string]: string | number | undefined }
 type TOnChangeFilter = (
-  p: { type: "MIN_AMOUNT" | "MAX_AMOUNT"; value: string | number | undefined; } | { type: "CATEGORY", value: string; }
+  p: { type: "MIN_AMOUNT" | "MAX_AMOUNT"; value: string | number | undefined; } | { type: "CATEGORY" | "SEARCH", value: string; }
 ) => void
 
 const BookExplore: FC<TBookList> = () => {
   const router = useRouter()
-  const [search, setSearch] = useState("")
+  const [search, setSearch] = useState<string>("")
   const [minAmount, setMinAmount] = useState<number | string | undefined>(undefined)
   const [maxAmount, setMaxAmount] = useState<number | string | undefined>(undefined)
   const [categoryIds, setCategoryIds] = React.useState<string[]>([]);
@@ -54,12 +54,21 @@ const BookExplore: FC<TBookList> = () => {
       const filter = {
         categoryIds: (dataCategories?.bookCategories || []).filter((cat) => categories.includes(cat.name)).map((cat) => cat.id),
         minAmount: (router.query as TQueryObj)["min"] ? Number((router.query as TQueryObj)["min"]) : "",
-        maxAmount: (router.query as TQueryObj)["max"] ? Number((router.query as TQueryObj)["max"]) : ""
+        maxAmount: (router.query as TQueryObj)["max"] ? Number((router.query as TQueryObj)["max"]) : "",
+        search: (router.query as TQueryObj)["search"] ? (router.query as TQueryObj)["search"] as string : ""
       }
       setCategoryIds(filter.categoryIds)
       setMinAmount(filter.minAmount)
       setMaxAmount(filter.maxAmount)
-      refetch({ options: { minAmount: filter.minAmount || undefined, maxAmount: filter.maxAmount || undefined, categoryIds: filter.categoryIds.length ? filter.categoryIds : undefined } })
+      setSearch(filter.search)
+      refetch({
+        options: {
+          minAmount: filter.minAmount || undefined,
+          maxAmount: filter.maxAmount || undefined,
+          categoryIds: filter.categoryIds.length ? filter.categoryIds : undefined,
+          search: filter.search || undefined
+        }
+      })
     }
   }, [router.query, dataCategories])
 
@@ -70,7 +79,6 @@ const BookExplore: FC<TBookList> = () => {
   }, [dataCategories?.bookCategories])
 
   const onChangeFilter: TOnChangeFilter = (params) => {
-    const query: TQueryObj = (router.query || {}) as TQueryObj
     switch (params.type) {
       case "CATEGORY": {
         const categories = dataCategories?.bookCategories || []
@@ -79,29 +87,37 @@ const BookExplore: FC<TBookList> = () => {
         else if (categoryIds.includes(params.value)) currCats = categoryIds.filter((val) => val !== params.value)
         else currCats = [...categoryIds, params.value]
         setCategoryIds(currCats)
-        query["categories"] = currCats.length ? categories.filter((cat) => currCats.includes(cat.id)).map((cat) => cat.name).join("+") : undefined
+        setQuery((prevState) => ({
+          ...prevState,
+          categories: currCats.length ? categories.filter((cat) => currCats.includes(cat.id)).map((cat) => cat.name).join("+") : undefined
+        }))
         break
       }
       case "MIN_AMOUNT": {
         setMinAmount(params.value)
-        query["min"] = params.value || undefined
+        setQuery((prevState) => ({ ...prevState, min: params.value || undefined }))
         break
       }
       case "MAX_AMOUNT": {
         setMaxAmount(params.value)
-        query["max"] = params.value || undefined
+        setQuery((prevState) => ({ ...prevState, max: params.value || undefined }))
+        break
+      }
+      case "SEARCH": {
+        setSearch(params.value)
+        setQuery((prevState) => ({ ...prevState, search: params.value || undefined }))
         break
       }
       default:
         break;
     }
-    setQuery(query)
   }
 
   const onClickReset = () => {
     setMinAmount("")
     setMaxAmount("")
     setCategoryIds([])
+    setQuery({})
     router.replace({ query: undefined })
     refetch({ options: { minAmount: undefined, maxAmount: undefined, categoryIds: undefined } })
   }
@@ -109,8 +125,6 @@ const BookExplore: FC<TBookList> = () => {
   const onClickBook = (slug: string) => {
     router.push({ pathname: '/book/[slug]', query: { slug } })
   }
-
-  const filterBook = data?.books?.filter((val) => `${val.title.toLowerCase()} ${val.authorName.toLowerCase()}`.includes(search.toLowerCase()))
 
   return (
     <Main id="book-list">
@@ -158,7 +172,7 @@ const BookExplore: FC<TBookList> = () => {
           </div>
         </NominalFilter>
         <div className="button-apply">
-          <ButtonComp label="Reset" variant="outlined" onClick={onClickReset} disabled={!categoryIds.length && !minAmount && !maxAmount} />
+          <ButtonComp label="Reset" variant="outlined" onClick={onClickReset} disabled={!Object.keys(router.query || {}).length} />
           <ButtonComp label="Terapkan" onClick={onClickFilter} />
         </div>
       </Filter>
@@ -168,22 +182,22 @@ const BookExplore: FC<TBookList> = () => {
             type="text"
             value={search}
             width="500px"
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => onChangeFilter({ type: "SEARCH", value: e.target.value })}
             placeholder="Cari berdasarkan judul/penulis"
           />
           <ButtonComp label="Cari" onClick={onClickFilter} />
         </div>
         <Line />
-        <Fade in={!loading && filterBook?.length! > 0} unmountOnExit>
+        <Fade in={!loading && data?.books?.length! > 0} unmountOnExit>
           <div className="books-wrapper">
-            {filterBook?.map((book) => (
+            {data?.books?.map((book) => (
               <div key={book.id}>
                 <BookCard data={book} onClick={() => onClickBook(book.slug)} />
               </div>
             ))}
           </div>
         </Fade>
-        {!loading && filterBook?.length === 0 && <NoData>Buku tidak ditemukan</NoData>}
+        {!loading && data?.books?.length === 0 && <NoData>Buku tidak ditemukan</NoData>}
         <Fade in={loading} unmountOnExit>
           <Loading>
             <FacebookCircularProgress size={60} thickness={5} />

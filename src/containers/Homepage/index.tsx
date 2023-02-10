@@ -79,17 +79,21 @@ const Main = styled.div`
 const Line = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 10px;
   > div.label {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     >p.title {
       font-size: 18px;
       font-weight: 600;
+      line-height: 1;
+      margin: 0;
     }
     .MuiButton-root {
       padding: 10px;
       line-height: 1;
-      height: auto;
+      height: fit-content;
       border-radius: 10px;
     }
   }

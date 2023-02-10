@@ -45,7 +45,7 @@ export const FacebookCircularProgress = (props: CircularProgressProps) => {
 const LoadingWrapper = ({ open = false }) => {
   return (
     <StyledModal slots={{ backdrop: Backdrop }} open={open}>
-      <Fade in={open}>
+      <Fade in={open} unmountOnExit>
         <Content>
           <Image src="/icons/ubb_press.png" height={50} width={190} alt="logo" style={{ zIndex: "100" }} />
           <FacebookCircularProgress size={35} thickness={5} />
