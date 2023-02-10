@@ -24,7 +24,7 @@ const BookDetail: FC<TBookDetail> = ({ slug }) => {
   const { data, loading, error } = useQuery<TQueryBookDetail>(PUBLIC_BOOK_DETAIL, { variables: { slug } })
 
   const onClickCategory = (category: string) => {
-    router.push({ pathname: "/", query: { categories: category } })
+    router.push({ pathname: "/explore", query: { categories: category } })
   }
 
   const detail = useMemo(() => ([
