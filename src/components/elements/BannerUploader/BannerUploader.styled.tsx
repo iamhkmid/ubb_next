@@ -133,7 +133,7 @@ export const ImagePreview = styled.div`
   position: absolute;
   align-items: center;
   justify-content: center;
-  background: ${({theme})=>theme?.colors?.primary?.ultrasoft};
+  background: ${({theme})=>theme?.colors?.primary?.ultraSoft};
   width: calc(100% - 4px);
   height: calc(100% - 4px);
   border-radius: 17px;
@@ -160,7 +160,7 @@ export const CloseIcon = styled.div`
   overflow: hidden;
   top: 0;
   right: 0;
-  background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
+  background: ${({ theme }) => theme.colors?.primary?.ultraSoft};
   color: ${({ theme }) => theme.colors?.primary?.default};
   align-items: center;
   justify-content: center;
@@ -170,7 +170,7 @@ export const CloseIcon = styled.div`
   height: 25px;
   :hover {
     background: ${({ theme }) => theme.colors?.red?.["07"]};
-    color: ${({ theme }) => theme.colors?.primary?.ultrasoft};
+    color: ${({ theme }) => theme.colors?.primary?.ultraSoft};
   }
   transition: .2s all ease;
 `

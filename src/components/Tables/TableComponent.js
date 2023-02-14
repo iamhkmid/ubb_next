@@ -166,7 +166,7 @@ const Main = styled.div`
   .MuiTableRow-root.MuiTableRow-hover{
     transition: background 0.2s ease;
     :hover{
-      background: ${({ theme }) => theme?.colors?.primary?.ultrasoft};
+      background: ${({ theme }) => theme?.colors?.primary?.ultraSoft};
     }
   }
 `;

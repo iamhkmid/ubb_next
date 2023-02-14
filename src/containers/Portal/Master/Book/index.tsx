@@ -1,4 +1,4 @@
-import { Button } from "@mui/material"
+import { Button, Fade } from "@mui/material"
 import React, { useMemo, useState } from "react"
 import styled from "styled-components"
 import { useQuery } from "@apollo/client"
@@ -38,56 +38,58 @@ const Book: React.FC = () => {
 
   const createData = (id: string, no: string, title: string, authorName: string, createdAt: string, action: any) => ({ id, no, title, authorName, createdAt, action });
 
-const dataTable = useMemo(() => {
-  const columns = [
-    { id: "id", label: "id", width: "auto", align: "left", display: "hidden" },
-    { id: "no", label: "No", width: "auto", align: "left" },
-    { id: "title", label: "Title", width: "auto", align: "left" },
-    { id: "authorName", label: "Author Name", width: "auto", align: "left" },
-    { id: "createdAt", label: "Created At", width: "auto", align: "left" },
-    { id: "action", label: "Action", width: "0", align: "center" },
-  ];
-  const rows = data?.books?.map((val, idx) => {
-    return createData(
-      val?.id,
-      String(idx + 1),
-      val?.title,
-      val?.authorName,
-      moment(val?.createdAt).locale("id").format("DD/MM/YYYY HH:mm:ss"),
-      <Action>
-        <Button onClick={(e) => onClickUpdate(e, val)}><EditIcon /></Button>
-        <Button onClick={(e) => onClickDelete(e, { id: val?.id, title: val?.title })}><XIcon /></Button>
-      </Action>
-    );
-  }, []);
-  return { columns, rows };
-}, [data]);
+  const dataTable = useMemo(() => {
+    const columns = [
+      { id: "id", label: "id", width: "auto", align: "left", display: "hidden" },
+      { id: "no", label: "No", width: "auto", align: "left" },
+      { id: "title", label: "Title", width: "auto", align: "left" },
+      { id: "authorName", label: "Author Name", width: "auto", align: "left" },
+      { id: "createdAt", label: "Created At", width: "auto", align: "left" },
+      { id: "action", label: "Action", width: "0", align: "center" },
+    ];
+    const rows = data?.books?.map((val, idx) => {
+      return createData(
+        val?.id,
+        String(idx + 1),
+        val?.title,
+        val?.authorName,
+        moment(val?.createdAt).locale("id").format("DD/MM/YYYY HH:mm:ss"),
+        <Action>
+          <Button onClick={(e) => onClickUpdate(e, val)}><EditIcon /></Button>
+          <Button onClick={(e) => onClickDelete(e, { id: val?.id, title: val?.title })}><XIcon /></Button>
+        </Action>
+      );
+    }, []);
+    return { columns, rows };
+  }, [data]);
 
-const onCloseAddBook = () => {
-  setPopupAdd(false)
-}
-const onCloseDeleteBook = () => {
-  setPopupDelete(false)
-}
+  const onCloseAddBook = () => {
+    setPopupAdd(false)
+  }
+  const onCloseDeleteBook = () => {
+    setPopupDelete(false)
+  }
 
-const onCloseUpdateBook = () => {
-  setPopupUpdate(false)
-}
+  const onCloseUpdateBook = () => {
+    setPopupUpdate(false)
+  }
 
-return (
-  <Main>
-    <PopupAddBook open={popupAdd} onClickClose={onCloseAddBook} refetch={refetch} />
-    <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateBook} data={updateData!} refetch={refetch}/>
-    <PopupDelete open={popupDelete} onClickClose={onCloseDeleteBook} data={deleteData} refetch={refetch} />
-    <p className="title">Portal - Book</p>
-    <Content>
-      <div className="action">
-        <ButtonComp label="ADD" startIcon={<PlusIcon />} onClick={() => setPopupAdd(true)} />
-      </div>
-      <TableComponent dataTable={dataTable} loading={loading} checkbox maxHeight="600px" />
-    </Content>
-  </Main>
-)
+  return (
+    <Fade in>
+      <Main>
+        <PopupAddBook open={popupAdd} onClickClose={onCloseAddBook} refetch={refetch} />
+        <PopupUpdate open={popupUpdate} onClickClose={onCloseUpdateBook} data={updateData!} refetch={refetch} />
+        <PopupDelete open={popupDelete} onClickClose={onCloseDeleteBook} data={deleteData} refetch={refetch} />
+        <p className="title">Portal - Book</p>
+        <Content>
+          <div className="action">
+            <ButtonComp label="ADD" startIcon={<PlusIcon />} onClick={() => setPopupAdd(true)} />
+          </div>
+          <TableComponent dataTable={dataTable} loading={loading} checkbox maxHeight="600px" />
+        </Content>
+      </Main>
+    </Fade>
+  )
 }
 
 export default Book

@@ -3,18 +3,18 @@ import { useRouter } from "next/router"
 import React from "react"
 import styled, { css } from "styled-components"
 import { dataMenu } from "./data"
+import { AnimatePresence, motion } from "framer-motion"
 
 const SideMenu = () => {
   const { pathname, push, replace } = useRouter()
   const [selectedMenu, setSelectedMenu] = React.useState<string>("")
+  const [hover, setHover] = React.useState<string | null>(null)
+  const [hoverSub, setHoverSub] = React.useState<string | null>(null)
 
   React.useEffect(() => {
     if (pathname) {
-      dataMenu.forEach((item) => {
-        if (item.pathname === pathname || item.subMenu?.some((val) => val.pathname === pathname)) {
-          setSelectedMenu(item.pathname)
-        }
-      })
+      const findMenu = dataMenu.find((item) => item.pathname === pathname || item.subMenu?.some((val) => val.pathname === pathname))
+      setSelectedMenu(findMenu?.pathname!)
     }
   }, [pathname])
 
@@ -33,21 +33,68 @@ const SideMenu = () => {
     <Main>
       <MenuList>
         {dataMenu.map((item) => (
-          <div className="menu" key={item.label}>
-            <Item key={item.label} isActive={pathname.includes(item.pathname)} isShow={item.pathname === selectedMenu} onClick={() => onClickMenu(item.pathname)}>
+          <div
+            className="menu"
+            key={item.label}
+            onMouseEnter={() => setHover(item.pathname)}
+            onMouseLeave={() => setHover(null)}>
+            <Item
+              key={item.label}
+              isActive={pathname.includes(item.pathname)}
+              isShow={item.pathname === selectedMenu}
+              onClick={() => onClickMenu(item.pathname)}
+            >
               <div>
                 {item.icon}
                 {item.label}
               </div>
               {item.subMenu && <ArrowIcon />}
+              <AnimatePresence>
+                {hover === item.pathname &&
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="hover-menu"
+                    layoutId="hover-menu">
+                  </motion.div>
+                }
+              </AnimatePresence>
             </Item>
             <Collapse in={item.subMenu && item.pathname === selectedMenu} unmountOnExit>
               <SubMenuWrapper>
                 {item.subMenu?.map((submenu) => (
-                  <SubMenu isActive={pathname.includes(submenu.pathname)} onClick={() => push(submenu.pathname)} key={submenu.label}>
+                  <SubMenu
+                    isActive={pathname.includes(submenu.pathname)}
+                    onClick={() => push(submenu.pathname)} key={submenu.label}
+                    onMouseEnter={() => setHoverSub(submenu.pathname)}
+                    onMouseLeave={() => setHoverSub(null)}
+                  >
                     <div>
                       {submenu.label}
                     </div>
+                    <AnimatePresence>
+                      {hoverSub === submenu.pathname &&
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="hover-sub-menu"
+                          layoutId="hover-sub-menu">
+                        </motion.div>
+                      }
+                    </AnimatePresence>
+                    <AnimatePresence>
+                      {pathname.includes(submenu.pathname) &&
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="selected-sub-menu"
+                          layoutId="selected-sub-menu">
+                        </motion.div>
+                      }
+                    </AnimatePresence>
                   </SubMenu>
                 ))}
               </SubMenuWrapper>
@@ -91,17 +138,15 @@ type TItem = {
 
 const Item = styled.div<TItem>`
   display: flex;
+  position: relative;
   justify-content: space-between;
   padding: 0 20px;
   margin: 0 10px;
-  border-radius: 0 8px 8px 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   align-items: center;
   height: 45px;
   cursor: pointer;
-  border-top: 1px solid ${({ theme }) => theme.colors?.primary?.ultrasoft};
-  background: white;
   color: ${({ theme }) => theme.colors?.text?.dark};
   > div {
     display: flex;
@@ -114,39 +159,38 @@ const Item = styled.div<TItem>`
       height: 15px;
     }
   }
+  > div.hover-menu {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    border-radius: 0 8px 8px 0;
+    background: ${({ theme }) => theme.colors?.primary?.ultraSoft};
+    z-index: -1;
+  }
   > svg {
-    height: 10px;
+    height: 20px;
     transition: transform ease 0.3s;
   }
-  :hover {
-    color: ${({ theme }) => theme.colors?.text?.ultraSoft};
-    background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
-    > div {
-      > svg {
-        path {
-          fill: ${({ theme }) => theme.colors?.text?.ultraSoft};
-        }
-      }
-    }
-  }
-  
+
   ${({ isShow }) => isShow && css`
     > svg {
       transform: rotate(-180deg);
     }
   `}
   ${({ isActive }) => isActive && css`
-    background: ${({ theme }) => theme.colors?.primary?.medium};
-    color: ${({ theme }) => theme.colors?.primary?.ultrasoft};
+    color: ${({ theme }) => theme.colors?.primary?.default
+    };
     > div {
       > svg {
         path {
-          fill: ${({ theme }) => theme.colors?.text?.ultraSoft};
+          fill: ${({ theme }) => theme.colors?.primary?.default};
         }
       }
     }
   `}
-  transition: all ease 0.3s;
 `
 
 type TSubMenu = {
@@ -156,14 +200,13 @@ type TSubMenu = {
 const SubMenu = styled.div<TSubMenu>`
   display: flex;
   justify-content: space-between;
-  padding: 0 20px;
-  font-size: 15px;
-  font-weight: 400;
+  position: relative;
+  padding: 0 20px 0 30px;
+  font-size: 13px;
+  font-weight: 500;
   align-items: center;
   height: 45px;
   cursor: pointer;
-  background: white;
-  border-top: 1px solid ${({ theme }) => theme.colors?.primary?.ultrasoft};
   color: ${({ theme }) => theme.colors?.text?.dark};
   > div {
     display: flex;
@@ -179,19 +222,29 @@ const SubMenu = styled.div<TSubMenu>`
   > svg {
     height: 20px;
   }
-  :hover {
-    color: ${({ theme }) => theme.colors?.text?.ultraSoft};
-    background: ${({ theme }) => theme.colors?.primary?.soft};
-    > div {
-      > svg {
-        path {
-          fill: ${({ theme }) => theme.colors?.text?.ultraSoft};
-        }
-      }
-    }
+  
+  > div.hover-sub-menu {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    border-radius: 0 8px 8px 0;
+    background: ${({ theme }) => theme.colors?.primary?.ultraSoft};
+    z-index: -1;
   }
+  > div.selected-sub-menu {
+    display: flex;
+    position: absolute;
+    height: 100%;
+    left: 10px;
+    top: 0;
+    z-index: 0;
+    border-left: 3px solid ${({ theme }) => theme.colors?.primary?.medium};
+  }
+
   ${({ isActive }) => isActive && css`
-    background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
     color: ${({ theme }) => theme.colors?.primary?.default};
     > div {
       > svg {
@@ -201,11 +254,20 @@ const SubMenu = styled.div<TSubMenu>`
       }
     }
   `}
-  transition: all ease 0.3s;
 `
 
 const SubMenuWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  border-top: 1px solid ${({ theme }) => theme.colors?.primary?.soft};
+  margin: 2px 20px 0 20px;
+  position: relative;
+  ::before {
+    display: flex;
+    position: absolute;
+    content: "";
+    left: 10px;
+    height: 100%;
+    width: 100%;
+    border-left: 2px solid ${({ theme }) => theme.colors?.text?.soft};
+  }
 `

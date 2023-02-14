@@ -18,7 +18,7 @@ const BookCard: FC<TBookCard> = ({ data, onClick }) => {
   const LightTooltip = styled(({ className, ...props }: TooltipProps) => (<Tooltip {...props} classes={{ popper: className }} />
   ))(({ }) => ({
     [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: theme?.colors?.primary?.ultrasoft,
+      backgroundColor: theme?.colors?.primary?.ultraSoft,
       color: theme?.colors?.text?.dark,
       boxShadow: "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;",
       fontSize: 11,

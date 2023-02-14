@@ -98,7 +98,7 @@ const Menu = styled.div`
         transition: background ease 0.3s;
       }
       :hover {
-          background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
+          background: ${({ theme }) => theme.colors?.primary?.ultraSoft};
         > div.selected-menu {
           background: ${({ theme }) => theme.colors?.primary?.default};
         }

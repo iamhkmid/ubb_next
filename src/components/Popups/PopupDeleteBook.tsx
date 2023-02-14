@@ -116,7 +116,7 @@ const ContentWrapper = styled.div`
     flex-direction: column;
     height: 100%;
     gap: 20px;
-    background: ${({ theme }) => theme?.colors?.primary?.ultrasoft};
+    background: ${({ theme }) => theme?.colors?.primary?.ultraSoft};
     border-radius: 5px;
     padding: 10px 20px;
     margin: 0 10px;

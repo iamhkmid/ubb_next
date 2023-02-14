@@ -48,13 +48,13 @@ const Main = styled(ButtonComp)`
     }
   }
   &.MuiButton-root.Mui-disabled {
-    background: ${({ theme }) => theme?.colors?.primary?.ultrasoft};
-    border-color: ${({ theme }) => theme?.colors?.primary?.ultrasoft};
+    background: ${({ theme }) => theme?.colors?.primary?.ultraSoft};
+    border-color: ${({ theme }) => theme?.colors?.primary?.ultraSoft};
     color: ${({ theme }) => theme?.colors?.text?.soft};
   }
   &.MuiButton-root.Mui-disabled.MuiButton-text {
     background: transparent;
-    border-color: ${({ theme }) => theme?.colors?.primary?.ultrasoft};
+    border-color: ${({ theme }) => theme?.colors?.primary?.ultraSoft};
     color: ${({ theme }) => theme?.colors?.text?.soft};
   }
   &.MuiButton-startIcon {

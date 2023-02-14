@@ -115,7 +115,7 @@ export const InputText = styled.input<TInputText>`
   `}
 
   :focus {
-    box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
+    box-shadow: ${({ theme }) => theme.colors?.primary?.ultraSoft} 0px 0px 0px 2.5px;
     ::placeholder { 
       color: ${({ theme }) => theme.colors?.text?.medium};
     }
@@ -173,7 +173,7 @@ export const CloseIcon = styled.div<TCloseIcon>`
   top: 0;
   bottom: 0;
   margin: auto 0;
-  background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
+  background: ${({ theme }) => theme.colors?.primary?.ultraSoft};
   align-items: center;
   justify-content: center;
   box-shadow: 0px 4px 12px 1px rgba(175, 173, 200, 0.2);
@@ -234,7 +234,7 @@ export const InputNumeric = styled(NumericFormat) <TInputNumeric>`
   `}
 
   :focus {
-    box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
+    box-shadow: ${({ theme }) => theme.colors?.primary?.ultraSoft} 0px 0px 0px 2.5px;
     ::placeholder { 
       color: ${({ theme }) => theme.colors?.text?.medium};
     }
@@ -285,7 +285,7 @@ export const InputPattern = styled(PatternFormat)<TInputPattern>`
     border: 1.5px solid ${({ theme }) => theme.colors?.red?.["05"]};
   `}
   :focus {
-    box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
+    box-shadow: ${({ theme }) => theme.colors?.primary?.ultraSoft} 0px 0px 0px 2.5px;
     ::placeholder { 
       color: ${({ theme }) => theme.colors?.text?.medium};
     }
@@ -399,10 +399,10 @@ export const Option = styled.li<TOption>`
     opacity: 0;
   }
   :hover {
-    background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
+    background: ${({ theme }) => theme.colors?.primary?.ultraSoft};
   }
   ${({ selected }) => selected && css`
-    background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
+    background: ${({ theme }) => theme.colors?.primary?.ultraSoft};
     > svg {
       opacity: 1;
     }
@@ -450,7 +450,7 @@ export const InputTextArea = styled.textarea<TTextArea>`
     border: 1.5px solid ${({ theme }) => theme.colors?.red?.["05"]};
   `}
   :focus {
-    box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
+    box-shadow: ${({ theme }) => theme.colors?.primary?.ultraSoft} 0px 0px 0px 2.5px;
     ::placeholder { 
       color: ${({ theme }) => theme.colors?.text?.medium};
     }

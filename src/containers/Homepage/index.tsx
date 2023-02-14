@@ -106,7 +106,7 @@ const Line = styled.div`
     height: 3px;
     overflow: hidden;
     border-radius: 2px;
-    background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
+    background: ${({ theme }) => theme.colors?.primary?.ultraSoft};
     ::before {
       content: "";
       position: absolute;

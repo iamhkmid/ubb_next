@@ -63,7 +63,7 @@ export const Dropdown = styled.div<TDrropdown>`
   }
 
   :focus {
-    box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
+    box-shadow: ${({ theme }) => theme.colors?.primary?.ultraSoft} 0px 0px 0px 2.5px;
   }
   
   > svg.end-icon {
@@ -72,7 +72,7 @@ export const Dropdown = styled.div<TDrropdown>`
   }
   ${({ isOpen }) => isOpen && css`
       color: ${({ theme }) => theme.colors?.text?.dark}; 
-      box-shadow: ${({ theme }) => theme.colors?.primary?.ultrasoft} 0px 0px 0px 2.5px;
+      box-shadow: ${({ theme }) => theme.colors?.primary?.ultraSoft} 0px 0px 0px 2.5px;
     > div.label {
       top: -7px;
       font-size: 12px;
@@ -128,7 +128,7 @@ export const Options = styled.ul<TOptions>`
   top: calc(100% - 10px);
   background: #ffffff;
   overflow: hidden;
-  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.ultrasoft};
+  border: 1.5px solid ${({ theme }) => theme.colors?.primary?.ultraSoft};
   flex-direction: column;
   box-shadow: 0px 4px 12px 1px rgba(175, 173, 200, 0.2);
   border-radius: 10px;
@@ -215,13 +215,13 @@ export const Option = styled.li<TOption>`
   max-height: 0;
   overflow: hidden;
   :focus {
-    background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
+    background: ${({ theme }) => theme.colors?.primary?.ultraSoft};
   }
   :hover {
-    background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
+    background: ${({ theme }) => theme.colors?.primary?.ultraSoft};
   }
   ${({ selected }) => selected && css`
-    background: ${({ theme }) => theme.colors?.primary?.ultrasoft};
+    background: ${({ theme }) => theme.colors?.primary?.ultraSoft};
   `}
   
   ${({ show }) => show && css`

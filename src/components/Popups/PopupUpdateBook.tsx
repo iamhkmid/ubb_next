@@ -565,7 +565,7 @@ const InputGroup = styled.div`
           width: 20px;
           >path {
             stroke-width: 45px;
-            color: ${({ theme }) => theme?.colors?.primary?.ultrasoft};
+            color: ${({ theme }) => theme?.colors?.primary?.ultraSoft};
           }
         }
       }
