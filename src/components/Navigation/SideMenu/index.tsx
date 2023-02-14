@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion"
 
 const SideMenu = () => {
   const { pathname, push, replace } = useRouter()
+  const [currentMenu, setCurrentMenu] = React.useState<string>("")
   const [selectedMenu, setSelectedMenu] = React.useState<string>("")
   const [hover, setHover] = React.useState<string | null>(null)
   const [hoverSub, setHoverSub] = React.useState<string | null>(null)
@@ -15,6 +16,8 @@ const SideMenu = () => {
     if (pathname) {
       const findMenu = dataMenu.find((item) => item.pathname === pathname || item.subMenu?.some((val) => val.pathname === pathname))
       setSelectedMenu(findMenu?.pathname!)
+      setCurrentMenu(findMenu?.pathname!)
+      setHover(findMenu?.pathname!)
     }
   }, [pathname])
 
@@ -31,13 +34,13 @@ const SideMenu = () => {
 
   return (
     <Main>
-      <MenuList>
+      <MenuList onMouseLeave={() => setSelectedMenu(currentMenu)}>
         {dataMenu.map((item) => (
           <div
             className="menu"
             key={item.label}
             onMouseEnter={() => setHover(item.pathname)}
-            onMouseLeave={() => setHover(null)}>
+            onMouseLeave={() => setHover(currentMenu)}>
             <Item
               key={item.label}
               isActive={pathname.includes(item.pathname)}
