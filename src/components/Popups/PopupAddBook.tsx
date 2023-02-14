@@ -67,7 +67,6 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
     resolver: yupResolver(validationSchema),
     defaultValues
   });
-  const { isValid } = formState;
 
   const [addBook, { data, error, loading }] = useMutation<TMutationAddBook>(ADDBOOK, {
     errorPolicy: "all",

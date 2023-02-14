@@ -1,3 +1,4 @@
+import React from "react"
 import { useQuery } from "@apollo/client"
 import { Fade } from "@mui/material"
 import Head from "next/head"
@@ -8,20 +9,18 @@ import styled from "styled-components"
 import Button from "../../components/elements/Button"
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
 import { PUBLIC_BOOK_DETAIL } from "../../graphql/book.graphql"
-import { CONTACTS, CONTACTWA } from "../../graphql/contact.graphql"
 import { formatToCurrency } from "../../helpers/formatToCurrency"
 import { TQueryBookDetail } from "../../types/book"
-import { TContact, TDefaultValueUpdateContact } from "../../types/contact"
+import { UbbCtx } from "../../contexts/UbbCtx"
 
 type TBookDetail = { slug: string; }
 
 const BookDetail: FC<TBookDetail> = ({ slug }) => {
-  type TResContact = {
-    contact: TContact;
-  }
-  const { data: dataContact} = useQuery<TResContact>(CONTACTWA)
   const router = useRouter()
+  const { footer } = React.useContext(UbbCtx)
   const { data, loading, error } = useQuery<TQueryBookDetail>(PUBLIC_BOOK_DETAIL, { variables: { slug } })
+
+  const waUrl = footer?.data?.find((val) => val?.label === "Whatsapp")?.value || "#"
 
   const onClickCategory = (category: string) => {
     router.push({ pathname: "/explore", query: { categories: category } })
@@ -59,12 +58,12 @@ const BookDetail: FC<TBookDetail> = ({ slug }) => {
       <Main>
         <div className="content">
           <Back onClick={() => router.back()}>{"< Kembali"}</Back>
-          <Fade in={loading} unmountOnExit>
+          <Fade in={loading || footer.loading} unmountOnExit>
             <Loading>
               <FacebookCircularProgress size={60} thickness={5} />
             </Loading>
           </Fade>
-          {!loading && data?.book && (
+          {!loading && !footer.loading && data?.book && (
             <div className="detail-wrapper">
               <CoverWrapper>
                 <div>
@@ -73,7 +72,8 @@ const BookDetail: FC<TBookDetail> = ({ slug }) => {
                       src={data?.book?.Images?.find((val) => val.type === "COVER")?.secureUrl!}
                       fill
                       alt="cover"
-                    />) : null}
+                    />
+                  ) : null}
                 </div>
               </CoverWrapper>
               <BookInfo>
@@ -87,7 +87,7 @@ const BookDetail: FC<TBookDetail> = ({ slug }) => {
                   </div>
                   <div className="section-2">
                     <p className="price">{`Rp ${formatToCurrency(data.book?.price, 0)}`}</p>
-                    <Button type="button" onClick={() => window.open(dataContact?.contact?.url)} label="Beli Sekarang" variant="contained" />
+                    <Button type="button" onClick={() => window.open(waUrl)} label="Beli Sekarang" variant="contained" />
                   </div>
                 </div>
                 <div className="additional-info">
@@ -234,7 +234,7 @@ const CoverWrapper = styled.div`
   background: #d2e2f3;
   justify-content: center;
   border-radius: 10px;
-  >div{
+  > div {
     border-radius: 8px;
     overflow: hidden;
     aspect-ratio: 2/2.9;

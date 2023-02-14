@@ -58,7 +58,7 @@ const Banners: React.FC<TBanners> = ({ data }) => {
 
 export default Banners
 
-const TriangleIcon = () => (<svg className="swipe-icon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M328 112L184 256l144 144" /></svg>)
+const TriangleIcon = () => (<svg className="swipe-icon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="48" d="M328 112L184 256l144 144" /></svg>)
 
 const Main = styled.div`
   display: flex;

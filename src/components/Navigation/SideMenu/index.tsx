@@ -50,8 +50,8 @@ const SideMenu = () => {
           pathname: "/portal/webinfo/announcement"
         },
         {
-          label: "Contact",
-          pathname: "/portal/webinfo/contact"
+          label: "Footer",
+          pathname: "/portal/webinfo/footer"
         },
       ],
       

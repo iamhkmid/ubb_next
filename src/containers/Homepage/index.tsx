@@ -11,11 +11,13 @@ import { PUBLIC_BOOK_LIST } from "../../graphql/book.graphql"
 import { TQueryPlublicBanners } from "../../types/announcement"
 import { TQueryBookHome } from "../../types/book"
 import { Fade } from "@mui/material"
+import { UbbCtx } from "../../contexts/UbbCtx"
 
 type THomepage = {}
 
 const Homepage: React.FC<THomepage> = () => {
   const router = useRouter()
+  const { footer } = React.useContext(UbbCtx)
   const [loading, setLoading] = React.useState(true)
 
   const { data: dataBanner, loading: loadBanner } = useQuery<TQueryPlublicBanners>(PUBLIC_ANNOUNCEMENT)
@@ -27,8 +29,8 @@ const Homepage: React.FC<THomepage> = () => {
   })
 
   React.useEffect(() => {
-    setLoading(loadBanner || loadBooks)
-  }, [loadBanner, loadBooks])
+    setLoading(footer?.loading || loadBanner || loadBooks)
+  }, [loadBanner, loadBooks, footer?.loading])
 
   const onClickBook = (slug: string) => {
     router.push({ pathname: '/book/[slug]', query: { slug } })

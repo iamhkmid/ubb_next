@@ -1,17 +1,15 @@
 import Head from "next/head";
 import React from "react";
-
-import CategoryComponent from "../../../src/containers/Portal/Master/Category";
-
+import FooterInfoComponent from "../../../src/containers/Portal/Webinfo/FooterInfo";
 
 const Book: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Portal - Category</title>
+        <title>Portal - Footer Info</title>
         <link rel="icon" href="/icons/ubb_press_logo.png" />
       </Head>
-      <CategoryComponent />
+      <FooterInfoComponent />
     </>
   );
 };

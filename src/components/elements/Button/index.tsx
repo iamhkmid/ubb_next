@@ -52,6 +52,11 @@ const Main = styled(ButtonComp)`
     border-color: ${({ theme }) => theme?.colors?.primary?.ultrasoft};
     color: ${({ theme }) => theme?.colors?.text?.soft};
   }
+  &.MuiButton-root.Mui-disabled.MuiButton-text {
+    background: transparent;
+    border-color: ${({ theme }) => theme?.colors?.primary?.ultrasoft};
+    color: ${({ theme }) => theme?.colors?.text?.soft};
+  }
   &.MuiButton-startIcon {
     > div {
       display: flex;

@@ -138,17 +138,19 @@ const Login: React.FC = () => {
               />
             </div>
             <div className="button-wrapper">
+              <Button label="Back to home" variant="text" type="button" startIcon={<ChevronBackIcon />} disabled={loading || loadLogin} onClick={() => router.push("/")} />
               <Button label="Login" variant="contained" type="submit" startIcon={(loading || loadLogin) && <FacebookCircularProgress size={20} thickness={3} />} disabled={!isValid || loading || loadLogin} />
             </div>
           </Form>
         </div>
       </Main>
     </Fade>
-
   )
 }
 
 export default Login
+
+const ChevronBackIcon = () => (<svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="48" d="M328 112L184 256l144 144" /></svg>)
 
 const Main = styled.div`
   display: flex;
@@ -189,6 +191,12 @@ const Form = styled.form`
   }
   > div.button-wrapper {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    > button:nth-child(1) {
+      svg {
+        width: 20px;
+      } 
+      color: ${({ theme }) => theme?.colors?.primary?.default};
+    }
   }
 `

@@ -1,11 +1,3 @@
-type TThemeCtxProps = {
-  theme?: TTheme,
-}
-
-type TThemeCtxProviderProps = {
-  children: React.ReactNode
-}
-
 type TDefaultColorPallet = {
   "01"?: string
   "02"?: string
@@ -87,6 +79,6 @@ type TColors = {
   purple?: TDefaultColorPallet
 }
 
-type TTheme = {
+export type TTheme = {
   colors?: TColors
 }
