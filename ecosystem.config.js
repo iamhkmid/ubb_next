@@ -1,11 +1,11 @@
 module.exports = {
   apps : [{
-    name      : 'yarn',
+    name      : 'ubb_next',
     script    : 'yarn',
     args      : 'start',
     interpreter: '/bin/bash',
     env: {
-      NODE_ENV: 'development'
+      NODE_ENV: 'production'
     }
   }]
 };
