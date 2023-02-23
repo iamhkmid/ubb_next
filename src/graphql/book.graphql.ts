@@ -10,9 +10,11 @@ export const PUBLIC_BOOK_LIST = gql`
       printType
       price
       Images {
-        url
-        secureUrl
-        type
+        id
+        url 
+        type 
+        createdAt
+        updatedAt
       }
     }
   }
@@ -35,8 +37,11 @@ export const PUBLIC_BOOK_DETAIL = gql`
       stock
       printType
       Images {
-        secureUrl
-        type
+        id
+        url 
+        type 
+        createdAt
+        updatedAt
       }
     }
   }
@@ -60,10 +65,11 @@ export const PORTAL_INIT_BOOK_UPDATE = gql`
       printType
       publicationYear
       Images {
-        secureUrl
-        type
-        publicId
         id
+        url 
+        type 
+        createdAt
+        updatedAt
       }
     }
   }
