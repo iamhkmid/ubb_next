@@ -6,7 +6,7 @@ export type TFooterGroup = {
 export type TFooterInfo = {
   id: string;
   label: string;
-  image: string;
+  imageUrl: string;
   value: string;
   Group?: TFooterGroup
 }
