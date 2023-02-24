@@ -69,7 +69,7 @@ const BookDetail: FC<TBookDetail> = ({ slug }) => {
                 <div>
                   {data?.book.Images?.find((val) => val.type === "COVER") ? (
                     <Image
-                      src={data?.book?.Images?.find((val) => val.type === "COVER")?.secureUrl!}
+                      src={data?.book?.Images?.find((val) => val.type === "COVER")?.url!}
                       fill
                       alt="cover"
                     />

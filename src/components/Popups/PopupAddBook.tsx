@@ -10,8 +10,7 @@ import FileUploader from '../elements/FileUploader/FileUploader'
 import { useMutation, useQuery } from '@apollo/client'
 import { TFormAddBook, TMutationAddBook } from '../../types/book'
 import { FacebookCircularProgress } from "../../components/Loading/LoadingWrapper"
-import { ADDBOOK } from '../../graphql/book.graphql'
-import useMutationApi from '../../hooks/useMutation'
+import { ADD_BOOK } from '../../graphql/book.graphql'
 import Dropdown from '../elements/Dropdown/Dropdown'
 import { BOOKCATEGORIES } from '../../graphql/category.graphql'
 import { TQueryBookCategory } from '../../types/category'
@@ -26,7 +25,7 @@ type TPopupAddBook = {
 
 type TResUploadFile = {
   statusCode: string;
-  data: { id: string; type: string; publicId: string; url: string; secureUrl: string; },
+  data: { id: string; type: string; publicId: string; url: string; },
   message: string;
 }
 
@@ -56,11 +55,6 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
 
   const categoryOptions = React.useMemo(() => dataCategories?.bookCategories?.map((val) => ({ value: val?.id, label: val?.name })), [dataCategories])
 
-  const { data: dataUploadFile, loading: loadUploadFile, mutation, error: errorUploadFile } = useMutationApi<TResUploadFile>({
-    url: "/upload/book-image",
-    method: "POST"
-  })
-
   const { handleSubmit, watch, control, formState, setValue, reset } = useForm<TFormAddBook>({
     mode: "all",
     reValidateMode: "onChange",
@@ -68,7 +62,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
     defaultValues
   });
 
-  const [addBook, { data, error, loading }] = useMutation<TMutationAddBook>(ADDBOOK, {
+  const [addBook, { data, error, loading }] = useMutation<TMutationAddBook>(ADD_BOOK, {
     errorPolicy: "all",
     fetchPolicy: 'network-only'
   })
@@ -79,28 +73,17 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
   }, [error])
 
   React.useEffect(() => {
-    if (errorUploadFile)
-      enqueueSnackbar("Cover failed to upload", { variant: "error", anchorOrigin: { vertical: "bottom", horizontal: "left" }, autoHideDuration: 4000 })
-  }, [errorUploadFile])
-
-  React.useEffect(() => {
-    if (data && (dataUploadFile || errorUploadFile)) {
+    if (data) {
       refetch()
       enqueueSnackbar("Book added successfully", { variant: "success", anchorOrigin: { vertical: "bottom", horizontal: "left" }, autoHideDuration: 4000 })
       onClickClose()
     }
-  }, [data, dataUploadFile, errorUploadFile])
+  }, [data])
 
   const onSubmit = async (values: TFormAddBook) => {
     const { cover, ...rest } = values
     try {
-      const dataAddBook = await addBook({ variables: { data: rest } });
-      if (dataAddBook.data?.addBook) mutation({
-        body: {
-          type: "CREATE",
-          data: { bookId: dataAddBook.data?.addBook?.id, type: "COVER", file: cover }
-        }
-      })
+      await addBook({ variables: { data: rest, cover } });
     } catch (error) { }
   }
 
@@ -129,7 +112,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
                     width="100%"
                     onChange={onChange}
                     id="title"
-                    disabled={loading || loadUploadFile}
+                    disabled={loading}
                   />
                 )}
               />
@@ -147,7 +130,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
                     width="100%"
                     onChange={onChange}
                     id="authorName"
-                    disabled={loading || loadUploadFile}
+                    disabled={loading}
                   />
                 )}
               />
@@ -166,11 +149,11 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
                       width="100%"
                       onChange={onChange}
                       options={categoryOptions}
-                      disabled={loading || loadUploadFile}
+                      disabled={loading}
                     />
                   )}
                 />
-                <ButtonComp label={<PlusIcon />} variant="contained" onClick={() => setPopupAddCategory(true)} disabled={loading || loadUploadFile}/>
+                <ButtonComp label={<PlusIcon />} variant="contained" onClick={() => setPopupAddCategory(true)} disabled={loading} />
               </InputGroup>
               <Controller
                 name="description"
@@ -186,7 +169,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
                     width="100%"
                     onChange={onChange}
                     id="description"
-                    disabled={loading || loadUploadFile}
+                    disabled={loading}
                   />
                 )}
               />
@@ -205,7 +188,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
                       width="100%"
                       onChange={onChange}
                       id="price"
-                      disabled={loading || loadUploadFile}
+                      disabled={loading}
                     />
                   )}
                 />
@@ -223,7 +206,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
                       width="100%"
                       onChange={onChange}
                       id="stock"
-                      disabled={loading || loadUploadFile}
+                      disabled={loading}
                     />
                   )}
                 />
@@ -242,7 +225,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
                     width="100%"
                     onChange={onChange}
                     id="ISBN"
-                    disabled={loading || loadUploadFile}
+                    disabled={loading}
                   />
                 )}
               />
@@ -262,7 +245,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
                     width="100%"
                     onChange={onChange}
                     id="publisher"
-                    disabled={loading || loadUploadFile}
+                    disabled={loading}
                   />
                 )}
               />
@@ -281,7 +264,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
                       width="100%"
                       onChange={(e) => onChange(e.target.value)}
                       id="printType"
-                      disabled={loading || loadUploadFile}
+                      disabled={loading}
                     />
                   )}
                 />
@@ -299,7 +282,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
                       width="100%"
                       onChange={onChange}
                       id="numberOfPages"
-                      disabled={loading || loadUploadFile}
+                      disabled={loading}
                     />
                   )}
                 />
@@ -320,7 +303,7 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
                       width="100%"
                       onChange={onChange}
                       id="publicationYear"
-                      disabled={loading || loadUploadFile}
+                      disabled={loading}
                     />
                   )}
                 />
@@ -344,8 +327,8 @@ const FormData: FC<TFormdata> = ({ open, onClickClose, refetch }) => {
           </FormWrapper>
         </div>
         <div className="footer">
-          <ButtonComp label="Save" type="submit" variant="contained" startIcon={(loading || loadUploadFile) && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading || loadUploadFile} />
-          <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading || loadUploadFile} />
+          <ButtonComp label="Save" type="submit" variant="contained" startIcon={(loading) && <FacebookCircularProgress size={20} thickness={3} />} disabled={loading} />
+          <ButtonComp label="Cancel" variant="outlined" onClick={onClickClose} disabled={loading} />
         </div>
       </Form>
     </>

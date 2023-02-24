@@ -25,7 +25,7 @@ const Footer = () => {
           <div className="icon-wrapper">
             {socialMedia?.map((val) => (
               <div onClick={() => window.open(val.value)} key={val?.id}>
-                <img src={val.image} alt={val.label} />
+                <img src={val.imageUrl} alt={val.label} />
               </div>
             ))}
           </div>

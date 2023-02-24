@@ -5,7 +5,7 @@ import { useMutation } from '@apollo/client';
 import { TMutationDeleteBook } from '../../types/book';
 import ButtonComp from '../elements/Button';
 import { FacebookCircularProgress } from '../Loading/LoadingWrapper';
-import { DELETEBOOK } from '../../graphql/book.graphql';
+import { DELETE_BOOK } from '../../graphql/book.graphql';
 
 type TPopupDelete = {
   open: boolean;
@@ -16,7 +16,7 @@ type TPopupDelete = {
 
 const PopupDelete: FC<TPopupDelete> = ({ open, onClickClose, data, refetch }) => {
 
-  const [deleteBook, { data: datares, error, loading}] = useMutation<TMutationDeleteBook>(DELETEBOOK, {
+  const [deleteBook, { data: datares, error, loading}] = useMutation<TMutationDeleteBook>(DELETE_BOOK, {
     errorPolicy: "all",
     fetchPolicy: 'network-only'
   })

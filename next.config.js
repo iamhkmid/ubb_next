@@ -6,7 +6,7 @@ const nextConfig = {
     styledComponents: true,
   },
   images: {
-    domains: ["res.cloudinary.com"],
+    domains: ["localhost", "service.ubbpress.tp3i.ubb.ac.id"],
   },
 }
 

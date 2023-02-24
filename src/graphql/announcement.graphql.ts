@@ -5,8 +5,7 @@ export const BANNNERS = gql`
     banners{
       createdAt
       id
-      image
-      publicId
+      imageUrl
       updatedAt
     }
   }
@@ -26,8 +25,7 @@ export const PORTAL_BANNERS_LIST = gql`
     banners{
       createdAt
       id
-      image
-      publicId
+      imageUrl
       updatedAt
     }
   }
@@ -46,7 +44,7 @@ export const PUBLIC_ANNOUNCEMENT = gql`
   query{
     banners{
       id
-      image
+      imageUrl
     }
   }
 `;

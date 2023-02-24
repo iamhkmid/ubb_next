@@ -35,7 +35,7 @@ const BookCard: FC<TBookCard> = ({ data, onClick }) => {
       <div className="cover">
         {data?.Images?.find((val) => val.type === "COVER") ? (
           <Image
-            src={data?.Images?.find((val) => val.type === "COVER")?.secureUrl!}
+            src={data?.Images?.find((val) => val.type === "COVER")?.url!}
             fill
             alt="cover"
           />) : null}

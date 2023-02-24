@@ -5,7 +5,7 @@ export const FOOTER_INFO = gql`
     footerInfo{
       id
       label
-      image
+      imageUrl
       value
       Group {
         id
@@ -28,7 +28,7 @@ export const PORTAL_INIT_FOOTER_UPDATE = gql`
     footerInfo(footerInfoId: $footerInfoId) {
       id
       label
-      image 
+      imageUrl 
       value
       Group {
         id

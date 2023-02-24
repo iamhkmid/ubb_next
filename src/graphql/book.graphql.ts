@@ -86,9 +86,9 @@ export const PORTAL_BOOK_LIST = gql`
   }
 `;
 
-export const ADDBOOK = gql`
-  mutation ($data: addBookInput!) {
-    addBook(data: $data) {
+export const ADD_BOOK = gql`
+  mutation ($data: addBookInput!, $cover: String!) {
+    addBook(data: $data, cover: $cover) {
       createdAt
       id
       title
@@ -96,7 +96,7 @@ export const ADDBOOK = gql`
   }
 `;
 
-export const DELETEBOOK = gql`
+export const DELETE_BOOK = gql`
   mutation ($bookId: ID!) {
     deleteBook(bookId: $bookId) {
       createdAt
@@ -106,11 +106,12 @@ export const DELETEBOOK = gql`
   }
 `;
 
-export const UPDATEBOOK = gql`
- mutation($data: updateBookInput!){
-   updateBook(data: $data){
-     createdAt
-     id
-     title
-   }
- }`
+export const UPDATE_BOOK = gql`
+  mutation($data: updateBookInput!, $cover: String){
+    updateBook(data: $data, cover: $cover){
+      createdAt
+      id
+      title
+    }
+  }
+`

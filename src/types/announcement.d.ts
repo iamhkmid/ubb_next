@@ -1,6 +1,6 @@
 export type TBanner = {
   id: string;
-  image: string
+  imageUrl: string
   length: any
 }
 
@@ -24,6 +24,6 @@ export type TFormAddBanner = {
 export type TQueryPlublicBanners = {
   banners: {
     id: string;
-    image: string;
+    imageUrl: string;
   }[]
 }

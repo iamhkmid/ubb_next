@@ -67,7 +67,7 @@ const Book: React.FC = () => {
     } catch (error) { }
   }
 
-  // const createData = (id: string, no: string, secureUrl: string) => ({ id, no, secureUrl});
+  // const createData = (id: string, no: string, url: string) => ({ id, no, url});
 
 
   // const dataTable = useMemo(() => {
@@ -75,7 +75,7 @@ const Book: React.FC = () => {
   //     return createData(
   //       val?.id,
   //       String(idx + 1),
-  //       val?.secureUrl,
+  //       val?.url,
   //       <Action>
   //         <Button onClick={(e) => onClickDelete(e, {id: val?.id})}><XIcon /></Button>
   //       </Action>

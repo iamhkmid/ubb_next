@@ -9,8 +9,6 @@ import "swiper/css/navigation";
 
 // import required modules
 import SwiperClass, { Autoplay, EffectFade, Navigation, Mousewheel, Pagination } from "swiper";
-import { useQuery } from "@apollo/client";
-import { PUBLIC_ANNOUNCEMENT } from "../../graphql/announcement.graphql";
 import Image from "next/image";
 import Button from "../elements/Button";
 import { TQueryPlublicBanners } from "../../types/announcement";
@@ -25,10 +23,6 @@ type TBanners = {
 
 const Banners: React.FC<TBanners> = ({ data }) => {
   const swiperRef = React.useRef<SwiperRef>(null)
-
-  useEffect(() => {
-  }, [])
-
 
   return (
     <Main>
@@ -46,7 +40,7 @@ const Banners: React.FC<TBanners> = ({ data }) => {
         >
           {data?.banners?.map((banner) => (
             <SwiperSlide key={banner.id}>
-              <Image src={banner.image} alt="banner" fill style={{ objectFit: "contain" }} />
+              <Image src={banner.imageUrl} alt="banner" fill style={{ objectFit: "contain" }} />
             </SwiperSlide>
           ))}
         </Swiper>
